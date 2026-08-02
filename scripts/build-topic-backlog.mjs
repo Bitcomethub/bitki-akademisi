@@ -75,13 +75,13 @@ const ARCHETYPES = [
     slug: (s) => `${s}-faydalari-nelerdir`,
     title: (n) => `${n} Faydaları Nelerdir? Bilinenler ve Bilinmeyenler`,
     question: (n) => `${n} faydaları nelerdir?`,
-    keywords: (n, s) => [
-      `${n.toLocaleLowerCase("tr")} faydaları`,
-      `${n.toLocaleLowerCase("tr")} nedir`,
-      `${n.toLocaleLowerCase("tr")} ne işe yarar`,
-      `${n.toLocaleLowerCase("tr")} neye iyi gelir`,
-      `${s.replace(/-/g, " ")} ekstraktı`,
-    ],
+    // Anahtar kelimeler slug'dan DEĞİL görünen addan türetilir; slug ASCII
+    // olduğu için ondan türetince "zerdecal ekstraktı" gibi Türkçesi bozuk
+    // ifadeler çıkıyor ve kimse öyle aramıyor.
+    keywords: (n) => {
+      const l = n.toLocaleLowerCase("tr");
+      return [`${l} faydaları`, `${l} nedir`, `${l} ne işe yarar`, `${l} neye iyi gelir`, `${l} ekstraktı`];
+    },
     angle:
       "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda " +
       "araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı " +
@@ -480,7 +480,7 @@ for (const [plant, noun, slugBase, category, tier] of PLANTS) {
       category,
       archetype: arch.key,
       tier,
-      keywords: arch.keywords(noun, slugBase),
+      keywords: arch.keywords(noun),
       angle: arch.angle,
     });
   }
