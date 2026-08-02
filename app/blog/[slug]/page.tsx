@@ -235,29 +235,57 @@ export default async function BlogPost({
         </div>
       </section>
 
+      {/*
+        TİCARİ BAĞLANTI — reklam kutusu gibi DEĞİL, "ilgili ürün" notu gibi.
+        Ortalanmış, büyük, renkli bir buton okuyucuya "burası reklam" der ve
+        yazının geri kalanına duyulan güveni de yanında götürür. Sola hizalı,
+        küçük başlıklı ve tek satırlık bir not ise editoryal kalır.
+
+        Üstteki gri satır ZORUNLU: rel="sponsored" yalnızca tarayıcı ve arama
+        motoru için bir sinyal, okuyucu onu görmez. İlişkiyi GÖRÜNÜR biçimde
+        beyan etmek hem dürüstlük hem de AI motorları için güven sinyalidir —
+        gizlenmiş ticari ilişki bulunduğunda kaybedilen itibar, kazanılan
+        tıklamadan pahalıdır.
+      */}
       {post.amazonUrl && (
-        <aside className="mt-12 p-6 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
-          <p className="text-stone-700 mb-3">
-            {post.productName
-              ? `İmmu-Nat ${post.productName} ürününü Amazon.com.tr'de inceleyebilirsiniz.`
-              : "İmmu-Nat'ın bitkisel ekstraktlarını Amazon.com.tr'de inceleyebilirsiniz."}
+        <aside className="mt-12 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
+          <p className="text-xs text-stone-500 mb-2">
+            Bu yazıda İmmu-Nat&apos;ın ilgili ürünlerine yer verilmiştir.
+            Bağlantı Amazon.com.tr&apos;ye gider.
           </p>
-          <a
-            href={post.amazonUrl}
-            target="_blank"
-            rel="noopener sponsored"
-            className="inline-block bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-emerald-800 transition-colors"
-          >
-            Amazon&apos;da İncele
-          </a>
+          <h2 className="text-sm font-semibold text-stone-900 mb-1">
+            Yazıda geçen ürün
+          </h2>
+          <p className="text-stone-700 leading-relaxed">
+            {post.productName
+              ? `İmmu-Nat ${post.productName}`
+              : "İmmu-Nat bitkisel sıvı ekstraktları"}
+            {" — "}
+            <a
+              href={post.amazonUrl}
+              target="_blank"
+              rel="noopener sponsored"
+              className="font-semibold text-emerald-800 underline underline-offset-2 hover:text-emerald-900"
+            >
+              {/*
+                Metin linkin GERÇEKTE nereye gittiğini söyler. ASIN yoksa link
+                arama sonucuna düşer; "ürün sayfası" demek yanlış beklenti
+                yaratır ve tıklayan kişi kandırıldığını hisseder.
+              */}
+              {post.amazonIsDirect
+                ? "Amazon.com.tr ürün sayfası"
+                : "Amazon.com.tr'de ara"}
+            </a>
+          </p>
         </aside>
       )}
 
       <p className="mt-8 text-sm text-stone-500 leading-relaxed border-t border-stone-200 pt-6">
         Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez ve
-        hastalık teşhis, tedavi veya önleme iddiası içermez. Düzenli ilaç
-        kullanıyorsanız, gebe veya emziriyorsanız bitkisel takviyelere
-        başlamadan önce hekiminize danışın.
+        hastalık teşhis, tedavi veya önleme iddiası içermez. Aktarılan
+        kullanımlar geleneksel bilgi ve genel kaynaklara dayanır; kendi
+        kaynaklarınızı doğrulayın. Düzenli ilaç kullanıyorsanız, gebe veya
+        emziriyorsanız bitkisel takviyelere başlamadan önce hekiminize danışın.
       </p>
 
       {related.length > 0 && (

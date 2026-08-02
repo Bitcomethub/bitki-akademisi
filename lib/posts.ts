@@ -16,7 +16,7 @@
  */
 import seedData from "@/content/seed-posts.json";
 import generatedData from "@/content/generated-posts.json";
-import { amazonUrlFor, productForPlant } from "@/lib/brand-facts";
+import { amazonUrlFor, isDirectProductLink, productForPlant } from "@/lib/brand-facts";
 
 export type Faq = { q: string; a: string };
 
@@ -52,6 +52,8 @@ export type PostSource = {
 export type Post = PostSource & {
   amazonUrl?: string;
   productName?: string;
+  /** Link doğrudan ürün sayfasına mı gidiyor, arama sonucuna mı? */
+  amazonIsDirect?: boolean;
 };
 
 /**
@@ -84,8 +86,9 @@ function hydrate(source: PostSource): Post {
   const product = source.plant ? productForPlant(source.plant) : undefined;
   return {
     ...source,
-    amazonUrl: product ? amazonUrlFor(product.amazonQuery) : undefined,
+    amazonUrl: product ? amazonUrlFor(product) : undefined,
     productName: product?.name,
+    amazonIsDirect: product ? isDirectProductLink(product) : undefined,
   };
 }
 

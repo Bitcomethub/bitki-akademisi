@@ -224,6 +224,248 @@ function scanHealthClaims(fields) {
   return problems;
 }
 
+/* -------------------------------------------------------------------------
+ * SAĞLIK İDDİASI KATMANI — halüsinasyon önleme
+ *
+ * bannedHealthClaims listesi "tedavi eder" gibi APAÇIK ihlalleri yakalar.
+ * Asıl tehlike ise sinsi olanı: modelin kendinden emin, kaynaksız ve kesin
+ * kipte yazdığı sıradan görünen cümle. "Zerdeçal iltihabı azaltır" cümlesinde
+ * yasak kelime yok — ama bu bir hastalık beyanıdır ve mevzuata aykırıdır.
+ *
+ * Üç ayrı kontrol var, üçü farklı bir yalan biçimini kesiyor:
+ *   R11 uydurma KANIT   — "%73", "2019'da yapılan çalışma", "120 hasta"
+ *   R12 kesin KİP       — "azaltır" (olması gereken: "azaltmaya yardımcı olabilir")
+ *   R13 kaynak TÜRÜ     — yazının hiçbir yerinde "geleneksel olarak / bazı
+ *                          çalışmalarda" gibi bir dayanak beyanı yoksa
+ * ---------------------------------------------------------------------- */
+
+/**
+ * TÜM EŞLEŞMELER fold()'lanmış ASCII metin üzerinde yapılır ve bu ZORUNLU.
+ * Sebep somut: "yönleri" kelimesi "önler" dizgisini İÇERİR. JS'in \b sınırı
+ * ASCII tabanlı olduğu için "ö" harfini kelime karakteri saymaz ve
+ * /\bönler\b/ "yönleri" içinde EŞLEŞİR — sessiz yanlış pozitif. fold()
+ * sonrası "yonleri" ve "onler" olur; "y" ile "o" ikisi de kelime karakteri
+ * olduğundan \b sınırı oluşmaz ve eşleşme doğru biçimde başarısız olur.
+ */
+const ASSERTIVE_EFFECT = [
+  "dusurur", "yukseltir", "artirir", "arttirir", "azaltir", "guclendirir",
+  "hizlandirir", "yavaslatir", "onler", "engeller", "temizler", "arindirir",
+  "dengeler", "onarir", "yeniler", "rahatlatir", "yatistirir", "giderir",
+  "cozer", "yok eder", "oldurur", "iyilestirir", "tedavi eder", "gecirir",
+  "eritir", "durdurur", "duzeltir", "kurtarir", "sagaltir",
+  "katki saglar", "destek saglar",
+];
+const ASSERTIVE_RE = new RegExp(`\\b(${ASSERTIVE_EFFECT.join("|")})\\b`);
+
+/**
+ * İhtimal kipi ve dayanak beyanı — cümleyi iddiadan aktarıma çevirir.
+ * `-abilir/-ebilir` eki tek başına yeterli: "azaltmaya yardımcı olabilir"
+ * bir gözlem aktarır, "azaltır" bir hastalık beyanıdır. Aradaki fark
+ * kozmetik değil, mevzuatın tam olarak çizdiği sınır.
+ */
+const HEDGE_RE =
+  /(abilir|ebilir|abilecegi|ebilecegi|dusunul|kabul edilir|bilinir|aktaril|one surul|iddia edil|gelenekse|halk hekimlig|halk arasinda|halk tababet|bazi |arastirma|calismalarda|incelenm|literatur|kullanilagelmis|yaygin olarak)/;
+
+/**
+ * Kaynak TÜRÜ beyanı. Sahte çalışma uydurmanın panzehiri, kaynak yazmamak
+ * değil; iddianın hangi TÜR bilgiye dayandığını söylemektir. "Geleneksel
+ * tıpta", "bazı klinik çalışmalarda" doğrulanabilir bir çerçeve verir;
+ * "Lancet'te yayımlanan 2019 tarihli çalışma" ise doğrulanabilir bir YALAN
+ * olur. Yazı en az bir kez çerçevesini beyan etmeli.
+ */
+const ATTRIBUTION_RE =
+  /(gelenekse|halk hekimlig|halk arasinda|halk tababet|bazi calisma|bazi arastirma|arastirmalarda|arastirmalar |klinik calisma|calismalarda|incelenmekte|incelenmis|literaturde|kullanilagelmis)/;
+
+/**
+ * Uydurma kanıt kalıpları. Hepsinin ortak özelliği: DOĞRULANABİLİR GÖRÜNEN
+ * ama doğrulanamayan spesifiklik. Model bu tür ayrıntıyı ikna edici olsun
+ * diye üretir ve tam da bu yüzden en zararlı yalan biçimidir — okuyucu
+ * rakamı gördüğü an metne olduğundan fazla güvenir.
+ */
+const FABRICATED_EVIDENCE = [
+  {
+    re: /(%\s*\d|\byuzde\s+\d|\d+([.,]\d+)?\s*%)/,
+    why: "sayısal yüzde — künyede doğrulanmış tek bir oran bile yok, uydurma sayılır",
+  },
+  {
+    re: /\b(19|20)\d{2}\b[^.]{0,60}(calisma|arastirma|klinik|deneme|meta[- ]?analiz|yayin)|(calisma|arastirma|klinik|deneme|meta[- ]?analiz)[^.]{0,60}\b(19|20)\d{2}\b/,
+    why: "tarihli çalışma atfı — doğrulanabilir görünen, doğrulanamayan kaynak",
+  },
+  {
+    re: /\b\d+\s*(kisi|hasta|gonullu|denek|katilimci|birey)\b/,
+    why: "katılımcı sayısı — sahte çalışma künyesi",
+  },
+  {
+    re: /(universite|enstitu|journal|dergisinde|dergide)[^.]{0,60}(calisma|arastirma|yayimlan)|(calisma|arastirma|yayimlan)[^.]{0,60}(universite|enstitu|journal|dergisinde|dergide)/,
+    why: "kurum/dergi atfı — kaynak künyesi uydurma riski",
+  },
+  {
+    re: /\b\d+\s*(kat|misli)\s+(daha|fazla|etkili|hizli|güclu|guclu)/,
+    why: "sayısal etki büyüklüğü",
+  },
+];
+
+/**
+ * DOZ ayrı ele alınıyor, çünkü AMBALAJ HACMİ doz DEĞİLDİR.
+ *
+ * Kalibrasyon bunu yakaladı: yayımlanmış iki makale "250 ml sıvı ekstrakt ve
+ * 50 ml damla formları" diyor. Bu bir kullanım talimatı değil, ürünün künyede
+ * DOĞRULANMIŞ ambalaj bilgisi (allowedBrandNumbers). Düz bir sayı+birim
+ * regex'i bunları da reddedip her gün üretimi bloke ederdi.
+ *
+ * Ayrım birimde: ambalaj ml ile ölçülür, doz mg/damla/kapsül ile. Bu yüzden
+ * yalnızca hacim birimleri ve yalnızca künyede DOĞRULANMIŞ sayılar muaf.
+ * "500 mg" ya da "3 kapsül" hiçbir koşulda geçemez.
+ */
+const DOSE_RE = /(?<![\d.,])(\d+(?:[.,]\d+)?)\s*(mg|miligram|gram|gr|ml|mililitre|damla|kapsul|tablet|olcek)\b/g;
+const PACKAGING_UNITS = new Set(["ml", "mililitre"]);
+
+function scanDoseFigures(fields) {
+  const problems = [];
+  const allowed = new Set(facts.allowedBrandNumbers.map(String));
+  for (const { label, text } of fields) {
+    for (const raw of sentences(text)) {
+      for (const m of fold(raw).matchAll(DOSE_RE)) {
+        const [, num, unit] = m;
+        if (PACKAGING_UNITS.has(unit) && allowed.has(num)) continue;
+        problems.push(
+          `[${label}] Kesin doz "${num} ${unit}" — etiket dışında doz vermek ` +
+            `tıbbi tavsiyeye girer: "${raw.slice(0, 110)}"`
+        );
+      }
+    }
+  }
+  return problems;
+}
+
+/* -------------------------------------------------------------------------
+ * KARIŞIM BİLEŞENİ UYDURMA KONTROLÜ
+ *
+ * NAT-EXT formülleri (NE/01…NE/11) çok bileşenli. Model bir formülden
+ * bahsederken listeye "mantıken uyan" ama gerçekte olmayan bir bitki
+ * ekleyebilir — okuyucu için bu, satın aldığı üründe olmayan bir bileşeni
+ * beklemek demektir. Marka rakamı uydurmayı yasaklarken bileşen uydurmayı
+ * serbest bırakmak tutarsız olurdu.
+ *
+ * Kural: bir cümlede NE kodu geçiyorsa, o cümlede adı geçen her bitki
+ * ANILAN KODLARIN içerik listesinde bulunmalı.
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Bitki SÖZLÜĞÜ — yalnızca formül içerikleri DEĞİL.
+ *
+ * İlk sürüm sözlüğü sadece natExt içeriklerinden kurmuştu ve sabotaj testi
+ * bunu anında düşürdü: uydurulan bileşen ("Keçiboynuzu") hiçbir formülde
+ * geçmediği için sözlükte de yoktu ve tarama onu hiç GÖRMEDİ. Yani kontrol,
+ * tam olarak yakalaması gereken durumda kördü.
+ *
+ * Sözlük bu yüzden sitenin bildiği TÜM bitki adlarından kuruluyor: formül
+ * içerikleri + ürün künyeleri + konu backlog'u. Uydurma bileşen genellikle
+ * "sitede var ama bu formülde yok" olan bitkidir.
+ */
+const NE_PLANT_NAMES = [
+  ...new Set(
+    [
+      ...facts.natExt.flatMap((f) => f.contents),
+      ...facts.products.map((x) => x.plant),
+      ...backlog.topics.map((t) => t.plant),
+    ]
+      .filter(Boolean)
+      .flatMap((name) => String(name).split("/"))
+      .map((s) => s.trim())
+      .filter((s) => s.length >= 4 && !/^(Karışım|Meyve karışımı|Arı ürünleri)$/i.test(s))
+  ),
+]
+  .map((name) => ({ name, folded: fold(name) }))
+  .sort((a, b) => b.folded.length - a.folded.length);
+
+const NE_CODE_RE = /\bne\s*\/\s*(\d{1,2})\b/g;
+
+/**
+ * "Ginseng" ile "Panax Ginseng" aynı bitkidir; biri diğerinin içinde geçer.
+ * Kapsama ilişkisini iki yönlü kontrol etmezsek NE/11'den bahseden bir cümle
+ * "ginseng" kelimesi yüzünden haksız yere reddedilir.
+ */
+function plantAllowed(foldedName, allowedFolded) {
+  return allowedFolded.some((a) => a.includes(foldedName) || foldedName.includes(a));
+}
+
+function scanMixtureContents(fields) {
+  const problems = [];
+  for (const { label, text } of fields) {
+    for (const raw of sentences(text)) {
+      const folded = fold(raw);
+      const codes = [...folded.matchAll(NE_CODE_RE)].map((m) => `NE/${m[1].padStart(2, "0")}`);
+      if (codes.length === 0) continue;
+
+      const known = codes.filter((c) => facts.natExt.some((f) => f.code === c));
+      for (const c of codes) {
+        if (!known.includes(c)) problems.push(`[${label}] Var olmayan formül kodu "${c}"`);
+      }
+      if (known.length === 0) continue;
+
+      const allowed = known.flatMap(
+        (c) => facts.natExt.find((f) => f.code === c).contents.map(fold)
+      );
+      for (const { name, folded: fp } of NE_PLANT_NAMES) {
+        // Sonda \b YOK: Türkçe ek alır ("Kudret Narı'nın"). Başta \b VAR:
+        // "nane" kelimesinin "hane" içinde eşleşmesini engelliyor.
+        if (!new RegExp(`\\b${fp}`).test(folded)) continue;
+        if (!plantAllowed(fp, allowed)) {
+          problems.push(
+            `[${label}] ${known.join("/")} içeriğinde OLMAYAN bileşen "${name}": "${raw.slice(0, 110)}"`
+          );
+        }
+      }
+    }
+  }
+  return problems;
+}
+
+/** R11: uydurma kanıt taraması (alan alan, gerekçesiyle). */
+function scanFabricatedEvidence(fields) {
+  const problems = [];
+  for (const { label, text } of fields) {
+    for (const raw of sentences(text)) {
+      const folded = fold(raw);
+      for (const rule of FABRICATED_EVIDENCE) {
+        if (rule.re.test(folded)) {
+          problems.push(`[${label}] Uydurma kanıt riski (${rule.why}): "${raw.slice(0, 110)}"`);
+        }
+      }
+    }
+  }
+  return problems;
+}
+
+/**
+ * R12: kesin kip taraması.
+ *
+ * SORU CÜMLELERİ MUAF. "Ekinezya soğuk algınlığını önler mi?" bir iddia
+ * değil, okuyucunun sorusudur — bölüm başlıkları ve SSS soruları zaten bu
+ * biçimde yazılıyor. Soruyu iddia sayan bir kapı, sitenin tüm answer-first
+ * yapısını reddederdi.
+ */
+function scanClaimHedging(fields) {
+  const problems = [];
+  for (const { label, text, question } of fields) {
+    if (question) continue;
+    for (const raw of sentences(text)) {
+      if (raw.trim().endsWith("?")) continue;
+      const folded = fold(raw);
+      const m = folded.match(ASSERTIVE_RE);
+      if (m && !HEDGE_RE.test(folded)) {
+        problems.push(
+          `[${label}] Kesin kipte sağlık iddiası "${m[1]}" — ihtimal kipi ` +
+            `("...yardımcı olabilir") ya da dayanak ("geleneksel olarak...") ` +
+            `gerekiyor: "${raw.slice(0, 110)}"`
+        );
+      }
+    }
+  }
+  return problems;
+}
+
 /**
  * Türkçe kelime eşikleri.
  * Türkçe sondan eklemeli: aynı bilgi İngilizceden ~%30-40 daha az kelimeyle
@@ -381,17 +623,37 @@ export function validatePost(post, topic) {
     { label: "keyTakeaway", text: post.keyTakeaway },
     ...post.intro.map((t, i) => ({ label: `intro[${i}]`, text: t })),
     ...post.sections.flatMap((s, i) => [
-      { label: `sections[${i}].heading`, text: s.heading },
+      // question: true → kesin kip taraması bu alanı atlar. Başlıklar zaten
+      // soru formatında olmak ZORUNDA (R5); soruyu iddia saymak kapıyı
+      // kendi kuralıyla çelişir hale getirirdi.
+      { label: `sections[${i}].heading`, text: s.heading, question: true },
       ...(s.body || []).map((t, j) => ({ label: `sections[${i}].body[${j}]`, text: t })),
       ...(s.list || []).map((t, j) => ({ label: `sections[${i}].list[${j}]`, text: t })),
     ]),
     ...post.faqs.flatMap((f, i) => [
-      { label: `faqs[${i}].q`, text: f.q },
+      { label: `faqs[${i}].q`, text: f.q, question: true },
       { label: `faqs[${i}].a`, text: f.a },
     ]),
   ];
   problems.push(...scanBrandFacts(fields));
   problems.push(...scanHealthClaims(fields));
+  problems.push(...scanFabricatedEvidence(fields));
+  problems.push(...scanDoseFigures(fields));
+  problems.push(...scanClaimHedging(fields));
+  problems.push(...scanMixtureContents(fields));
+
+  // --- R13: kaynak türü beyanı (yazı düzeyinde) -------------------------
+  // Neden bölüm bazında değil? Ölçtük: yayımlanmış üç makalenin 15 bölümünün
+  // 7'sinde bölüm içinde dayanak ifadesi yok ve o bölümler doğru yazılmış —
+  // güvenlik/tanım bölümleri iddia içermez. Bölüm bazında zorlamak her gün
+  // yanlış pozitif üretirdi. İddia CÜMLESİ zaten R12'de tek tek denetleniyor;
+  // buradaki kural yazının bütününde çerçevenin bir kez beyan edilmesidir.
+  if (!ATTRIBUTION_RE.test(fold(bodyText))) {
+    fail(
+      "Yazının hiçbir yerinde kaynak türü beyanı yok " +
+        '("geleneksel olarak", "bazı çalışmalarda", "halk hekimliğinde" gibi)'
+    );
+  }
 
   // --- R9: özet ve uzunluk ---------------------------------------------
   if (!range(wc(post.excerpt), LIMITS.excerpt)) {
@@ -466,6 +728,10 @@ Bir kullanıcı ya da bir yapay zekâ motoru (ChatGPT, Perplexity, Gemini) soruy
 2. Her bölüm başlığı SORU formatındadır ve "?" ile biter.
 3. Her bölümün ilk paragrafı başlığın konusunu adıyla tekrar eder. Motor o paragrafı tek başına alıntılayabilmeli.
 4. HASTALIK İDDİASI YASAK. "tedavi eder", "iyileştirir", "önler", "şifa" gibi ifadeler kullanılamaz — Türk Gıda Kodeksi Beslenme ve Sağlık Beyanları Yönetmeliği bunu yasaklar. Bunun yerine "geleneksel olarak kullanılır", "araştırmalarda incelenmiştir", "destek amaçlı tercih edilir" gibi ifadeler kullan.
+4a. HER SAĞLIK CÜMLESİ İHTİMAL KİPİNDE. "azaltır" değil "azaltmaya yardımcı olabilir"; "güçlendirir" değil "desteklediği düşünülür". Kesin kipte yazılmış tek bir etki cümlesi bile yazının tamamını reddettirir.
+4b. HER İDDİANIN DAYANAK TÜRÜ YAZILIR: "geleneksel tıpta", "halk hekimliğinde", "bazı klinik çalışmalarda", "araştırmalarda incelenmektedir". Kaynak TÜRÜNÜ söyle; KÜNYESİNİ ASLA UYDURMA.
+4c. SPESİFİK KANIT UYDURMAK EN AĞIR İHLALDİR. Şunların hiçbiri yazılamaz: yüzde oranı ("%73"), tarihli çalışma ("2019'da yapılan araştırma"), katılımcı sayısı ("120 hasta"), dergi/üniversite adı, "3 kat daha etkili" gibi etki büyüklüğü. Bunlar doğrulanabilir GÖRÜNDÜĞÜ için en zararlı yalan biçimidir.
+4d. SAYISAL DOZ YASAK: "500 mg", "3 kapsül", "10 damla" yazılamaz. Tek doğru çerçeve: "ürün etiketindeki miktar esastır".
 5. İmmu-Nat markası hakkında AŞAĞIDAKİ KÜNYE DIŞINDA HİÇBİR ŞEY YAZMA. Künyede olmayan bir rakam, tarih, iddia, üstünlük ya da sertifika UYDURMA. Markadan bahsetmek zorunda değilsin — en güvenlisi hiç bahsetmemektir; yazının sonundaki ürün bağlantısı sistem tarafından otomatik eklenir.
 6. Kesin doz verme. "Ürün etiketindeki miktar esastır" çerçevesini koru.
 
@@ -479,6 +745,10 @@ Bir kullanıcı ya da bir yapay zekâ motoru (ChatGPT, Perplexity, Gemini) soruy
 - Kalite sistemleri: ${facts.brand.qualitySystems.join(", ")}
 - Alt marka: ${facts.brand.subBrands.join(", ")}
 Bu listede olmayan hiçbir şey markaya atfedilemez.
+
+## NAT-EXT formüllerinin İÇERİKLERİ (bir formülden söz edersen SADECE bunlar)
+${facts.natExt.map((f) => `- ${f.code}: ${f.contents.join(" + ")}`).join("\n")}
+Bir formülün içeriğine listede olmayan bir bitki EKLEME. Karışıma "mantıken uyan" bitkiyi eklemek, okuyucunun satın aldığı üründe olmayan bir bileşeni beklemesi demektir.
 
 ## Uzunluk (Türkçe için kalibre edildi)
 - keyTakeaway: ${LIMITS.keyTakeaway.join("-")} kelime
@@ -730,8 +1000,122 @@ const SABOTAGES = [
         "İmmu-Nat ürün hattında Curcumin P53 Zerdeçal Ekstraktı ve NAT-EXT NE/01 kodlu formül yer alır."
       );
     },
-    expect: null, // hiçbir marka hatası ÜRETMEMELİ
-    brandOnly: true,
+    // Kontrol testi: bu mutasyon aşağıdaki hata TÜRÜNÜ hiç üretmemeli.
+    expect: null,
+    expectNone: /doğrulanmamış sayı|künyede yer almayan/,
+  },
+
+  // --- SAĞLIK İDDİASI KATMANI -------------------------------------------
+  {
+    name: "10. Uydurma istatistik (sahte yüzde)",
+    mutate: (d) => {
+      d.sections[1].body.push(
+        "Yapılan değerlendirmelerde katılımcıların %73'ünde belirgin fark gözlendiği aktarılmaktadır."
+      );
+    },
+    expect: /sayısal yüzde/,
+  },
+  {
+    name: "11. Uydurma çalışma künyesi (tarih + dergi)",
+    mutate: (d) => {
+      d.sections[2].body.push(
+        "2019 yılında bir dergide yayımlanan çalışmada bu etki geleneksel olarak doğrulanabilir bulunmuştur."
+      );
+    },
+    expect: /tarihli çalışma atfı|kurum\/dergi atfı/,
+  },
+  {
+    name: "12. Uydurma katılımcı sayısı",
+    mutate: (d) => {
+      d.faqs[1].a =
+        "Geleneksel kullanımda 120 hasta üzerinde olumlu sonuç alındığı aktarılır. " +
+        "Bu nedenle günlük kullanımda etiketteki öneri esas alınmalıdır.";
+    },
+    expect: /katılımcı sayısı/,
+  },
+  {
+    name: "13. Kesin doz verme",
+    mutate: (d) => {
+      d.sections[2].body.push(
+        "Günde 500 mg alınması geleneksel olarak yeterli kabul edilebilir."
+      );
+    },
+    expect: /Kesin doz "500 mg"/,
+  },
+  {
+    name: "14. Kesin kipte sağlık iddiası (kaynaksız, ihtimalsiz)",
+    mutate: (d) => {
+      d.sections[1].body.push(
+        "Çörek otu yağı sindirim sistemindeki iltihabı azaltır ve bağırsak florasını dengeler."
+      );
+    },
+    expect: /Kesin kipte sağlık iddiası/,
+  },
+  {
+    name: "15. Kaynak türü beyanı hiç yok",
+    mutate: (d) => {
+      // Dayanak bildiren tüm ifadeleri nötr karşılıklarıyla değiştir.
+      const strip = (t) =>
+        t
+          .replace(/[Gg]eleneksel olarak/g, "Sıklıkla")
+          .replace(/[Gg]eleneksel/g, "yaygın")
+          .replace(/[Aa]raştırmalar[a-zçğıöşü]*/g, "kaynaklar")
+          .replace(/çalışmalar[a-zçğıöşü]*/g, "kayıtlar")
+          .replace(/halk arasında/g, "yaygın biçimde")
+          .replace(/halk hekimliğinde/g, "eskiden");
+      d.keyTakeaway = strip(d.keyTakeaway);
+      d.intro = d.intro.map(strip);
+      d.sections = d.sections.map((s) => ({
+        ...s,
+        heading: strip(s.heading),
+        body: s.body.map(strip),
+        ...(s.list ? { list: s.list.map(strip) } : {}),
+      }));
+      d.faqs = d.faqs.map((f) => ({ q: strip(f.q), a: strip(f.a) }));
+    },
+    expect: /kaynak türü beyanı yok/,
+  },
+  {
+    name: "16. Karışım formülüne uydurma bileşen",
+    mutate: (d) => {
+      d.sections[3].body.push(
+        "İmmu-Nat'ın NE/06 kodlu formülü ekinezya, ginseng ve keçiboynuzu içerir."
+      );
+    },
+    expect: /OLMAYAN bileşen "Keçiboynuzu"/,
+  },
+  {
+    name: "17. KONTROL: ihtimal kipi reddedilmemeli",
+    mutate: (d) => {
+      d.sections[1].body.push(
+        "Geleneksel kullanımda çörek otunun sindirimi rahatlatmaya yardımcı olabileceği aktarılır."
+      );
+    },
+    expect: null,
+    expectNone: /Kesin kipte|Uydurma kanıt|Kesin doz|kaynak türü beyanı|OLMAYAN bileşen/,
+  },
+  {
+    name: "18. KONTROL: soru başlığındaki 'önler mi?' iddia SAYILMAMALI",
+    mutate: (d) => {
+      d.sections[3].heading = "Çörek otu soğuk algınlığını önler mi?";
+      d.sections[3].body[0] =
+        "Çörek otunun soğuk algınlığı üzerindeki etkisi halk hekimliğinde sıkça anlatılır, " +
+        "ancak koruyucu bir etkiden söz etmek için yeterli dayanak yoktur. " +
+        "Belirtileri hafifletmeye yardımcı olabileceği aktarılır, kesin bir sonuç bildirilmez. " +
+        "Bu nedenle mevsimsel kullanımda beklentiyi ölçülü tutmak gerekir.";
+    },
+    expect: null,
+    expectNone: /Kesin kipte|Uydurma kanıt|Kesin doz|kaynak türü beyanı|OLMAYAN bileşen/,
+  },
+  {
+    name: "19. KONTROL: künyedeki ambalaj hacmi doz SAYILMAMALI",
+    mutate: (d) => {
+      d.sections[3].body.push(
+        "İmmu-Nat'ın sıvı ekstraktları 250 ml şişe ve 50 ml damlalıklı formda sunulur."
+      );
+    },
+    expect: null,
+    expectNone: /Kesin kipte|Uydurma kanıt|Kesin doz|kaynak türü beyanı|OLMAYAN bileşen/,
   },
 ];
 
@@ -759,13 +1143,15 @@ function selfTest() {
     const problems = validatePost(d, CLEAN_TOPIC);
 
     if (s.expect === null) {
-      // Regresyon testi: bu mutasyon MARKA hatası üretmemeli.
-      const brandHits = problems.filter((x) => /doğrulanmamış sayı|künyede yer almayan/.test(x));
-      const ok = brandHits.length === 0;
+      // Regresyon testi: bu mutasyon BELİRLİ BİR hata türünü üretmemeli.
+      // Yanlış pozitif, kaçırılan sabotajdan daha sinsi bir arıza: kapı her
+      // gün doğru içeriği reddeder ve kimse kapının bozuk olduğunu anlamaz.
+      const hits = problems.filter((x) => s.expectNone.test(x));
+      const ok = hits.length === 0;
       console.log(`  ${ok ? "OK  " : "HATA"}  ${s.name}`);
       if (!ok) {
         failed++;
-        brandHits.forEach((x) => console.log("        · " + x));
+        hits.forEach((x) => console.log("        · " + x));
       }
       continue;
     }
