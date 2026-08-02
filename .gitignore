@@ -24,6 +24,11 @@
 .DS_Store
 *.pem
 
+# Claude Code yerel ayarları — onaylanan kabuk komutlarını DÜZ METİN saklar.
+# Bu depo public: inline yazılmış bir API anahtarı ya da bağlantı dizesi
+# buraya düşerse doğrudan yayımlanır. LEARNINGS.md bilerek izleniyor.
+.claude/settings.local.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
