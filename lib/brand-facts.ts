@@ -17,12 +17,42 @@ export type BrandProduct = {
   amazonQuery: string;
   /** Gerçek Amazon.com.tr ürün kodu. Bilinmiyorsa ALAN HİÇ YAZILMAZ. */
   asin?: string;
+  /**
+   * Kartta görünen 1-2 cümlelik kullanım açıklaması.
+   *
+   * OPSİYONEL OLMASI KASITLI: bu alan künye değil, ÜRETİM. Yalnızca
+   * scripts/generate-product-blurbs.mjs yazar ve yalnızca kalite kapısından
+   * geçen metin yazılır. Kapıdan geçemeyen ürün alansız kalır ve kartında
+   * açıklama görünmez — yanlış bir açıklama göstermektense hiç göstermemek.
+   * Bu yüzden arayüz her zaman "yoksa" halini de render edebilmelidir.
+   */
+  kisaFayda?: string;
+};
+
+/**
+ * Nat-Ext karışım formülü.
+ *
+ * TİP NEDEN AÇIKÇA YAZILDI? JSON'dan çıkarılan tip, girdilerin alan
+ * kümelerinin BİRLEŞİMİdir: bazı formüllerde `asin`, bazılarında
+ * `asinDelisted`, bazılarında `nedenBuKarisim` var. Böyle bir birleşim
+ * üzerinde `item.nedenBuKarisim` okumak derleme hatası verir — alan tüm
+ * üyelerde yok. Açık tip, "olabilir de olmayabilir de" bilgisini tek yerde
+ * tanımlar.
+ */
+export type NatExtFormula = {
+  code: string;
+  contents: string[];
+  asin?: string;
+  /** Amazon'dan kaldırılmış ASIN — BİLEREK okunmuyor, link aramaya düşsün. */
+  asinDelisted?: string;
+  /** Bileşenlerin neden bir arada sunulduğu. Üretimdir; bkz. kisaFayda. */
+  nedenBuKarisim?: string;
 };
 
 export const site = facts.site;
 export const brand = facts.brand;
 export const products: BrandProduct[] = facts.products;
-export const natExt = facts.natExt;
+export const natExt: NatExtFormula[] = facts.natExt;
 export const bannedHealthClaims = facts.bannedHealthClaims;
 
 /**

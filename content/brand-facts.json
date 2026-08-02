@@ -64,6 +64,25 @@
     "amazonProductBase": "https://www.amazon.com.tr/dp/"
   },
 
+  "_blurbsReadme": [
+    "KART AÇIKLAMALARI — products[].kisaFayda ve natExt[].nedenBuKarisim.",
+    "",
+    "DİKKAT: Bu dosyadaki DİĞER her alan doğrulanmış künye kaydıdır; bu iki alan",
+    "DEĞİLDİR. Bunlar scripts/generate-product-blurbs.mjs tarafından LLM ile",
+    "üretilmiş, kalite kapısından geçirilmiş METİNLERDİR. Bir kaynağa değil, bir",
+    "DENETİME dayanırlar. Elle düzenlenmemeleri gerekir — düzenlenirse denetimden",
+    "geçmemiş metin, geçmiş metinlerin arasına karışır ve ayırt edilemez.",
+    "",
+    "Neden yine de burada duruyorlar: /urunler kartları bu metinleri ürün künyesiyle",
+    "BİRLİKTE okumak zorunda. Ayrı bir dosyada tutulsalardı, ürün silindiğinde",
+    "açıklaması öksüz kalır ve bir sonraki ürüne kayabilirdi.",
+    "",
+    "Denetim: node scripts/generate-product-blurbs.mjs --verify",
+    "Kural değişince: --verify tüm metinleri YENİDEN tarar; düşen olursa --force",
+    "ile o girdi yeniden üretilir. Kapının kendi testi: --self-test (API gerektirmez).",
+    "İddia taramaları makale üreticisiyle aynı koddan gelir (scripts/lib/claim-gate.mjs)."
+  ],
+
   "_productsReadme": [
     "İmmu-Nat'ın GERÇEK ürün hattı (15.01.2026 fiyat listesinden birebir).",
     "Kalite kapısı, makalede geçen 'İmmu-Nat <ürün>' ifadelerini bu listeye karşı",

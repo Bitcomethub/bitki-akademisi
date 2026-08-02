@@ -12,6 +12,9 @@
     "blog:next": "node scripts/generate-blog-post.mjs --next",
     "blog:generate": "node scripts/generate-blog-post.mjs",
     "blog:image": "node scripts/generate-cover-image.mjs",
+    "blurbs:test": "node scripts/generate-product-blurbs.mjs --self-test",
+    "blurbs:verify": "node scripts/generate-product-blurbs.mjs --verify",
+    "blurbs:generate": "node scripts/generate-product-blurbs.mjs",
     "asin:check": "node scripts/check-asins.mjs"
   },
   "dependencies": {

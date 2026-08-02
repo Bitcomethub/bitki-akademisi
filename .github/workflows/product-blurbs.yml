@@ -1,0 +1,124 @@
+name: Ürün kartı açıklamaları
+
+# NEDEN AYRI BİR WORKFLOW?
+# Günlük blog işine iliştirilseydi 55 ürünün tamamı her sabah yeniden
+# üretilirdi — hem gereksiz API harcaması, hem de kapıdan geçmiş, incelenmiş
+# metinlerin her gün başka bir varyantla değişmesi demek. Ürün kataloğu nadiren
+# değişir; üretim de nadiren, ELLE tetiklenir.
+#
+# NEDEN SCHEDULE YOK?
+# Zamanlanmış bir iş, "değişmedi" durumunu da bir çalıştırma sayar ve
+# değişiklik olmadığı halde commit geçmişini gürültüye boğar. Yeni ürün
+# eklendiğinde ya da kural değiştiğinde insan tetikler.
+#
+# NEDEN YEREL DEĞİL?
+# ANTHROPIC_API_KEY reponun secret'ı; geliştirme makinesinde yok ve olmamalı.
+# Anahtarı yerele indirmek yerine üretimi anahtarın zaten bulunduğu yerde
+# çalıştırmak, sızıntı yüzeyini hiç açmamak demek.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Var olan açıklamaları da yeniden üret"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Üret ama JSON'a yazma (kapıyı ve modeli denemek için)"
+        type: boolean
+        default: false
+      limit:
+        description: "Yalnızca ilk N ürün (boş = hepsi)"
+        type: string
+        default: ""
+
+concurrency:
+  group: product-blurbs
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Branch üzerinde deneyip preview'da görebilmek için; sabit "main"
+          # yazmak dallanarak test etmeyi imkânsız kılardı.
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Kapı bozuksa API harcamanın anlamı yok. --self-test hiç istek atmaz.
+      - name: Kalite kapısı testleri
+        run: npm run blurbs:test
+
+      - name: Açıklamaları üret
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Bütçe uygunsa repo değişkeni ile modeli yükselt: BLURB_MODEL
+          BLURB_MODEL: ${{ vars.BLURB_MODEL }}
+        run: |
+          ARGS=""
+          [ "${{ inputs.force }}" = "true" ] && ARGS="$ARGS --force"
+          [ "${{ inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
+          [ -n "${{ inputs.limit }}" ] && ARGS="$ARGS --limit=${{ inputs.limit }}"
+          # Reddedilen girdi olursa script 1 döner ama YAZDIKLARI geçerlidir;
+          # commit'i kaçırmamak için burada yutuyoruz, sonuç son adımda raporlanır.
+          npm run blurbs:generate -- $ARGS || echo "reddedilen=var" >> "$GITHUB_OUTPUT"
+
+      # Yazılan her metni bir de dosyadan okuyarak denetle. Üretim anındaki
+      # doğrulama bellekteki dizgiyi görür; buradaki, JSON'a GERÇEKTEN ne
+      # yazıldığını görür. Cerrahi yazma bir metni bozmuş olsaydı fark burada
+      # ortaya çıkar.
+      - name: Yazılanı yeniden denetle
+        if: inputs.dry_run != true
+        run: npm run blurbs:verify
+
+      # Kapı METNİ denetler, DERLENEBİLİRLİĞİ değil. Linux runner'da build
+      # çalışıyor (geliştirme Mac'inde native binary kısıtı yüzünden çalışmaz).
+      - name: Derleme doğrulaması
+        if: inputs.dry_run != true
+        run: |
+          if ! npm run build; then
+            echo "::error::Üretilen açıklamalar build'i kırdı, değişiklik geri alınıyor"
+            git checkout -- content/brand-facts.json
+            exit 1
+          fi
+
+      - name: Commit ve push
+        if: inputs.dry_run != true
+        run: |
+          git config user.name "bitki-akademisi-bot"
+          git config user.email "actions@github.com"
+          git add content/brand-facts.json
+
+          if git diff --cached --quiet; then
+            echo "Commit edilecek değişiklik yok."
+            exit 0
+          fi
+
+          git commit -m "İçerik: ürün kartı açıklamaları" \
+            -m "Otomatik üretim — scripts/generate-product-blurbs.mjs" \
+            -m "Her metin kalite kapısından geçti (blurbs:test + blurbs:verify)."
+
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+      # En sona bırakıldı: geçen metinler commit'lendikten SONRA uyar. Kapıdan
+      # geçemeyen ürün alansız kalır ve kartında açıklama görünmez — bu bir
+      # arıza değil, tasarım; ama sessiz kalmamalı.
+      - name: Reddedilen varsa uyar
+        if: steps.generate.outputs.reddedilen == 'var'
+        run: |
+          echo "::warning::Bazı açıklamalar kapıdan geçemedi; o ürünler açıklamasız kaldı. Log'daki RED satırlarına bak."

@@ -8,6 +8,7 @@ import {
   amazonUrlFor,
   isDirectProductLink,
   type BrandProduct,
+  type NatExtFormula,
 } from "@/lib/brand-facts";
 
 export const metadata: Metadata = {
@@ -17,12 +18,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${site.url}/urunler` },
 };
 
-function natExtAmazonUrl(item: {
-  code: string;
-  contents: string[];
-  asin?: string;
-  asinDelisted?: string;
-}): { url: string; direct: boolean } {
+function natExtAmazonUrl(item: NatExtFormula): { url: string; direct: boolean } {
   if (item.asin) {
     return { url: `${brand.amazonProductBase}${item.asin}`, direct: true };
   }
@@ -35,28 +31,74 @@ function natExtAmazonUrl(item: {
   return { url: `${brand.amazonSearchBase}${query}`, direct: false };
 }
 
-function ProductRow({ product }: { product: BrandProduct }) {
-  const url = amazonUrlFor(product);
-  const direct = isDirectProductLink(product);
+function AmazonCta({ url, direct }: { url: string; direct: boolean }) {
   return (
-    <li className="flex items-center justify-between gap-4 border-b border-stone-200 py-3 last:border-0">
-      <div>
-        <p className="font-medium text-stone-900">{product.name}</p>
-        <p className="text-sm text-stone-500">{product.plant}</p>
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener sponsored"
+      className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        direct
+          ? "bg-emerald-700 text-white hover:bg-emerald-800"
+          : "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"
+      }`}
+    >
+      {direct ? "Ürün Sayfası" : "Amazon'da Ara"}
+    </a>
+  );
+}
+
+/**
+ * Kart: [ad + künye | bağlantı] üstte, açıklama altta.
+ *
+ * Açıklama satırı KOŞULLU. Metin yalnızca kalite kapısından geçtiyse JSON'a
+ * yazılıyor; geçemeyen ürün alansız kalıyor. Bu yüzden arayüz "açıklama yok"
+ * halini normal bir durum olarak render eder — boş bir yer tutucu ya da
+ * "açıklama bekleniyor" yazısı göstermek, eksikliği hataya çevirirdi.
+ *
+ * Açıklama başlığın ALTINDA çünkü kartın işi önce ürünü teşhis etmek: gözü
+ * gezdiren okuyucu adı tarar, ilgisini çekeni okur.
+ */
+function ProductCard({
+  title,
+  subtitle,
+  blurb,
+  url,
+  direct,
+}: {
+  title: string;
+  subtitle: string;
+  blurb?: string;
+  url: string;
+  direct: boolean;
+}) {
+  return (
+    <li className="border-b border-stone-200 py-4 last:border-0">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-medium text-stone-900">{title}</p>
+          <p className="text-sm text-stone-500">{subtitle}</p>
+        </div>
+        <AmazonCta url={url} direct={direct} />
       </div>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener sponsored"
-        className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          direct
-            ? "bg-emerald-700 text-white hover:bg-emerald-800"
-            : "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"
-        }`}
-      >
-        {direct ? "Ürün Sayfası" : "Amazon'da Ara"}
-      </a>
+      {blurb && (
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-stone-600">
+          {blurb}
+        </p>
+      )}
     </li>
+  );
+}
+
+function ProductRow({ product }: { product: BrandProduct }) {
+  return (
+    <ProductCard
+      title={product.name}
+      subtitle={product.plant}
+      blurb={product.kisaFayda}
+      url={amazonUrlFor(product)}
+      direct={isDirectProductLink(product)}
+    />
   );
 }
 
@@ -85,6 +127,12 @@ export default function UrunlerPage() {
         gösterilir — bu, yanlış bir ürüne yönlendirmektense okuyucuyu
         Amazon&apos;un kendi arama sonucuna bırakmak içindir.
       </p>
+      <p className="text-xs text-stone-400 mb-10">
+        Ürün açıklamaları bitkilerin <strong>geleneksel kullanım alanlarını</strong>{" "}
+        anlatır; tedavi, teşhis ya da tıbbi tavsiye değildir. Her açıklama
+        yayımlanmadan önce yasaklı sağlık iddiaları, uydurulmuş istatistik ve
+        doğrulanmamış bileşen adlarına karşı otomatik olarak denetlenir.
+      </p>
 
       <section className="mb-12">
         <h2 className="text-xl font-bold text-stone-900 mb-1">
@@ -98,31 +146,14 @@ export default function UrunlerPage() {
           {natExt.map((item) => {
             const { url, direct } = natExtAmazonUrl(item);
             return (
-              <li
+              <ProductCard
                 key={item.code}
-                className="flex items-center justify-between gap-4 border-b border-stone-200 py-3 last:border-0"
-              >
-                <div>
-                  <p className="font-medium text-stone-900">
-                    {item.contents.join(" + ")}
-                  </p>
-                  <p className="text-sm text-stone-500">
-                    Nat-Ext {item.code}
-                  </p>
-                </div>
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener sponsored"
-                  className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                    direct
-                      ? "bg-emerald-700 text-white hover:bg-emerald-800"
-                      : "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"
-                  }`}
-                >
-                  {direct ? "Ürün Sayfası" : "Amazon'da Ara"}
-                </a>
-              </li>
+                title={item.contents.join(" + ")}
+                subtitle={`Nat-Ext ${item.code}`}
+                blurb={item.nedenBuKarisim}
+                url={url}
+                direct={direct}
+              />
             );
           })}
         </ul>

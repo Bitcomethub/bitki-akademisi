@@ -58,8 +58,16 @@ jobs:
       # Kalite kapısı bozuksa hiç üretme. Kapı yanlış pozitif üretiyorsa
       # (kalibrasyon testi) ya da sabotajı kaçırıyorsa API'yi harcamanın
       # anlamı yok — burada durmak hem para hem içerik güvenliği.
+      #
+      # blurbs:test DE burada: iki üretici de iddia kurallarını aynı modülden
+      # (scripts/lib/claim-gate.mjs) alıyor. Ortak çekirdekte yapılan bir
+      # değişiklik makalede masum görünüp kartlarda yanlış pozitife dönüşebilir;
+      # iki test paketini birlikte koşturmak bunu commit anında yakalar.
       - name: Kalite kapısı testleri
-        run: npm run blog:test
+        run: |
+          npm run blog:test
+          npm run blurbs:test
+          npm run blurbs:verify
 
       - name: Makale üret
         id: generate
