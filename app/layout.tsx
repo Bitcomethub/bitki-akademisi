@@ -6,8 +6,16 @@ import {
   webSiteSchema,
   immuNatBrandSchema,
 } from "@/lib/brand-facts";
+import { COVER_SIZE, SITE_COVER_SLUG, coverPath } from "@/lib/cover";
 
 const siteUrl = "https://bitkiakademisi.com";
+
+const siteCover = {
+  url: coverPath(SITE_COVER_SLUG),
+  width: COVER_SIZE.width,
+  height: COVER_SIZE.height,
+  alt: "Bitki Akademisi — Şifalı Bitkiler Rehberi",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,6 +33,10 @@ export const metadata: Metadata = {
     "doğal sağlık",
     "bitki akademisi",
   ],
+  // Site geneli varsayılan paylaşım kartı. Makale sayfaları kendi
+  // openGraph.images'ini verdiği için bunu EZER; burada tanımlı olması
+  // yalnızca kendi kartı olmayan sayfaları (anasayfa, hakkında, liste)
+  // görselsiz bırakmamak için.
   openGraph: {
     type: "website",
     locale: "tr_TR",
@@ -33,12 +45,14 @@ export const metadata: Metadata = {
     title: "Bitki Akademisi — Şifalı Bitkiler Rehberi",
     description:
       "Hangi bitki neye iyi gelir? Şifalı bitkiler, bitkisel ekstraktlar ve doğal sağlık hakkında güvenilir, bilimsel temelli rehberler.",
+    images: [siteCover],
   },
   twitter: {
     card: "summary_large_image",
     title: "Bitki Akademisi — Şifalı Bitkiler Rehberi",
     description:
       "Hangi bitki neye iyi gelir? Şifalı bitkiler, bitkisel ekstraktlar ve doğal sağlık hakkında güvenilir, bilimsel temelli rehberler.",
+    images: [siteCover],
   },
   alternates: {
     canonical: siteUrl,

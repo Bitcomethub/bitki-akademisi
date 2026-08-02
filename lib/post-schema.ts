@@ -11,6 +11,7 @@
  * okumada bağlayabilsin diye.
  */
 import { site } from "@/lib/brand-facts";
+import { COVER_SIZE, coverUrl } from "@/lib/cover";
 import type { Post } from "@/lib/posts";
 
 export function postUrl(slug: string): string {
@@ -38,6 +39,19 @@ export function postGraph(post: Post) {
     articleSection: post.category,
     keywords: post.keywords.join(", "),
     breadcrumb: { "@id": `${url}#breadcrumb` },
+    // Article.image, makaleyi TEMSİL eden görsel — gövdeye gömülü bir görsel
+    // olmak zorunda değil; og:image mekanizmasının şemadaki karşılığı budur.
+    // Bu, dosyanın başındaki "sayfada olmayanı şemaya yazma" kuralının istisnası
+    // değil, kapsamı dışı: kural METİN alanları içindir (özellikle FAQPage),
+    // çünkü orada görünmeyen metin doğrudan ihlaldir. Görselde Google'ın tek
+    // şartı URL'in taranabilir ve indekslenebilir olması — /kapak/<slug>.png
+    // build anında üretilen statik bir dosya, ikisini de karşılıyor.
+    image: {
+      "@type": "ImageObject",
+      url: coverUrl(post.slug),
+      width: COVER_SIZE.width,
+      height: COVER_SIZE.height,
+    },
     // Sesli asistanlar ve AI motorları için "sayfanın cevabı burası" işareti.
     // .geo-answer sınıfı sayfada keyTakeaway kutusundadır.
     speakable: {
