@@ -75,6 +75,33 @@ jobs:
             npm run blog:generate
           fi
 
+      # Kapak fotoğrafı — BUILD'DEN ÖNCE, çünkü sayfa fotoğrafın diskte olup
+      # olmadığına bakarak render ediliyor (lib/photo.ts). Sonra üretilse
+      # doğrulama build'i görseli hiç görmezdi.
+      #
+      # continue-on-error BİLİNÇLİ: fal.ai kesintisi ya da kota hatası günün
+      # makalesini engellememeli. Görsel yoksa yazı degrade şeride düşer —
+      # görselsiz yayımlamak, yayımlamamaktan iyidir.
+      #
+      # FAL_KEY kontrolü NEDEN `if:` İÇİNDE DEĞİL DE SHELL'DE?
+      # Adımın `if:` ifadesi, aynı adımın kendi `env` bloğunu GÖRMEZ (yukarıda
+      # INDEXNOW_KEY'in iş düzeyinde durmasının sebebi de bu). Kontrolü shell'e
+      # almak hem çalışır hem de eksikliği log'a bir uyarı olarak yazar —
+      # sessizce atlanan bir adım, aylar sonra "neden görsel yok?" demeye yol açar.
+      - name: Kapak görseli üret
+        if: steps.generate.outputs.status == 'published'
+        continue-on-error: true
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          # Bütçe/kalite ayarı repo değişkeniyle: FAL_MODEL
+          FAL_MODEL: ${{ vars.FAL_MODEL }}
+        run: |
+          if [ -z "$FAL_KEY" ]; then
+            echo "::warning::FAL_KEY tanımlı değil — kapak görseli üretilmedi, yazı degrade şeride düşecek."
+            exit 0
+          fi
+          npm run blog:image -- --slug="${{ steps.generate.outputs.slug }}"
+
       # Kalite kapısı METNİ denetler, DERLENEBİLİRLİĞİ değil. Bozuk bir JSON
       # ya da tipe uymayan bir alan siteyi kırar. Linux runner'da build
       # çalışıyor (geliştirme Mac'inde native binary kısıtı yüzünden çalışmaz),
@@ -96,7 +123,10 @@ jobs:
           git config user.email "actions@github.com"
 
           if [ "${{ steps.generate.outputs.status }}" = "published" ]; then
-            git add content/generated-posts.json
+            # Görsel de commit'lenir: build hiçbir zaman fal.ai'ye istek atmaz,
+            # dosya repoda statik olarak durur. Görsel üretilemediyse burada
+            # eklenecek bir şey olmaz, makale yine de yayımlanır.
+            git add content/generated-posts.json public/images/blog
             MSG="İçerik: ${{ steps.generate.outputs.title }}"
           else
             # Reddedilen taslak ve deneme sayacı da commit'lenir: sayaç

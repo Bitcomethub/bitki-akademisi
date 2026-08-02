@@ -1,28 +1,28 @@
 /**
- * Sayfa içi kapak şeridi.
+ * Sayfa içi kapak — fal.ai fotoğrafı varsa o, yoksa degrade şerit.
  *
- * NEDEN /kapak/<slug>.png BURADA <img> OLARAK KULLANILMIYOR?
- * Üç sebep:
+ * ÜÇ FARKLI GÖRSEL VAR VE ÜÇÜ FARKLI İŞ YAPIYOR. Karıştırılmaması önemli:
  *
- * 1. TEKRAR. PNG'nin üzerinde makalenin sorusu yazıyor. Rehber listesinde
- *    kartın başlığı zaten o soruyu içeriyor, makale sayfasında ise soru
- *    "Kısa cevap" kutusunun H2'si. Aynı cümleyi görselde bir daha basmak
- *    şablon işi gibi görünür.
- * 2. MALİYET. Backlog 128 makale; liste sayfası zamanla 128 PNG isteği
- *    demek. Şerit saf CSS: sıfır istek, sıfır bayt, sıfır layout kayması.
- * 3. BİLGİ. Şerit sorunun tekrarı yerine BİTKİ ADINI taşıyor — kartta zaten
- *    olmayan bir bilgi. Görsel süs değil, ayırt edici oluyor.
+ * 1. public/images/blog/<slug>.jpg — fal.ai ile üretilen BOTANİK FOTOĞRAF.
+ *    Sayfa içinde kullanılır (bu bileşen). Üzerinde metin yoktur; işi bitkiyi
+ *    göstermek, okuyucuya konuyu bir bakışta tanıtmak.
+ * 2. /kapak/<slug>.png — üzerinde SORU yazan paylaşım kartı. Yalnızca
+ *    og:image, twitter:image ve Article.image'ta. Kartı gören kişi sayfayı
+ *    henüz açmamıştır; orada metin şart, fotoğraf tek başına bilgi vermez.
+ * 3. Degrade şerit — fotoğrafı olmayan yazılar için yedek. Görsel üretimi
+ *    başarısız olduğunda sayfa görselsiz ya da kırık kalmaz.
  *
- * PNG'nin işi ayrı: paylaşım kartı (og:image, twitter:image) ve Article
- * şemasının image alanı. Orada metin şart, çünkü kartı gören insan sayfayı
- * henüz açmamıştır.
+ * Fotoğraf sayfada, metinli kart sosyalde: her biri izleyicisinin neyi zaten
+ * bildiğine göre seçildi.
  *
  * Degrade rengi Tailwind sınıfıyla verilemez: renkler çalışma zamanında
  * kategoriden geliyor, Tailwind ise sınıf adlarını kaynak kodda statik olarak
  * tarar — `bg-[${palette.from}]` derlenmez, sessizce kaybolur. Dinamik renk
  * için doğru kaçış yolu inline style.
  */
+import Image from "next/image";
 import { coverVariant, paletteFor } from "@/lib/cover";
+import { photoPath } from "@/lib/photo";
 
 type Props = {
   slug: string;
@@ -36,6 +36,34 @@ export function CoverBand({ slug, category, plant, size = "card" }: Props) {
   const palette = paletteFor(category);
   const variant = coverVariant(slug);
   const isHero = size === "hero";
+  const photo = photoPath(slug);
+
+  // Fotoğraf VARSA o gösterilir; yoksa degrade şeride düşülür. Şerit ölmedi,
+  // yedek oldu: görsel üretimi başarısız olan ya da henüz üretilmemiş bir yazı
+  // görselsiz/bozuk değil, sadece daha sade görünür. Sayfa her koşulda çalışır.
+  if (photo) {
+    return (
+      <div
+        className={`relative overflow-hidden bg-stone-100 ${
+          isHero ? "h-56 md:h-80 rounded-2xl" : "h-40"
+        }`}
+      >
+        <Image
+          src={photo}
+          alt={`${plant ?? category} — bitkinin doğal görünümü`}
+          fill
+          // Kart ızgarası 3 sütun (md) → viewport'un ~1/3'ü; hero tam genişlik.
+          // Doğru sizes vermek Next'in gereğinden büyük dosya servis etmesini
+          // engelliyor, mobilde ciddi bant genişliği farkı yaratıyor.
+          sizes={isHero ? "(min-width: 768px) 768px, 100vw" : "(min-width: 768px) 320px, 100vw"}
+          className="object-cover"
+          // Hero makale sayfasının ilk ekranında; LCP adayı olduğu için
+          // tembel yüklenmemeli.
+          priority={isHero}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
