@@ -1,0 +1,2166 @@
+{
+  "_readme": [
+    "OTOMATİK ÜRETİLİR — bu dosyayı elle düzenleme.",
+    "Kaynak: scripts/build-topic-backlog.mjs  ·  Çalıştır: node scripts/build-topic-backlog.mjs",
+    "",
+    "Bir küme = bir sayfa. Arketipler (fayda / kullanim / guvenlik / ozel)",
+    "Türkçe SERP'te AYRI sonuç kümeleridir; bu yüzden kanibalizasyon oluşmaz.",
+    "Her konudaki `angle` alanı üretim script'ine 'bu yazının DIŞINDA kalan",
+    "konular' talimatını verir — asıl kanibalizasyon koruması odur.",
+    "",
+    "Sıralama derinlik-önceliklidir: yüksek talepli bitkinin dört yazısı",
+    "arka arkaya gelir. 30 bitkide birer yazı olmaktansa 8 bitkide dörder",
+    "yazı olmak AI motorlarında daha güçlü konu otoritesi sinyalidir.",
+    "",
+    "Yayımlanmış konular BURADA İŞARETLENMEZ. Pipeline 'yapıldı' bilgisini",
+    "seed-posts.json + generated-posts.json'daki slug'lardan TÜRETİR; böylece",
+    "bu dosya değişmez kalır ve günlük commit'lerde çakışma üretmez."
+  ],
+  "_method": {
+    "clustering": "searchfit-seo:keyword-clustering — bir küme bir sayfa",
+    "archetypes": {
+      "fayda": "'X nedir' + 'X faydaları' + 'X ne işe yarar' aynı SERP → tek sayfa (hub)",
+      "kullanim": "'X nasıl kullanılır' + 'günde ne kadar' + 'ne zaman' → ayrı SERP",
+      "guvenlik": "'X kimler kullanmamalı' + 'yan etkileri' + 'hamilelikte' → ayrı SERP",
+      "ozel": "Bitkiye özgü tarif / isim karışıklığı / tür farkı — elle seçilmiş",
+      "kombinasyon": "NAT-EXT formüllerindeki bitkilerin birlikteliği (içerik doğrulanmış)",
+      "genel": "Bitkiden bağımsız kategori yazıları"
+    },
+    "tierNote": "Talep katmanı TAHMİNDİR — arama hacmi API'si bağlı değil. Bilinirlik ve ürün çeşitliliği üzerinden atandı, gerçek veri geldiğinde güncellenmeli.",
+    "excluded": "Bileşimi doğrulanmayan karışım ürünleri (XP Tonis, Phyto Sist, İmmubowel, Purpol, İmmu Life 8, Osmanlı Kök Şurubu, Momoroid) için konu ÜRETİLMEDİ — içeriklerini bilmiyoruz ve uydurmak yasak. Yerlerini 'genel' yazıları tutar."
+  },
+  "_stats": {
+    "total": 128,
+    "plants": 28,
+    "byArchetype": {
+      "fayda": 26,
+      "kullanim": 28,
+      "guvenlik": 28,
+      "ozel": 28,
+      "kombinasyon": 6,
+      "genel": 12
+    },
+    "byTier": {
+      "1": 38,
+      "2": 56,
+      "3": 34
+    }
+  },
+  "topics": [
+    {
+      "slug": "zerdecal-faydalari-nelerdir",
+      "title": "Zerdeçal Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Zerdeçal faydaları nelerdir?",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "zerdeçal faydaları",
+        "zerdeçal nedir",
+        "zerdeçal ne işe yarar",
+        "zerdeçal neye iyi gelir",
+        "zerdeçal ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "zerdecal-nasil-kullanilir",
+      "title": "Zerdeçal Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Zerdeçal nasıl kullanılır?",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "zerdeçal nasıl kullanılır",
+        "zerdeçal günde ne kadar",
+        "zerdeçal ne zaman içilir",
+        "zerdeçal kaç gün kullanılır",
+        "zerdeçal aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "zerdecal-kimler-kullanmamali",
+      "title": "Zerdeçal Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Zerdeçal kimler tarafından kullanılmamalı?",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "zerdeçal kimler kullanmamalı",
+        "zerdeçal yan etkileri",
+        "zerdeçal zararları",
+        "zerdeçal hamilelikte kullanımı",
+        "zerdeçal ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "zerdecal-sutu-altin-sut-nasil-yapilir",
+      "title": "Zerdeçal Sütü (Altın Süt) Nasıl Yapılır? Tarif ve Ölçüler",
+      "question": "Zerdeçal sütü nasıl yapılır?",
+      "keywords": [
+        "altın süt tarifi",
+        "zerdeçal sütü",
+        "zerdeçal sütü nasıl yapılır",
+        "golden milk"
+      ],
+      "angle": "Tarif odaklı: ölçüler, karabiber ve yağ neden eklenir, ne zaman içilir.",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "corek-otu-nasil-kullanilir",
+      "title": "Çörek Otu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Çörek Otu nasıl kullanılır?",
+      "plant": "Çörek Otu",
+      "category": "Bağışıklık",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "çörek otu nasıl kullanılır",
+        "çörek otu günde ne kadar",
+        "çörek otu ne zaman içilir",
+        "çörek otu kaç gün kullanılır",
+        "çörek otu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "corek-otu-kimler-kullanmamali",
+      "title": "Çörek Otu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Çörek Otu kimler tarafından kullanılmamalı?",
+      "plant": "Çörek Otu",
+      "category": "Bağışıklık",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "çörek otu kimler kullanmamalı",
+        "çörek otu yan etkileri",
+        "çörek otu zararları",
+        "çörek otu hamilelikte kullanımı",
+        "çörek otu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "corek-otu-bali-nasil-yapilir",
+      "title": "Çörek Otu Balı Nasıl Yapılır? Oran, Saklama ve Kullanım",
+      "question": "Çörek otu balı nasıl yapılır?",
+      "keywords": [
+        "çörek otu balı",
+        "çörek otu bal karışımı",
+        "çörek otu balı tarifi"
+      ],
+      "angle": "Tarif odaklı: tohum/bal oranı, öğütmek gerekir mi, saklama koşulları.",
+      "plant": "Çörek Otu",
+      "category": "Bağışıklık",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "zencefil-faydalari-nelerdir",
+      "title": "Zencefil Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Zencefil faydaları nelerdir?",
+      "plant": "Zencefil",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "zencefil faydaları",
+        "zencefil nedir",
+        "zencefil ne işe yarar",
+        "zencefil neye iyi gelir",
+        "zencefil ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "zencefil-nasil-kullanilir",
+      "title": "Zencefil Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Zencefil nasıl kullanılır?",
+      "plant": "Zencefil",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "zencefil nasıl kullanılır",
+        "zencefil günde ne kadar",
+        "zencefil ne zaman içilir",
+        "zencefil kaç gün kullanılır",
+        "zencefil aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "zencefil-kimler-kullanmamali",
+      "title": "Zencefil Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Zencefil kimler tarafından kullanılmamalı?",
+      "plant": "Zencefil",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "zencefil kimler kullanmamalı",
+        "zencefil yan etkileri",
+        "zencefil zararları",
+        "zencefil hamilelikte kullanımı",
+        "zencefil ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "zencefil-cayi-nasil-yapilir",
+      "title": "Zencefil Çayı Nasıl Yapılır? Bal ve Limonla Doğru Ölçü",
+      "question": "Zencefil çayı nasıl yapılır?",
+      "keywords": [
+        "zencefil çayı tarifi",
+        "zencefil çayı nasıl yapılır",
+        "zencefil limon bal"
+      ],
+      "angle": "Tarif odaklı: taze/kuru zencefil ölçüsü, demleme süresi, bal ne zaman eklenir.",
+      "plant": "Zencefil",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "ekinezya-nasil-kullanilir",
+      "title": "Ekinezya Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Ekinezya nasıl kullanılır?",
+      "plant": "Ekinezya",
+      "category": "Bağışıklık",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "ekinezya nasıl kullanılır",
+        "ekinezya günde ne kadar",
+        "ekinezya ne zaman içilir",
+        "ekinezya kaç gün kullanılır",
+        "ekinezya aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "ekinezya-kimler-kullanmamali",
+      "title": "Ekinezya Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Ekinezya kimler tarafından kullanılmamalı?",
+      "plant": "Ekinezya",
+      "category": "Bağışıklık",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "ekinezya kimler kullanmamalı",
+        "ekinezya yan etkileri",
+        "ekinezya zararları",
+        "ekinezya hamilelikte kullanımı",
+        "ekinezya ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "ekinezya-mi-kara-murver-mi",
+      "title": "Ekinezya mı Kara Mürver mi? Kış Desteğinde Aradaki Fark",
+      "question": "Ekinezya ile kara mürver arasındaki fark nedir?",
+      "keywords": [
+        "ekinezya mı kara mürver mi",
+        "kara mürver ekinezya farkı",
+        "kış bitkileri"
+      ],
+      "angle": "Karşılaştırma: iki bitkinin bileşenleri, kullanım süreleri ve kimin hangisini tercih ettiği.",
+      "plant": "Ekinezya",
+      "category": "Bağışıklık",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "zeytin-yapragi-faydalari-nelerdir",
+      "title": "Zeytin Yaprağı Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Zeytin Yaprağı faydaları nelerdir?",
+      "plant": "Zeytin Yaprağı",
+      "category": "Kalp & Dolaşım",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "zeytin yaprağı faydaları",
+        "zeytin yaprağı nedir",
+        "zeytin yaprağı ne işe yarar",
+        "zeytin yaprağı neye iyi gelir",
+        "zeytin yaprağı ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "zeytin-yapragi-nasil-kullanilir",
+      "title": "Zeytin Yaprağı Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Zeytin Yaprağı nasıl kullanılır?",
+      "plant": "Zeytin Yaprağı",
+      "category": "Kalp & Dolaşım",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "zeytin yaprağı nasıl kullanılır",
+        "zeytin yaprağı günde ne kadar",
+        "zeytin yaprağı ne zaman içilir",
+        "zeytin yaprağı kaç gün kullanılır",
+        "zeytin yaprağı aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "zeytin-yapragi-kimler-kullanmamali",
+      "title": "Zeytin Yaprağı Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Zeytin Yaprağı kimler tarafından kullanılmamalı?",
+      "plant": "Zeytin Yaprağı",
+      "category": "Kalp & Dolaşım",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "zeytin yaprağı kimler kullanmamalı",
+        "zeytin yaprağı yan etkileri",
+        "zeytin yaprağı zararları",
+        "zeytin yaprağı hamilelikte kullanımı",
+        "zeytin yaprağı ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "zeytin-yapragi-cayi-nasil-demlenir",
+      "title": "Zeytin Yaprağı Çayı Nasıl Demlenir? Acılığı Azaltma Yöntemleri",
+      "question": "Zeytin yaprağı çayı nasıl demlenir?",
+      "keywords": [
+        "zeytin yaprağı çayı",
+        "zeytin yaprağı nasıl demlenir",
+        "zeytin yaprağı çayı acı"
+      ],
+      "angle": "Tarif odaklı: demleme süresi/sıcaklığı, acılığın kaynağı (oleuropein) ve azaltma yolları.",
+      "plant": "Zeytin Yaprağı",
+      "category": "Kalp & Dolaşım",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "alic-faydalari-nelerdir",
+      "title": "Alıç Meyvesi Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Alıç Meyvesi faydaları nelerdir?",
+      "plant": "Alıç",
+      "category": "Kalp & Dolaşım",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "alıç meyvesi faydaları",
+        "alıç meyvesi nedir",
+        "alıç meyvesi ne işe yarar",
+        "alıç meyvesi neye iyi gelir",
+        "alıç meyvesi ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "alic-nasil-kullanilir",
+      "title": "Alıç Meyvesi Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Alıç Meyvesi nasıl kullanılır?",
+      "plant": "Alıç",
+      "category": "Kalp & Dolaşım",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "alıç meyvesi nasıl kullanılır",
+        "alıç meyvesi günde ne kadar",
+        "alıç meyvesi ne zaman içilir",
+        "alıç meyvesi kaç gün kullanılır",
+        "alıç meyvesi aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "alic-kimler-kullanmamali",
+      "title": "Alıç Meyvesi Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Alıç Meyvesi kimler tarafından kullanılmamalı?",
+      "plant": "Alıç",
+      "category": "Kalp & Dolaşım",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "alıç meyvesi kimler kullanmamalı",
+        "alıç meyvesi yan etkileri",
+        "alıç meyvesi zararları",
+        "alıç meyvesi hamilelikte kullanımı",
+        "alıç meyvesi ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "alic-cayi-nasil-yapilir",
+      "title": "Alıç Çayı Nasıl Yapılır? Meyve, Yaprak ve Çiçek Farkı",
+      "question": "Alıç çayı nasıl yapılır?",
+      "keywords": [
+        "alıç çayı",
+        "alıç çayı nasıl yapılır",
+        "alıç yaprağı çayı",
+        "alıç demleme"
+      ],
+      "angle": "Tarif odaklı: kurutulmuş meyve/yaprak/çiçek ölçüleri ve hangisinin ne zaman kullanıldığı.",
+      "plant": "Alıç",
+      "category": "Kalp & Dolaşım",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "ginkgo-biloba-faydalari-nelerdir",
+      "title": "Ginkgo Biloba Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Ginkgo Biloba faydaları nelerdir?",
+      "plant": "Ginkgo Biloba",
+      "category": "Zihin & Odaklanma",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "ginkgo biloba faydaları",
+        "ginkgo biloba nedir",
+        "ginkgo biloba ne işe yarar",
+        "ginkgo biloba neye iyi gelir",
+        "ginkgo biloba ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "ginkgo-biloba-nasil-kullanilir",
+      "title": "Ginkgo Biloba Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Ginkgo Biloba nasıl kullanılır?",
+      "plant": "Ginkgo Biloba",
+      "category": "Zihin & Odaklanma",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "ginkgo biloba nasıl kullanılır",
+        "ginkgo biloba günde ne kadar",
+        "ginkgo biloba ne zaman içilir",
+        "ginkgo biloba kaç gün kullanılır",
+        "ginkgo biloba aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "ginkgo-biloba-kimler-kullanmamali",
+      "title": "Ginkgo Biloba Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Ginkgo Biloba kimler tarafından kullanılmamalı?",
+      "plant": "Ginkgo Biloba",
+      "category": "Zihin & Odaklanma",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "ginkgo biloba kimler kullanmamalı",
+        "ginkgo biloba yan etkileri",
+        "ginkgo biloba zararları",
+        "ginkgo biloba hamilelikte kullanımı",
+        "ginkgo biloba ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "ginkgo-biloba-standardize-ekstrakt-ne-demek",
+      "title": "Ginkgo Biloba'da Standardize Ekstrakt Ne Demek?",
+      "question": "Ginkgo biloba ekstraktında standardizasyon ne anlama gelir?",
+      "keywords": [
+        "ginkgo biloba standardize",
+        "ginkgo ekstrakt oranı",
+        "flavon glikozit"
+      ],
+      "angle": "Standardizasyon kavramı: etiketteki yüzdeler ne anlatır, iki ürün neden farklıdır.",
+      "plant": "Ginkgo Biloba",
+      "category": "Zihin & Odaklanma",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "isirgan-otu-faydalari-nelerdir",
+      "title": "Isırgan Otu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Isırgan Otu faydaları nelerdir?",
+      "plant": "Isırgan",
+      "category": "Saç & Cilt",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "ısırgan otu faydaları",
+        "ısırgan otu nedir",
+        "ısırgan otu ne işe yarar",
+        "ısırgan otu neye iyi gelir",
+        "ısırgan otu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "isirgan-otu-nasil-kullanilir",
+      "title": "Isırgan Otu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Isırgan Otu nasıl kullanılır?",
+      "plant": "Isırgan",
+      "category": "Saç & Cilt",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "ısırgan otu nasıl kullanılır",
+        "ısırgan otu günde ne kadar",
+        "ısırgan otu ne zaman içilir",
+        "ısırgan otu kaç gün kullanılır",
+        "ısırgan otu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "isirgan-otu-kimler-kullanmamali",
+      "title": "Isırgan Otu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Isırgan Otu kimler tarafından kullanılmamalı?",
+      "plant": "Isırgan",
+      "category": "Saç & Cilt",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "ısırgan otu kimler kullanmamalı",
+        "ısırgan otu yan etkileri",
+        "ısırgan otu zararları",
+        "ısırgan otu hamilelikte kullanımı",
+        "ısırgan otu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "isirgan-otu-sac-dokulmesi-icin-nasil-kullanilir",
+      "title": "Isırgan Otu Saç Dökülmesi İçin Nasıl Kullanılır?",
+      "question": "Isırgan otu saç dökülmesine karşı nasıl kullanılır?",
+      "keywords": [
+        "ısırgan otu saç",
+        "ısırgan otu saç dökülmesi",
+        "ısırgan otu şampuanı",
+        "ısırgan suyu saça"
+      ],
+      "angle": "Hedef kitle odaklı: harici (suyu, yağı) ve dahili kullanım ayrımı, gerçekçi beklenti.",
+      "plant": "Isırgan",
+      "category": "Saç & Cilt",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "deve-dikeni-faydalari-nelerdir",
+      "title": "Deve Dikeni Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Deve Dikeni faydaları nelerdir?",
+      "plant": "Deve Dikeni",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "deve dikeni faydaları",
+        "deve dikeni nedir",
+        "deve dikeni ne işe yarar",
+        "deve dikeni neye iyi gelir",
+        "deve dikeni ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "deve-dikeni-nasil-kullanilir",
+      "title": "Deve Dikeni Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Deve Dikeni nasıl kullanılır?",
+      "plant": "Deve Dikeni",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "deve dikeni nasıl kullanılır",
+        "deve dikeni günde ne kadar",
+        "deve dikeni ne zaman içilir",
+        "deve dikeni kaç gün kullanılır",
+        "deve dikeni aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "deve-dikeni-kimler-kullanmamali",
+      "title": "Deve Dikeni Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Deve Dikeni kimler tarafından kullanılmamalı?",
+      "plant": "Deve Dikeni",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "deve dikeni kimler kullanmamalı",
+        "deve dikeni yan etkileri",
+        "deve dikeni zararları",
+        "deve dikeni hamilelikte kullanımı",
+        "deve dikeni ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "deve-dikeni-silimarin-nedir",
+      "title": "Deve Dikeni ve Silimarin İlişkisi Nedir?",
+      "question": "Silimarin nedir ve deve dikeniyle ilişkisi nedir?",
+      "keywords": [
+        "silimarin nedir",
+        "deve dikeni silimarin",
+        "silymarin",
+        "deve dikeni ekstraktı oranı"
+      ],
+      "angle": "Bitki ile aktif bileşen ayrımı — zerdeçal/curcumin yazısının kardeşi; etiketteki silimarin oranı.",
+      "plant": "Deve Dikeni",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "sari-kantaron-faydalari-nelerdir",
+      "title": "Sarı Kantaron Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Sarı Kantaron faydaları nelerdir?",
+      "plant": "Sarı Kantaron",
+      "category": "Uyku & Sakinlik",
+      "archetype": "fayda",
+      "tier": 1,
+      "keywords": [
+        "sarı kantaron faydaları",
+        "sarı kantaron nedir",
+        "sarı kantaron ne işe yarar",
+        "sarı kantaron neye iyi gelir",
+        "sarı kantaron ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "sari-kantaron-nasil-kullanilir",
+      "title": "Sarı Kantaron Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Sarı Kantaron nasıl kullanılır?",
+      "plant": "Sarı Kantaron",
+      "category": "Uyku & Sakinlik",
+      "archetype": "kullanim",
+      "tier": 1,
+      "keywords": [
+        "sarı kantaron nasıl kullanılır",
+        "sarı kantaron günde ne kadar",
+        "sarı kantaron ne zaman içilir",
+        "sarı kantaron kaç gün kullanılır",
+        "sarı kantaron aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "sari-kantaron-kimler-kullanmamali",
+      "title": "Sarı Kantaron Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Sarı Kantaron kimler tarafından kullanılmamalı?",
+      "plant": "Sarı Kantaron",
+      "category": "Uyku & Sakinlik",
+      "archetype": "guvenlik",
+      "tier": 1,
+      "keywords": [
+        "sarı kantaron kimler kullanmamalı",
+        "sarı kantaron yan etkileri",
+        "sarı kantaron zararları",
+        "sarı kantaron hamilelikte kullanımı",
+        "sarı kantaron ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "sari-kantaron-yagi-nasil-yapilir",
+      "title": "Sarı Kantaron Yağı Nasıl Yapılır? Geleneksel Yöntem",
+      "question": "Sarı kantaron yağı nasıl yapılır?",
+      "keywords": [
+        "sarı kantaron yağı",
+        "kantaron yağı nasıl yapılır",
+        "kantaron yağı tarifi"
+      ],
+      "angle": "Geleneksel maserasyon yöntemi, güneşte bekletme, saklama. Fotosensitivite uyarısı şart.",
+      "plant": "Sarı Kantaron",
+      "category": "Uyku & Sakinlik",
+      "archetype": "ozel",
+      "tier": 1
+    },
+    {
+      "slug": "ginseng-faydalari-nelerdir",
+      "title": "Ginseng Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Ginseng faydaları nelerdir?",
+      "plant": "Ginseng",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "ginseng faydaları",
+        "ginseng nedir",
+        "ginseng ne işe yarar",
+        "ginseng neye iyi gelir",
+        "ginseng ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "ginseng-nasil-kullanilir",
+      "title": "Ginseng Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Ginseng nasıl kullanılır?",
+      "plant": "Ginseng",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "ginseng nasıl kullanılır",
+        "ginseng günde ne kadar",
+        "ginseng ne zaman içilir",
+        "ginseng kaç gün kullanılır",
+        "ginseng aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "ginseng-kimler-kullanmamali",
+      "title": "Ginseng Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Ginseng kimler tarafından kullanılmamalı?",
+      "plant": "Ginseng",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "ginseng kimler kullanmamalı",
+        "ginseng yan etkileri",
+        "ginseng zararları",
+        "ginseng hamilelikte kullanımı",
+        "ginseng ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "kore-ginsengi-mi-sibirya-ginsengi-mi",
+      "title": "Kore Ginsengi mi Sibirya Ginsengi mi? Türler Arasındaki Fark",
+      "question": "Kore ginsengi ile Sibirya ginsengi arasındaki fark nedir?",
+      "keywords": [
+        "kore ginsengi",
+        "sibirya ginsengi",
+        "panax ginseng",
+        "ginseng türleri",
+        "kırmızı ginseng"
+      ],
+      "angle": "Tür karşılaştırması: Panax ginseng, Panax quinquefolius, Eleutherococcus — botanik olarak aynı değil.",
+      "plant": "Ginseng",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "meyan-koku-faydalari-nelerdir",
+      "title": "Meyan Kökü Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Meyan Kökü faydaları nelerdir?",
+      "plant": "Meyan Kökü",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "meyan kökü faydaları",
+        "meyan kökü nedir",
+        "meyan kökü ne işe yarar",
+        "meyan kökü neye iyi gelir",
+        "meyan kökü ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "meyan-koku-nasil-kullanilir",
+      "title": "Meyan Kökü Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Meyan Kökü nasıl kullanılır?",
+      "plant": "Meyan Kökü",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "meyan kökü nasıl kullanılır",
+        "meyan kökü günde ne kadar",
+        "meyan kökü ne zaman içilir",
+        "meyan kökü kaç gün kullanılır",
+        "meyan kökü aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "meyan-koku-kimler-kullanmamali",
+      "title": "Meyan Kökü Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Meyan Kökü kimler tarafından kullanılmamalı?",
+      "plant": "Meyan Kökü",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "meyan kökü kimler kullanmamalı",
+        "meyan kökü yan etkileri",
+        "meyan kökü zararları",
+        "meyan kökü hamilelikte kullanımı",
+        "meyan kökü ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "meyan-koku-serbeti-nasil-yapilir",
+      "title": "Meyan Kökü Şerbeti Nasıl Yapılır? Geleneksel Tarif",
+      "question": "Meyan kökü şerbeti nasıl yapılır?",
+      "keywords": [
+        "meyan şerbeti",
+        "meyan kökü şerbeti tarifi",
+        "meyan balı",
+        "meyan kökü nasıl yapılır"
+      ],
+      "angle": "Tarif odaklı: soğuk demleme, köpük, bekletme süresi. Tansiyon uyarısı mutlaka yer alsın.",
+      "plant": "Meyan Kökü",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "hayit-meyvesi-faydalari-nelerdir",
+      "title": "Hayıt Meyvesi Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Hayıt Meyvesi faydaları nelerdir?",
+      "plant": "Hayıt Meyvesi",
+      "category": "Kadın Sağlığı",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "hayıt meyvesi faydaları",
+        "hayıt meyvesi nedir",
+        "hayıt meyvesi ne işe yarar",
+        "hayıt meyvesi neye iyi gelir",
+        "hayıt meyvesi ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "hayit-meyvesi-nasil-kullanilir",
+      "title": "Hayıt Meyvesi Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Hayıt Meyvesi nasıl kullanılır?",
+      "plant": "Hayıt Meyvesi",
+      "category": "Kadın Sağlığı",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "hayıt meyvesi nasıl kullanılır",
+        "hayıt meyvesi günde ne kadar",
+        "hayıt meyvesi ne zaman içilir",
+        "hayıt meyvesi kaç gün kullanılır",
+        "hayıt meyvesi aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "hayit-meyvesi-kimler-kullanmamali",
+      "title": "Hayıt Meyvesi Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Hayıt Meyvesi kimler tarafından kullanılmamalı?",
+      "plant": "Hayıt Meyvesi",
+      "category": "Kadın Sağlığı",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "hayıt meyvesi kimler kullanmamalı",
+        "hayıt meyvesi yan etkileri",
+        "hayıt meyvesi zararları",
+        "hayıt meyvesi hamilelikte kullanımı",
+        "hayıt meyvesi ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "hayit-meyvesi-ne-kadar-surede-etki-eder",
+      "title": "Hayıt Meyvesi Ne Kadar Sürede Etki Eder?",
+      "question": "Hayıt meyvesi kullanımında etki ne kadar sürede beklenir?",
+      "keywords": [
+        "hayıt meyvesi ne kadar sürede etki eder",
+        "hayıt kaç ay kullanılır",
+        "vitex agnus castus süre"
+      ],
+      "angle": "Zaman beklentisi odaklı: döngüsel kullanım mantığı, neden kısa sürede sonuç beklenmediği.",
+      "plant": "Hayıt Meyvesi",
+      "category": "Kadın Sağlığı",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "biberiye-faydalari-nelerdir",
+      "title": "Biberiye Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Biberiye faydaları nelerdir?",
+      "plant": "Biberiye",
+      "category": "Zihin & Odaklanma",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "biberiye faydaları",
+        "biberiye nedir",
+        "biberiye ne işe yarar",
+        "biberiye neye iyi gelir",
+        "biberiye ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "biberiye-nasil-kullanilir",
+      "title": "Biberiye Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Biberiye nasıl kullanılır?",
+      "plant": "Biberiye",
+      "category": "Zihin & Odaklanma",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "biberiye nasıl kullanılır",
+        "biberiye günde ne kadar",
+        "biberiye ne zaman içilir",
+        "biberiye kaç gün kullanılır",
+        "biberiye aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "biberiye-kimler-kullanmamali",
+      "title": "Biberiye Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Biberiye kimler tarafından kullanılmamalı?",
+      "plant": "Biberiye",
+      "category": "Zihin & Odaklanma",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "biberiye kimler kullanmamalı",
+        "biberiye yan etkileri",
+        "biberiye zararları",
+        "biberiye hamilelikte kullanımı",
+        "biberiye ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "biberiye-suyu-saca-nasil-uygulanir",
+      "title": "Biberiye Suyu Saça Nasıl Uygulanır?",
+      "question": "Biberiye suyu saça nasıl uygulanır?",
+      "keywords": [
+        "biberiye suyu saç",
+        "biberiye suyu nasıl yapılır",
+        "biberiye saç toniği"
+      ],
+      "angle": "Uygulama odaklı: kaynatma/demleme, durulanır mı, sıklık, alerji testi.",
+      "plant": "Biberiye",
+      "category": "Zihin & Odaklanma",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "gilaburu-faydalari-nelerdir",
+      "title": "Gilaburu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Gilaburu faydaları nelerdir?",
+      "plant": "Gilaburu",
+      "category": "Böbrek & İdrar Yolları",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "gilaburu faydaları",
+        "gilaburu nedir",
+        "gilaburu ne işe yarar",
+        "gilaburu neye iyi gelir",
+        "gilaburu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "gilaburu-nasil-kullanilir",
+      "title": "Gilaburu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Gilaburu nasıl kullanılır?",
+      "plant": "Gilaburu",
+      "category": "Böbrek & İdrar Yolları",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "gilaburu nasıl kullanılır",
+        "gilaburu günde ne kadar",
+        "gilaburu ne zaman içilir",
+        "gilaburu kaç gün kullanılır",
+        "gilaburu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "gilaburu-kimler-kullanmamali",
+      "title": "Gilaburu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Gilaburu kimler tarafından kullanılmamalı?",
+      "plant": "Gilaburu",
+      "category": "Böbrek & İdrar Yolları",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "gilaburu kimler kullanmamalı",
+        "gilaburu yan etkileri",
+        "gilaburu zararları",
+        "gilaburu hamilelikte kullanımı",
+        "gilaburu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "gilaburu-suyu-nasil-yapilir",
+      "title": "Gilaburu Suyu Nasıl Yapılır? Kayseri Usulü ve Ölçüler",
+      "question": "Gilaburu suyu nasıl yapılır?",
+      "keywords": [
+        "gilaburu suyu",
+        "gilaburu nasıl yapılır",
+        "gilaburu suyu tarifi",
+        "kayseri gilaburu"
+      ],
+      "angle": "Tarif ve yerel gelenek odaklı: bekletme süresi, ekşiliğin sebebi, günlük tüketim ölçüsü.",
+      "plant": "Gilaburu",
+      "category": "Böbrek & İdrar Yolları",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "yaban-mersini-faydalari-nelerdir",
+      "title": "Yaban Mersini Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Yaban Mersini faydaları nelerdir?",
+      "plant": "Yaban Mersini",
+      "category": "Göz Sağlığı",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "yaban mersini faydaları",
+        "yaban mersini nedir",
+        "yaban mersini ne işe yarar",
+        "yaban mersini neye iyi gelir",
+        "yaban mersini ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "yaban-mersini-nasil-kullanilir",
+      "title": "Yaban Mersini Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Yaban Mersini nasıl kullanılır?",
+      "plant": "Yaban Mersini",
+      "category": "Göz Sağlığı",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "yaban mersini nasıl kullanılır",
+        "yaban mersini günde ne kadar",
+        "yaban mersini ne zaman içilir",
+        "yaban mersini kaç gün kullanılır",
+        "yaban mersini aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "yaban-mersini-kimler-kullanmamali",
+      "title": "Yaban Mersini Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Yaban Mersini kimler tarafından kullanılmamalı?",
+      "plant": "Yaban Mersini",
+      "category": "Göz Sağlığı",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "yaban mersini kimler kullanmamalı",
+        "yaban mersini yan etkileri",
+        "yaban mersini zararları",
+        "yaban mersini hamilelikte kullanımı",
+        "yaban mersini ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "yaban-mersini-ile-blueberry-ayni-mi",
+      "title": "Yaban Mersini ile Blueberry Aynı Meyve mi?",
+      "question": "Yaban mersini ile blueberry aynı meyve midir?",
+      "keywords": [
+        "yaban mersini blueberry farkı",
+        "yaban mersini nedir",
+        "bilberry blueberry",
+        "çay üzümü"
+      ],
+      "angle": "İsim karışıklığı odaklı: Vaccinium myrtillus ile Vaccinium corymbosum ayrımı, antosiyanin farkı.",
+      "plant": "Yaban Mersini",
+      "category": "Göz Sağlığı",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "enginar-yapragi-faydalari-nelerdir",
+      "title": "Enginar Yaprağı Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Enginar Yaprağı faydaları nelerdir?",
+      "plant": "Enginar Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "enginar yaprağı faydaları",
+        "enginar yaprağı nedir",
+        "enginar yaprağı ne işe yarar",
+        "enginar yaprağı neye iyi gelir",
+        "enginar yaprağı ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "enginar-yapragi-nasil-kullanilir",
+      "title": "Enginar Yaprağı Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Enginar Yaprağı nasıl kullanılır?",
+      "plant": "Enginar Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "enginar yaprağı nasıl kullanılır",
+        "enginar yaprağı günde ne kadar",
+        "enginar yaprağı ne zaman içilir",
+        "enginar yaprağı kaç gün kullanılır",
+        "enginar yaprağı aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "enginar-yapragi-kimler-kullanmamali",
+      "title": "Enginar Yaprağı Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Enginar Yaprağı kimler tarafından kullanılmamalı?",
+      "plant": "Enginar Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "enginar yaprağı kimler kullanmamalı",
+        "enginar yaprağı yan etkileri",
+        "enginar yaprağı zararları",
+        "enginar yaprağı hamilelikte kullanımı",
+        "enginar yaprağı ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "enginar-yapragi-ekstrakti-ile-enginar-yemek-farki",
+      "title": "Enginar Yaprağı Ekstraktı ile Enginar Yemenin Farkı Nedir?",
+      "question": "Enginar yaprağı ekstraktı ile enginar yemek arasındaki fark nedir?",
+      "keywords": [
+        "enginar yaprağı ekstraktı",
+        "enginar yaprağı nedir",
+        "sinarin",
+        "enginar özü"
+      ],
+      "angle": "Gıda ile takviye ayrımı: yenen kısım ile ekstrakte edilen kısım aynı değil.",
+      "plant": "Enginar Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "reishi-mantari-faydalari-nelerdir",
+      "title": "Reishi Mantarı Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Reishi Mantarı faydaları nelerdir?",
+      "plant": "Reishi Mantarı",
+      "category": "Bağışıklık",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "reishi mantarı faydaları",
+        "reishi mantarı nedir",
+        "reishi mantarı ne işe yarar",
+        "reishi mantarı neye iyi gelir",
+        "reishi mantarı ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "reishi-mantari-nasil-kullanilir",
+      "title": "Reishi Mantarı Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Reishi Mantarı nasıl kullanılır?",
+      "plant": "Reishi Mantarı",
+      "category": "Bağışıklık",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "reishi mantarı nasıl kullanılır",
+        "reishi mantarı günde ne kadar",
+        "reishi mantarı ne zaman içilir",
+        "reishi mantarı kaç gün kullanılır",
+        "reishi mantarı aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "reishi-mantari-kimler-kullanmamali",
+      "title": "Reishi Mantarı Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Reishi Mantarı kimler tarafından kullanılmamalı?",
+      "plant": "Reishi Mantarı",
+      "category": "Bağışıklık",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "reishi mantarı kimler kullanmamalı",
+        "reishi mantarı yan etkileri",
+        "reishi mantarı zararları",
+        "reishi mantarı hamilelikte kullanımı",
+        "reishi mantarı ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "reishi-ile-chaga-arasindaki-fark",
+      "title": "Reishi ile Chaga Arasındaki Fark Nedir?",
+      "question": "Reishi mantarı ile chaga arasındaki fark nedir?",
+      "keywords": [
+        "reishi chaga farkı",
+        "chaga mantarı",
+        "ganoderma lucidum",
+        "şifalı mantarlar"
+      ],
+      "angle": "Karşılaştırma: iki mantarın botanik farkı, kullanım biçimleri, hazırlama yöntemi.",
+      "plant": "Reishi Mantarı",
+      "category": "Bağışıklık",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "kudret-nari-faydalari-nelerdir",
+      "title": "Kudret Narı Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Kudret Narı faydaları nelerdir?",
+      "plant": "Kudret Narı",
+      "category": "Metabolizma & Kilo",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "kudret narı faydaları",
+        "kudret narı nedir",
+        "kudret narı ne işe yarar",
+        "kudret narı neye iyi gelir",
+        "kudret narı ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "kudret-nari-nasil-kullanilir",
+      "title": "Kudret Narı Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Kudret Narı nasıl kullanılır?",
+      "plant": "Kudret Narı",
+      "category": "Metabolizma & Kilo",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "kudret narı nasıl kullanılır",
+        "kudret narı günde ne kadar",
+        "kudret narı ne zaman içilir",
+        "kudret narı kaç gün kullanılır",
+        "kudret narı aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "kudret-nari-kimler-kullanmamali",
+      "title": "Kudret Narı Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Kudret Narı kimler tarafından kullanılmamalı?",
+      "plant": "Kudret Narı",
+      "category": "Metabolizma & Kilo",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "kudret narı kimler kullanmamalı",
+        "kudret narı yan etkileri",
+        "kudret narı zararları",
+        "kudret narı hamilelikte kullanımı",
+        "kudret narı ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "kudret-nari-nasil-yenir",
+      "title": "Kudret Narı Nasıl Yenir? Acılığını Azaltmanın Yolları",
+      "question": "Kudret narı nasıl yenir?",
+      "keywords": [
+        "kudret narı nasıl yenir",
+        "kudret narı acılığı",
+        "kudret narı yemeği",
+        "kudret narı balı"
+      ],
+      "angle": "Mutfak odaklı: tuzlama, haşlama, çekirdek ayıklama; kan şekeri ilacı uyarısı kısa ama net.",
+      "plant": "Kudret Narı",
+      "category": "Metabolizma & Kilo",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "uzum-cekirdegi-faydalari-nelerdir",
+      "title": "Üzüm Çekirdeği Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Üzüm Çekirdeği faydaları nelerdir?",
+      "plant": "Siyah Üzüm Çekirdeği",
+      "category": "Kalp & Dolaşım",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "üzüm çekirdeği faydaları",
+        "üzüm çekirdeği nedir",
+        "üzüm çekirdeği ne işe yarar",
+        "üzüm çekirdeği neye iyi gelir",
+        "üzüm çekirdeği ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "uzum-cekirdegi-nasil-kullanilir",
+      "title": "Üzüm Çekirdeği Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Üzüm Çekirdeği nasıl kullanılır?",
+      "plant": "Siyah Üzüm Çekirdeği",
+      "category": "Kalp & Dolaşım",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "üzüm çekirdeği nasıl kullanılır",
+        "üzüm çekirdeği günde ne kadar",
+        "üzüm çekirdeği ne zaman içilir",
+        "üzüm çekirdeği kaç gün kullanılır",
+        "üzüm çekirdeği aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "uzum-cekirdegi-kimler-kullanmamali",
+      "title": "Üzüm Çekirdeği Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Üzüm Çekirdeği kimler tarafından kullanılmamalı?",
+      "plant": "Siyah Üzüm Çekirdeği",
+      "category": "Kalp & Dolaşım",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "üzüm çekirdeği kimler kullanmamalı",
+        "üzüm çekirdeği yan etkileri",
+        "üzüm çekirdeği zararları",
+        "üzüm çekirdeği hamilelikte kullanımı",
+        "üzüm çekirdeği ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "uzum-cekirdegi-ekstrakti-ile-resveratrol-ayni-mi",
+      "title": "Üzüm Çekirdeği Ekstraktı ile Resveratrol Aynı Şey mi?",
+      "question": "Üzüm çekirdeği ekstraktı ile resveratrol aynı madde midir?",
+      "keywords": [
+        "üzüm çekirdeği resveratrol",
+        "opc nedir",
+        "proantosiyanidin",
+        "resveratrol nedir"
+      ],
+      "angle": "Bileşen ayrımı: OPC/proantosiyanidin çekirdekte, resveratrol kabukta — aynı şey değil.",
+      "plant": "Siyah Üzüm Çekirdeği",
+      "category": "Kalp & Dolaşım",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "keciboynuzu-faydalari-nelerdir",
+      "title": "Keçiboynuzu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Keçiboynuzu faydaları nelerdir?",
+      "plant": "Keçiboynuzu",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "fayda",
+      "tier": 2,
+      "keywords": [
+        "keçiboynuzu faydaları",
+        "keçiboynuzu nedir",
+        "keçiboynuzu ne işe yarar",
+        "keçiboynuzu neye iyi gelir",
+        "keçiboynuzu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "keciboynuzu-nasil-kullanilir",
+      "title": "Keçiboynuzu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Keçiboynuzu nasıl kullanılır?",
+      "plant": "Keçiboynuzu",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "kullanim",
+      "tier": 2,
+      "keywords": [
+        "keçiboynuzu nasıl kullanılır",
+        "keçiboynuzu günde ne kadar",
+        "keçiboynuzu ne zaman içilir",
+        "keçiboynuzu kaç gün kullanılır",
+        "keçiboynuzu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "keciboynuzu-kimler-kullanmamali",
+      "title": "Keçiboynuzu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Keçiboynuzu kimler tarafından kullanılmamalı?",
+      "plant": "Keçiboynuzu",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "guvenlik",
+      "tier": 2,
+      "keywords": [
+        "keçiboynuzu kimler kullanmamalı",
+        "keçiboynuzu yan etkileri",
+        "keçiboynuzu zararları",
+        "keçiboynuzu hamilelikte kullanımı",
+        "keçiboynuzu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "keciboynuzu-pekmezi-ile-ekstrakti-farki",
+      "title": "Keçiboynuzu Pekmezi ile Ekstraktı Arasındaki Fark Nedir?",
+      "question": "Keçiboynuzu pekmezi ile keçiboynuzu ekstraktı arasındaki fark nedir?",
+      "keywords": [
+        "keçiboynuzu pekmezi",
+        "harnup pekmezi",
+        "keçiboynuzu ekstraktı",
+        "keçiboynuzu şekeri"
+      ],
+      "angle": "Form karşılaştırması: pekmezin şeker yoğunluğu ile ekstraktın farkı, kimin hangisini seçtiği.",
+      "plant": "Keçiboynuzu",
+      "category": "Enerji & Dayanıklılık",
+      "archetype": "ozel",
+      "tier": 2
+    },
+    {
+      "slug": "bitkisel-sivi-ekstrakt-nedir",
+      "title": "Bitkisel Sıvı Ekstrakt Nedir? Çay ve Kapsülden Farkı",
+      "question": "Bitkisel sıvı ekstrakt nedir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "bitkisel sıvı ekstrakt",
+        "ekstrakt nedir",
+        "tentür nedir",
+        "sıvı bitki ekstraktı"
+      ],
+      "angle": "Üretim yöntemi, çözücü, konsantrasyon; çay/kapsül/damla ile karşılaştırma.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "standardize-ekstrakt-ne-demek",
+      "title": "Bitkisel Takviyede 'Standardize' Ne Anlama Gelir?",
+      "question": "Standardize bitkisel ekstrakt ne demektir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "standardize ekstrakt",
+        "standardizasyon nedir",
+        "ekstrakt oranı",
+        "1:4 ekstrakt"
+      ],
+      "angle": "Etiketteki oranların (1:4, %5 vb.) anlamı; neden iki aynı isimli ürün farklı olabilir.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "bitkisel-takviye-etiketi-nasil-okunur",
+      "title": "Bitkisel Takviye Etiketi Nasıl Okunur?",
+      "question": "Bitkisel takviye etiketi nasıl okunur?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "takviye etiketi okuma",
+        "gıda takviyesi etiket",
+        "bitkisel ürün etiketi"
+      ],
+      "angle": "Latince ad, kullanılan bitki kısmı, ekstrakt oranı, günlük miktar, uyarılar.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "bitkisel-takviyeler-hangi-ilaclarla-etkilesir",
+      "title": "Bitkisel Takviyeler Hangi İlaçlarla Etkileşir? Genel Rehber",
+      "question": "Bitkisel takviyeler hangi ilaçlarla etkileşebilir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "bitki ilaç etkileşimi",
+        "bitkisel takviye ilaç",
+        "kan sulandırıcı bitki"
+      ],
+      "angle": "Etkileşim sınıfları (kan sulandırıcı, antidepresan, tansiyon, şeker); hekime ne söylenmeli.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "bitkisel-takviyede-kur-mantigi",
+      "title": "Bitkisel Takviyede Kür Mantığı: Ne Kadar Süre Kullanılmalı?",
+      "question": "Bitkisel takviyeler ne kadar süre kullanılmalıdır?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "bitkisel kür süresi",
+        "takviye ne kadar kullanılır",
+        "kür arası"
+      ],
+      "angle": "Neden sürekli kullanım önerilmez, kür/ara mantığı, hangi bitkiler kısa süreliktir.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "gebelikte-bitkisel-takviye",
+      "title": "Gebelikte Bitkisel Takviye Kullanılır mı?",
+      "question": "Gebelikte bitkisel takviye kullanılabilir mi?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "gebelikte bitkisel çay",
+        "hamilelikte takviye",
+        "emzirirken bitkisel ürün"
+      ],
+      "angle": "Baharat miktarı ile takviye dozu ayrımı; veri yetersizliği kavramı; hekim onayı çerçevesi.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "cocuklarda-bitkisel-takviye",
+      "title": "Çocuklarda Bitkisel Takviye Kullanımı: Neye Dikkat Edilmeli?",
+      "question": "Çocuklarda bitkisel takviye kullanılabilir mi?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "çocukta bitkisel takviye",
+        "çocuk ekinezya",
+        "alkolsüz bitkisel damla"
+      ],
+      "angle": "Yaş sınırları, alkol bazlı ekstrakt sorunu, miktar ölçekleme yanlışı, çocuk hekimi vurgusu.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "ameliyat-oncesi-bitkisel-takviye",
+      "title": "Ameliyat Öncesi Bitkisel Takviye Ne Zaman Bırakılmalı?",
+      "question": "Ameliyat öncesi bitkisel takviyeler ne zaman bırakılmalıdır?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "ameliyat öncesi bitkisel",
+        "cerrahi bitkisel takviye",
+        "kanama riski bitki"
+      ],
+      "angle": "Neden bırakılır, tipik süre çerçevesi, anesteziste ne söylenmeli.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "soguk-sikim-bitkisel-yaglar-nasil-saklanir",
+      "title": "Soğuk Sıkım Bitkisel Yağlar Nasıl Saklanır?",
+      "question": "Soğuk sıkım bitkisel yağlar nasıl saklanmalıdır?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "soğuk sıkım yağ saklama",
+        "bitkisel yağ bozulur mu",
+        "koyu şişe yağ"
+      ],
+      "angle": "Işık/ısı/oksijen, koyu cam, buzdolabı gerekir mi, acılaşma nasıl anlaşılır.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "gmp-ve-haccp-sertifikasi-ne-anlama-gelir",
+      "title": "GMP ve HACCP Sertifikaları Bitkisel Üründe Ne Anlama Gelir?",
+      "question": "GMP ve HACCP sertifikaları bitkisel üründe ne anlama gelir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "gmp sertifikası nedir",
+        "haccp nedir",
+        "bitkisel ürün kalite belgesi"
+      ],
+      "angle": "İki sistemin ne denetlediği, neyi garanti ETMEDİĞİ, tüketici için pratik anlamı.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "coklu-bitki-formulleri-tek-bitkiden-etkili-mi",
+      "title": "Çoklu Bitki Formülleri Tek Bitkiden Daha mı Etkili?",
+      "question": "Çoklu bitki içeren formüller tek bitkiden daha mı etkilidir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "çoklu bitki formülü",
+        "bitki karışımı takviye",
+        "sinerji bitkisel"
+      ],
+      "angle": "Sinerji iddiasının sınırları, doz seyrelmesi riski, ne zaman karışım mantıklı.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "bitkisel-cay-mi-ekstrakt-mi",
+      "title": "Bitkisel Çay mı Ekstrakt mı? Hangisi Ne Zaman Tercih Edilir",
+      "question": "Bitkisel çay mı ekstrakt mı tercih edilmelidir?",
+      "category": "Genel Bilgi",
+      "keywords": [
+        "bitkisel çay mı ekstrakt mı",
+        "çay ekstrakt farkı",
+        "demleme konsantrasyon"
+      ],
+      "angle": "Tutarlılık, konsantrasyon, maliyet, ritüel değeri; hangi durumda hangisi.",
+      "plant": null,
+      "archetype": "genel",
+      "tier": 2
+    },
+    {
+      "slug": "karabas-otu-faydalari-nelerdir",
+      "title": "Karabaş Otu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Karabaş Otu faydaları nelerdir?",
+      "plant": "Karabaş Otu",
+      "category": "Uyku & Sakinlik",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "karabaş otu faydaları",
+        "karabaş otu nedir",
+        "karabaş otu ne işe yarar",
+        "karabaş otu neye iyi gelir",
+        "karabaş otu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "karabas-otu-nasil-kullanilir",
+      "title": "Karabaş Otu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Karabaş Otu nasıl kullanılır?",
+      "plant": "Karabaş Otu",
+      "category": "Uyku & Sakinlik",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "karabaş otu nasıl kullanılır",
+        "karabaş otu günde ne kadar",
+        "karabaş otu ne zaman içilir",
+        "karabaş otu kaç gün kullanılır",
+        "karabaş otu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "karabas-otu-kimler-kullanmamali",
+      "title": "Karabaş Otu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Karabaş Otu kimler tarafından kullanılmamalı?",
+      "plant": "Karabaş Otu",
+      "category": "Uyku & Sakinlik",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "karabaş otu kimler kullanmamalı",
+        "karabaş otu yan etkileri",
+        "karabaş otu zararları",
+        "karabaş otu hamilelikte kullanımı",
+        "karabaş otu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "karabas-otu-ile-lavanta-ayni-mi",
+      "title": "Karabaş Otu ile Lavanta Aynı Bitki mi?",
+      "question": "Karabaş otu ile lavanta aynı bitki midir?",
+      "keywords": [
+        "karabaş otu lavanta farkı",
+        "lavandula stoechas",
+        "karabaş otu nedir",
+        "yalancı lavanta"
+      ],
+      "angle": "İsim karışıklığı: Lavandula stoechas ile Lavandula angustifolia ayrımı, koku ve kullanım farkı.",
+      "plant": "Karabaş Otu",
+      "category": "Uyku & Sakinlik",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "civanpercemi-faydalari-nelerdir",
+      "title": "Civanperçemi Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Civanperçemi faydaları nelerdir?",
+      "plant": "Civanperçemi",
+      "category": "Kadın Sağlığı",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "civanperçemi faydaları",
+        "civanperçemi nedir",
+        "civanperçemi ne işe yarar",
+        "civanperçemi neye iyi gelir",
+        "civanperçemi ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "civanpercemi-nasil-kullanilir",
+      "title": "Civanperçemi Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Civanperçemi nasıl kullanılır?",
+      "plant": "Civanperçemi",
+      "category": "Kadın Sağlığı",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "civanperçemi nasıl kullanılır",
+        "civanperçemi günde ne kadar",
+        "civanperçemi ne zaman içilir",
+        "civanperçemi kaç gün kullanılır",
+        "civanperçemi aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "civanpercemi-kimler-kullanmamali",
+      "title": "Civanperçemi Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Civanperçemi kimler tarafından kullanılmamalı?",
+      "plant": "Civanperçemi",
+      "category": "Kadın Sağlığı",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "civanperçemi kimler kullanmamalı",
+        "civanperçemi yan etkileri",
+        "civanperçemi zararları",
+        "civanperçemi hamilelikte kullanımı",
+        "civanperçemi ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "civanpercemi-cayi-adet-doneminde-nasil-kullanilir",
+      "title": "Civanperçemi Çayı Adet Döneminde Nasıl Kullanılır?",
+      "question": "Civanperçemi çayı adet döneminde nasıl kullanılır?",
+      "keywords": [
+        "civanperçemi adet",
+        "civanperçemi çayı",
+        "achillea millefolium",
+        "civanperçemi kadın"
+      ],
+      "angle": "Hedef kitle odaklı: geleneksel kullanım, zamanlama, gebelikte kullanılmaması uyarısı belirgin.",
+      "plant": "Civanperçemi",
+      "category": "Kadın Sağlığı",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "hindiba-faydalari-nelerdir",
+      "title": "Hindiba Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Hindiba faydaları nelerdir?",
+      "plant": "Hindiba Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "hindiba faydaları",
+        "hindiba nedir",
+        "hindiba ne işe yarar",
+        "hindiba neye iyi gelir",
+        "hindiba ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "hindiba-nasil-kullanilir",
+      "title": "Hindiba Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Hindiba nasıl kullanılır?",
+      "plant": "Hindiba Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "hindiba nasıl kullanılır",
+        "hindiba günde ne kadar",
+        "hindiba ne zaman içilir",
+        "hindiba kaç gün kullanılır",
+        "hindiba aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "hindiba-kimler-kullanmamali",
+      "title": "Hindiba Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Hindiba kimler tarafından kullanılmamalı?",
+      "plant": "Hindiba Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "hindiba kimler kullanmamalı",
+        "hindiba yan etkileri",
+        "hindiba zararları",
+        "hindiba hamilelikte kullanımı",
+        "hindiba ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "hindiba-kahvesi-nedir",
+      "title": "Hindiba Kahvesi Nedir? Kafeinsiz Alternatif Olarak Hindiba",
+      "question": "Hindiba kahvesi nedir?",
+      "keywords": [
+        "hindiba kahvesi",
+        "hindiba kökü",
+        "kafeinsiz kahve alternatifi",
+        "chicory coffee"
+      ],
+      "angle": "Alternatif ürün odaklı: kavrulmuş kök, tat profili, inülin içeriği, kimler sevmez.",
+      "plant": "Hindiba Yaprağı",
+      "category": "Sindirim & Karaciğer",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "kirkkilit-otu-faydalari-nelerdir",
+      "title": "Kırkkilit Otu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Kırkkilit Otu faydaları nelerdir?",
+      "plant": "Kırkkilit",
+      "category": "Eklem & İltihap",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "kırkkilit otu faydaları",
+        "kırkkilit otu nedir",
+        "kırkkilit otu ne işe yarar",
+        "kırkkilit otu neye iyi gelir",
+        "kırkkilit otu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "kirkkilit-otu-nasil-kullanilir",
+      "title": "Kırkkilit Otu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Kırkkilit Otu nasıl kullanılır?",
+      "plant": "Kırkkilit",
+      "category": "Eklem & İltihap",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "kırkkilit otu nasıl kullanılır",
+        "kırkkilit otu günde ne kadar",
+        "kırkkilit otu ne zaman içilir",
+        "kırkkilit otu kaç gün kullanılır",
+        "kırkkilit otu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "kirkkilit-otu-kimler-kullanmamali",
+      "title": "Kırkkilit Otu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Kırkkilit Otu kimler tarafından kullanılmamalı?",
+      "plant": "Kırkkilit",
+      "category": "Eklem & İltihap",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "kırkkilit otu kimler kullanmamalı",
+        "kırkkilit otu yan etkileri",
+        "kırkkilit otu zararları",
+        "kırkkilit otu hamilelikte kullanımı",
+        "kırkkilit otu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "kirkkilit-otu-nerede-yetisir",
+      "title": "Kırkkilit Otu Nerede Yetişir, Nasıl Tanınır?",
+      "question": "Kırkkilit otu nerede yetişir ve nasıl tanınır?",
+      "keywords": [
+        "kırkkilit otu nedir",
+        "kırkkilit otu nerede yetişir",
+        "kırkkilit otu tanıma"
+      ],
+      "angle": "Botanik/toplama odaklı: yetişme alanı, hangi kısmı kullanılır, benzer bitkilerle karışması.",
+      "plant": "Kırkkilit",
+      "category": "Eklem & İltihap",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "damar-otu-faydalari-nelerdir",
+      "title": "Damar Otu Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Damar Otu faydaları nelerdir?",
+      "plant": "Damar Otu",
+      "category": "Solunum",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "damar otu faydaları",
+        "damar otu nedir",
+        "damar otu ne işe yarar",
+        "damar otu neye iyi gelir",
+        "damar otu ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "damar-otu-nasil-kullanilir",
+      "title": "Damar Otu Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Damar Otu nasıl kullanılır?",
+      "plant": "Damar Otu",
+      "category": "Solunum",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "damar otu nasıl kullanılır",
+        "damar otu günde ne kadar",
+        "damar otu ne zaman içilir",
+        "damar otu kaç gün kullanılır",
+        "damar otu aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "damar-otu-kimler-kullanmamali",
+      "title": "Damar Otu Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Damar Otu kimler tarafından kullanılmamalı?",
+      "plant": "Damar Otu",
+      "category": "Solunum",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "damar otu kimler kullanmamalı",
+        "damar otu yan etkileri",
+        "damar otu zararları",
+        "damar otu hamilelikte kullanımı",
+        "damar otu ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "damar-otu-ile-sinir-otu-ayni-mi",
+      "title": "Damar Otu ile Sinir Otu Aynı Bitki mi?",
+      "question": "Damar otu ile sinir otu aynı bitki midir?",
+      "keywords": [
+        "damar otu sinir otu",
+        "plantago lanceolata",
+        "damar otu nedir",
+        "sinir otu nedir"
+      ],
+      "angle": "İsim karışıklığı: yöresel adlandırmalar, Plantago türleri, hangi ad hangi bitkiye ait.",
+      "plant": "Damar Otu",
+      "category": "Solunum",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "aynisafa-faydalari-nelerdir",
+      "title": "Aynısafa Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Aynısafa faydaları nelerdir?",
+      "plant": "Aynı Safa",
+      "category": "Saç & Cilt",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "aynısafa faydaları",
+        "aynısafa nedir",
+        "aynısafa ne işe yarar",
+        "aynısafa neye iyi gelir",
+        "aynısafa ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "aynisafa-nasil-kullanilir",
+      "title": "Aynısafa Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Aynısafa nasıl kullanılır?",
+      "plant": "Aynı Safa",
+      "category": "Saç & Cilt",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "aynısafa nasıl kullanılır",
+        "aynısafa günde ne kadar",
+        "aynısafa ne zaman içilir",
+        "aynısafa kaç gün kullanılır",
+        "aynısafa aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "aynisafa-kimler-kullanmamali",
+      "title": "Aynısafa Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Aynısafa kimler tarafından kullanılmamalı?",
+      "plant": "Aynı Safa",
+      "category": "Saç & Cilt",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "aynısafa kimler kullanmamalı",
+        "aynısafa yan etkileri",
+        "aynısafa zararları",
+        "aynısafa hamilelikte kullanımı",
+        "aynısafa ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "aynisafa-ile-papatya-arasindaki-fark",
+      "title": "Aynısafa ile Papatya Arasındaki Fark Nedir?",
+      "question": "Aynısafa ile papatya arasındaki fark nedir?",
+      "keywords": [
+        "aynısafa nedir",
+        "calendula nedir",
+        "aynısafa papatya farkı",
+        "portakal nergisi"
+      ],
+      "angle": "İsim/görünüm karışıklığı: Calendula officinalis ile Matricaria chamomilla ayrımı, kullanım alanları.",
+      "plant": "Aynı Safa",
+      "category": "Saç & Cilt",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "kenevir-tohumu-yagi-faydalari-nelerdir",
+      "title": "Kenevir Tohumu Yağı Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Kenevir Tohumu Yağı faydaları nelerdir?",
+      "plant": "Kenevir Tohumu",
+      "category": "Saç & Cilt",
+      "archetype": "fayda",
+      "tier": 3,
+      "keywords": [
+        "kenevir tohumu yağı faydaları",
+        "kenevir tohumu yağı nedir",
+        "kenevir tohumu yağı ne işe yarar",
+        "kenevir tohumu yağı neye iyi gelir",
+        "kenevir tohumu yağı ekstraktı"
+      ],
+      "angle": "Bitkinin ne olduğu, hangi bileşenlerinin öne çıktığı ve hangi alanlarda araştırıldığı. KULLANIM MİKTARI ve GÜVENLİK detayına GİRME — onlar ayrı yazıların konusu; burada yalnızca kısa birer cümleyle değinip ilgili yazıya bırak."
+    },
+    {
+      "slug": "kenevir-tohumu-yagi-nasil-kullanilir",
+      "title": "Kenevir Tohumu Yağı Nasıl Kullanılır? Günlük Miktar ve Zamanlama",
+      "question": "Kenevir Tohumu Yağı nasıl kullanılır?",
+      "plant": "Kenevir Tohumu",
+      "category": "Saç & Cilt",
+      "archetype": "kullanim",
+      "tier": 3,
+      "keywords": [
+        "kenevir tohumu yağı nasıl kullanılır",
+        "kenevir tohumu yağı günde ne kadar",
+        "kenevir tohumu yağı ne zaman içilir",
+        "kenevir tohumu yağı kaç gün kullanılır",
+        "kenevir tohumu yağı aç karnına"
+      ],
+      "angle": "Form form (çay, ekstrakt, damla, kapsül, yağ) miktar ve zamanlama; kür süresi; aç/tok karın; saklama. FAYDA anlatımına GİRME, o ayrı yazının konusu. Kesin doz verme — 'ürün etiketindeki miktar esastır' çerçevesi kur."
+    },
+    {
+      "slug": "kenevir-tohumu-yagi-kimler-kullanmamali",
+      "title": "Kenevir Tohumu Yağı Kimler Kullanmamalı? Yan Etkiler ve İlaç Etkileşimleri",
+      "question": "Kenevir Tohumu Yağı kimler tarafından kullanılmamalı?",
+      "plant": "Kenevir Tohumu",
+      "category": "Saç & Cilt",
+      "archetype": "guvenlik",
+      "tier": 3,
+      "keywords": [
+        "kenevir tohumu yağı kimler kullanmamalı",
+        "kenevir tohumu yağı yan etkileri",
+        "kenevir tohumu yağı zararları",
+        "kenevir tohumu yağı hamilelikte kullanımı",
+        "kenevir tohumu yağı ilaç etkileşimi"
+      ],
+      "angle": "Kontrendikasyonlar, bildirilen yan etkiler, ilaç etkileşimleri, gebelik/emzirme, çocuk, ameliyat öncesi. Korkutma dili KULLANMA; 'hekime danışın' çerçevesini her bölümde koru. Fayda anlatımına girme."
+    },
+    {
+      "slug": "kenevir-tohumu-yagi-ile-cbd-ayni-mi",
+      "title": "Kenevir Tohumu Yağı ile CBD Yağı Aynı Şey mi?",
+      "question": "Kenevir tohumu yağı ile CBD yağı aynı ürün müdür?",
+      "keywords": [
+        "kenevir tohumu yağı",
+        "cbd yağı farkı",
+        "hemp seed oil",
+        "kenevir yağı nedir"
+      ],
+      "angle": "Ürün karışıklığı: tohumdan sıkılan yağ ile çiçek/yapraktan elde edilen ekstrakt farklı ürünlerdir. Türkiye'deki yasal çerçeveye dair İDDİA ÜRETME, yalnızca ikisinin farklı ürün olduğunu açıkla.",
+      "plant": "Kenevir Tohumu",
+      "category": "Saç & Cilt",
+      "archetype": "ozel",
+      "tier": 3
+    },
+    {
+      "slug": "corek-otu-zeytin-yapragi-kudret-nari-birlikte",
+      "title": "Çörek Otu, Zeytin Yaprağı, Yavşan Otu ve Kudret Narı Neden Birlikte Kullanılır?",
+      "question": "Çörek Otu, Zeytin Yaprağı, Yavşan Otu ve Kudret Narı birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Bağışıklık",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "çörek otu karışımı",
+        "zeytin yaprağı karışımı",
+        "yavşan otu karışımı",
+        "kudret narı karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Çörek Otu, Zeytin Yaprağı, Yavşan Otu, Kudret Narı) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/04 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    },
+    {
+      "slug": "ekinezya-ginseng-reishi-yaban-mersini-birlikte",
+      "title": "Ekinezya, Ginseng, Reishi Mantarı ve Yaban Mersini Neden Birlikte Kullanılır?",
+      "question": "Ekinezya, Ginseng, Reishi Mantarı ve Yaban Mersini birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Bağışıklık",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "ekinezya karışımı",
+        "ginseng karışımı",
+        "reishi mantarı karışımı",
+        "yaban mersini karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Ekinezya, Ginseng, Reishi Mantarı, Yaban Mersini) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/06 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    },
+    {
+      "slug": "deve-dikeni-enginar-hindiba-birlikte",
+      "title": "Deve Dikeni, Enginar Yaprağı ve Hindiba Neden Birlikte Kullanılır?",
+      "question": "Deve Dikeni, Enginar Yaprağı ve Hindiba birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Sindirim & Karaciğer",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "deve dikeni karışımı",
+        "enginar yaprağı karışımı",
+        "hindiba karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Deve Dikeni, Enginar Yaprağı, Hindiba) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/09 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    },
+    {
+      "slug": "hayit-civanpercemi-biberiye-birlikte",
+      "title": "Hayıt Tohumu, Civan Perçemi ve Biberiye Neden Birlikte Kullanılır?",
+      "question": "Hayıt Tohumu, Civan Perçemi ve Biberiye birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Kadın Sağlığı",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "hayıt tohumu karışımı",
+        "civan perçemi karışımı",
+        "biberiye karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Hayıt Tohumu, Civan Perçemi, Biberiye) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/10 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    },
+    {
+      "slug": "isirgan-kirkkilit-yaki-otu-birlikte",
+      "title": "Isırgan, Kırkkilit Otu ve Yakı Otu Neden Birlikte Kullanılır?",
+      "question": "Isırgan, Kırkkilit Otu ve Yakı Otu birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Eklem & İltihap",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "ısırgan karışımı",
+        "kırkkilit otu karışımı",
+        "yakı otu karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Isırgan, Kırkkilit Otu, Yakı Otu) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/08 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    },
+    {
+      "slug": "coban-cokerten-karabas-damar-otu-zencefil-birlikte",
+      "title": "Çoban Çökerten, Karabaş Otu, Damar Otu ve Zencefil Neden Birlikte Kullanılır?",
+      "question": "Çoban Çökerten, Karabaş Otu, Damar Otu ve Zencefil birlikte kullanıldığında ne amaçlanır?",
+      "plant": null,
+      "category": "Böbrek & İdrar Yolları",
+      "archetype": "kombinasyon",
+      "tier": 3,
+      "keywords": [
+        "çoban çökerten karışımı",
+        "karabaş otu karışımı",
+        "damar otu karışımı",
+        "zencefil karışımı",
+        "bitki karışımı"
+      ],
+      "angle": "Bu bitkilerin (Çoban Çökerten, Karabaş Otu, Damar Otu, Zencefil) tek tek ne için kullanıldığı ve bir arada neden tercih edildikleri. Formülün İmmu-Nat NE/11 ürününde yer aldığı bilgisi doğrudur ama yazının konusu ÜRÜN DEĞİL, bitkilerin birlikteliğidir. Formüle ait doz, oran veya etki İDDİASI ÜRETME — bunlar bilinmiyor."
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+name: Günlük blog yazısı
+
+# NEDEN GITHUB ACTIONS, VERCEL CRON DEĞİL?
+# Bu iş üretilen makaleyi content/generated-posts.json'a YAZIP COMMIT ediyor.
+# Vercel function'larının dosya sistemi salt okunur ve deploy'a commit atamaz;
+# yazı bir sonraki deploy'da kaybolurdu. GitHub Actions'ta repo checkout'u
+# gerçek bir çalışma dizini: yaz, doğrula, commit'le, push'la. Push Vercel'in
+# yeniden build almasını tetikliyor — sitemap ve llms.txt kendiliğinden
+# güncelleniyor (ikisi de build anında posts'tan türetiliyor).
+
+on:
+  schedule:
+    # 06:30 UTC = 09:30 Türkiye. Sabah yayını, gün içinde taranmaya vakit kalır.
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Üret ama yayımlama (API'yi ve kapıyı test etmek için)"
+        type: boolean
+        default: false
+
+# Aynı anda iki üretim çalışırsa ikisi de aynı konuyu seçer ve push çakışır.
+# cancel-in-progress: false — yarıda kesilen bir çalıştırma dosyayı bozuk
+# bırakabilir; sıraya girip beklemesi daha güvenli.
+concurrency:
+  group: daily-blog-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # İş düzeyinde tanımlı, çünkü adım `if:` koşulunda `env` bağlamı yalnızca
+    # iş/workflow düzeyindeki değişkenleri görür — adımın kendi env bloğunu
+    # görmez. Adım env'inde bıraksaydık koşul her zaman boş okunurdu.
+    env:
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Sabit "main" YAZMA. Branch üzerinde workflow_dispatch ile dry-run
+          # yapmayı imkânsız kılar; iş main'i checkout eder ve test ettiğini
+          # sandığın kod hiç çalışmaz.
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Kalite kapısı bozuksa hiç üretme. Kapı yanlış pozitif üretiyorsa
+      # (kalibrasyon testi) ya da sabotajı kaçırıyorsa API'yi harcamanın
+      # anlamı yok — burada durmak hem para hem içerik güvenliği.
+      - name: Kalite kapısı testleri
+        run: npm run blog:test
+
+      - name: Makale üret
+        id: generate
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Bütçe uygunsa repo değişkeni ile modeli yükselt: BLOG_MODEL
+          BLOG_MODEL: ${{ vars.BLOG_MODEL }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm run blog:generate -- --dry-run
+          else
+            npm run blog:generate
+          fi
+
+      # Kalite kapısı METNİ denetler, DERLENEBİLİRLİĞİ değil. Bozuk bir JSON
+      # ya da tipe uymayan bir alan siteyi kırar. Linux runner'da build
+      # çalışıyor (geliştirme Mac'inde native binary kısıtı yüzünden çalışmaz),
+      # o yüzden commit ÖNCESİ gerçek build alıyoruz. Kırılırsa değişiklik
+      # geri alınır — bozuk içerik repoya hiç girmez.
+      - name: Derleme doğrulaması
+        if: steps.generate.outputs.status == 'published'
+        run: |
+          if ! npm run build; then
+            echo "::error::Üretilen makale build'i kırdı, değişiklik geri alınıyor"
+            git checkout -- content/generated-posts.json
+            exit 1
+          fi
+
+      - name: Commit ve push
+        if: steps.generate.outputs.status == 'published' || steps.generate.outputs.status == 'rejected'
+        run: |
+          git config user.name "bitki-akademisi-bot"
+          git config user.email "actions@github.com"
+
+          if [ "${{ steps.generate.outputs.status }}" = "published" ]; then
+            git add content/generated-posts.json
+            MSG="İçerik: ${{ steps.generate.outputs.title }}"
+          else
+            # Reddedilen taslak ve deneme sayacı da commit'lenir: sayaç
+            # repoda durmazsa aynı konu her gün yeniden denenir ve pipeline
+            # kalıcı olarak takılır.
+            git add content/blog-pipeline-state.json content/rejected-drafts || true
+            MSG="Kalite kapısı reddetti: ${{ steps.generate.outputs.slug }}"
+          fi
+
+          if git diff --cached --quiet; then
+            echo "Commit edilecek değişiklik yok."
+            exit 0
+          fi
+
+          # Ayrı -m bayrakları: YAML blok girintisi commit mesajına sızmasın.
+          git commit -m "$MSG" \
+            -m "Otomatik üretim — scripts/generate-blog-post.mjs" \
+            -m "Konu: ${{ steps.generate.outputs.slug }}"
+
+          # Zamanlanmış iş ile elle atılan bir commit çakışabilir; rebase ile
+          # üstüne bin, merge commit üretme.
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+      # IndexNow, Bing ve Yandex'e "bu URL yeni" diye haber verir; taranmayı
+      # günlerden dakikalara indirir. Vercel'in yeni build'i yayına alması
+      # için önce bekliyoruz — yayında olmayan URL'i bildirmek işe yaramaz.
+      #
+      # KURULUM (iki adım, ikisi de yapılmadan bu adım sessizce atlanır):
+      #   1. Rastgele bir anahtar üret, public/<anahtar>.txt dosyasına
+      #      içeriği anahtarın kendisi olacak şekilde yaz ve commit'le.
+      #   2. Aynı anahtarı INDEXNOW_KEY reposu secret'ı olarak ekle.
+      - name: IndexNow bildirimi
+        if: steps.generate.outputs.status == 'published' && env.INDEXNOW_KEY != ''
+        run: |
+          echo "Vercel deploy'u bekleniyor..."
+          sleep 180
+          curl -sS -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"host\": \"bitkiakademisi.com\",
+              \"key\": \"$INDEXNOW_KEY\",
+              \"keyLocation\": \"https://bitkiakademisi.com/$INDEXNOW_KEY.txt\",
+              \"urlList\": [
+                \"https://bitkiakademisi.com/blog/${{ steps.generate.outputs.slug }}\",
+                \"https://bitkiakademisi.com/blog\",
+                \"https://bitkiakademisi.com/llms.txt\"
+              ]
+            }" || echo "IndexNow bildirimi başarısız (kritik değil)"
+
+      # En sona bırakıldı: reddedilen taslak commit'lendikten SONRA fail et,
+      # yoksa inceleme için gereken taslak kaybolur.
+      - name: Kapıdan geçemediyse işi başarısız say
+        if: steps.generate.outputs.status != 'published' && steps.generate.outputs.status != 'dry-run' && steps.generate.outputs.status != 'empty'
+        run: |
+          echo "::error::Üretim başarısız (durum: ${{ steps.generate.outputs.status }})."
+          echo "Reddedilen taslak: content/rejected-drafts/${{ steps.generate.outputs.slug }}.json"
+          exit 1
