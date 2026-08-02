@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "blog:backlog": "node scripts/build-topic-backlog.mjs",
+    "blog:test": "node scripts/generate-blog-post.mjs --self-test",
+    "blog:next": "node scripts/generate-blog-post.mjs --next",
+    "blog:generate": "node scripts/generate-blog-post.mjs"
   },
   "dependencies": {
     "next": "16.2.12",
