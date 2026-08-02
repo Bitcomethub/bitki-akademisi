@@ -118,16 +118,20 @@ export default async function BlogPost({
       </header>
 
       {/* Sayfanın alıntılanabilir cevabı. .geo-answer sınıfı JSON-LD'deki
-          speakable seçicisiyle eşleşir — AI motorları için "cevap burada". */}
+          speakable seçicisiyle eşleşir — AI motorları için "cevap burada".
+          Soru BAŞLIK olarak görünür: görünür soru + hemen ardından cevap,
+          motorların çıkarabildiği en net kalıptır. Ayrıca şemadaki
+          alternativeHeadline alanının sayfadaki karşılığı budur — şemada
+          olup sayfada olmayan alan bırakmıyoruz. */}
       <section
         aria-labelledby="kisa-cevap"
         className="geo-answer mt-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6"
       >
-        <h2
-          id="kisa-cevap"
-          className="text-xs font-semibold uppercase tracking-wide text-emerald-800 mb-2"
-        >
+        <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800 mb-2">
           Kısa cevap
+        </p>
+        <h2 id="kisa-cevap" className="text-lg font-bold text-emerald-950 mb-3">
+          {post.question}
         </h2>
         <p className="text-stone-800 leading-relaxed">{post.keyTakeaway}</p>
       </section>
