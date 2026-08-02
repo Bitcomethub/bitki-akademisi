@@ -1,0 +1,11 @@
+{
+  "_readme": [
+    "OTOMATİK ÜRETİLEN makaleler. Bu dosyayı ELLE DÜZENLEME.",
+    "scripts/generate-blog-post.mjs her gün kalite kapısından geçen makaleyi",
+    "posts dizisinin SONUNA ekler; .github/workflows/daily-blog-post.yml commit eder.",
+    "",
+    "Elle yazılan makaleler content/seed-posts.json içindedir.",
+    "İkisi lib/posts.ts'te birleştirilir; çakışan slug'da seed kazanır."
+  ],
+  "posts": []
+}
