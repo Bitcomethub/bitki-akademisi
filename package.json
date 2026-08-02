@@ -10,7 +10,8 @@
     "blog:backlog": "node scripts/build-topic-backlog.mjs",
     "blog:test": "node scripts/generate-blog-post.mjs --self-test",
     "blog:next": "node scripts/generate-blog-post.mjs --next",
-    "blog:generate": "node scripts/generate-blog-post.mjs"
+    "blog:generate": "node scripts/generate-blog-post.mjs",
+    "blog:image": "node scripts/generate-cover-image.mjs"
   },
   "dependencies": {
     "next": "16.2.12",
