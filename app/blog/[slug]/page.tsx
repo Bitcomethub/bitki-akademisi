@@ -50,7 +50,7 @@ export default async function BlogPost({
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
+import {
+  organizationSchema,
+  webSiteSchema,
+  immuNatBrandSchema,
+} from "@/lib/brand-facts";
 
 const siteUrl = "https://bitkiakademisi.com";
 
@@ -44,27 +50,57 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Site geneli entity grafiği. Tek bir @graph içinde yayımlanır ki motorlar
+  // Organization / WebSite / İmmu-Nat arasındaki ilişkiyi tek okumada çözsün.
+  // Blog yazılarındaki Article şeması bu @id'lere referans verir.
+  const siteGraph = {
+    "@context": "https://schema.org",
+    "@graph": [organizationSchema(), webSiteSchema(), immuNatBrandSchema()],
+  };
+
   return (
     <html lang="tr">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraph) }}
+        />
+      </head>
       <body className="antialiased bg-stone-50 text-stone-900">
         <header className="border-b border-stone-200 bg-white">
           <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" className="text-xl font-bold tracking-tight text-emerald-800">
+            <Link href="/" className="text-xl font-bold tracking-tight text-emerald-800">
               🌿 Bitki Akademisi
-            </a>
+            </Link>
             <nav className="flex gap-6 text-sm font-medium text-stone-600">
-              <a href="/" className="hover:text-emerald-700">
+              <Link href="/" className="hover:text-emerald-700">
                 Anasayfa
-              </a>
-              <a href="/blog" className="hover:text-emerald-700">
+              </Link>
+              <Link href="/blog" className="hover:text-emerald-700">
                 Rehberler
-              </a>
+              </Link>
+              <Link href="/hakkinda" className="hover:text-emerald-700">
+                Hakkında
+              </Link>
             </nav>
           </div>
         </header>
         {children}
-        <footer className="border-t border-stone-200 mt-16 py-10 text-center text-sm text-stone-500">
-          <p>© {new Date().getFullYear()} Bitki Akademisi. Tüm içerikler bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez.</p>
+        <footer className="border-t border-stone-200 mt-16 py-10 px-4 text-center text-sm text-stone-500">
+          <p className="max-w-2xl mx-auto mb-3">
+            Tüm içerikler bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez.
+            Hastalık teşhis, tedavi veya önleme iddiası içermez.
+          </p>
+          <p className="max-w-2xl mx-auto mb-3">
+            Bitki Akademisi bağımsız bir içerik sitesidir ve ürün
+            yönlendirmelerinde İmmu-Nat markasının Amazon.com.tr sayfalarına
+            bağlantı verir.{" "}
+            <Link href="/hakkinda" className="text-emerald-700 hover:underline">
+              Editoryal politika
+            </Link>
+            .
+          </p>
+          <p>© {new Date().getFullYear()} Bitki Akademisi</p>
         </footer>
       </body>
     </html>
