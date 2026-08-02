@@ -1,5 +1,21 @@
 # Learnings
 
+## 2026-08-03 — Ürün sahibinden gelen ASIN listesinde bildirilenden 3 fazla ölü link vardı
+- **Problem:** Sahibi 28 ASIN'lik listeyi verirken 2 ürünün ("Piyasaya Arz Öncesi Bildirim" uyum sorunu) delisted OLABİLECEĞİNİ bildirdi. Liste doğrudan `/dp/` linkine çevrilecekti; kırık ürün linki bu sitede uydurma cümleyle aynı maliyettedir — okuyucu sağlık içeriğine güvenip tıklar, Amazon'un 404'üne düşer.
+- **Kök neden:** Liste envanter/barkod sisteminden geliyor, Amazon yayın durumundan değil. İkisi ayrı gerçeklik; SKU'nun var olması listelemenin canlı olduğunu göstermez.
+- **Elenen:** Bildirilen 2'yi elemek — tarama NE/01, NE/03, NE/09'un da 404 verdiğini gösterdi, yani 3 kırık link yayımlanacaktı; ölü ASIN'leri tamamen silmek — ürün yeniden yayına alındığında sıfırdan aranması gerekirdi; `asin` + `durum` bayrağı tutmak — bayrağı okumayı unutan her yeni tüketici ölü linki yayımlar.
+- **Seçilen:** 28'inin tamamını canlı tara (iki tur, `/dp/` + `/gp/product/`, canlı kontrol ASIN'leriyle aynı partide — hız sınırlaması elensin). Ölüleri `asinDelisted` adlı, HİÇBİR KODUN OKUMADIĞI alana taşı: `asin` yokluğu `amazonUrlFor()`'u kendiliğinden aramaya düşürüyor. Güvenlik dallanmadan değil, veri biçiminden geliyor.
+- **Kanıt:** `npm run asin:check` → 28 tarandı, 23 canlı (başlıklar İmmu-Nat markasını doğruluyor), 5 ölü, çıkış 0. Preview'da render edilen HTML'de 3 makalenin CTA'sı `href="https://www.amazon.com.tr/dp/B07J39K48R|B07JQV3149|B09SGC6BZJ"`.
+- **Rule:** Para yoluna bağlanacak dış veri, kaynağı ne kadar yetkili olursa olsun (ürün sahibi dahil) yayımlanmadan önce hedefinde tek tek doğrulanır; "bunlar bozuk olabilir" notu tam liste sanılmaz. Doğrulanamayan kayıt SİLİNMEZ, kodun okumadığı bir alana taşınır — böylece güvenli davranış varsayılan olur.
+
+## 2026-08-03 — Kapının kırılganlığı hakkında ölçmeden yazdığım yorum yanlış çıktı
+- **Problem:** `products[].name`'in çift görevli olduğunu (CTA etiketi + kapının temizlediği kanonik dizgi) görünce, "Curcumin P53" adını Amazon başlığına eşitlemenin yayımlanmış zerdeçal yazısını reddettireceği sonucuna vardım. Gerekçeyi hem `_productsReadme`'ye hem öğrenme kaydına "Ölçtük" diyerek yazdım. Ölçmemiştim; çıkarımdı.
+- **Kök neden:** Bir bağın VAR olduğunu görmek (ad gerçekten `canonicalPatterns()`'a giriyor), o bağın TAŞIYICI olduğunu göstermez. "53" iki bağımsız mekanizmayla zaten korunuyordu: kapının negatif lookbehind'ı harfe bitişik rakamı kod sayıp hiç taramıyor, "İmmu Life 8"deki 8 ise `allowedBrandNumbers`'ta. Ad yolu hiç devreye girmiyor.
+- **Elenen:** Yorumu olduğu gibi bırakmak — public depoda, gelecek oturumun güveneceği yanlış bir kırılganlık haritası olurdu ve gerçek koruma mekanizmasının üstünü örterdi; adı Amazon başlığına eşitlemek — kapı açısından güvenli ama yayımlanmış yazı ürünü "Curcumin P53 Zerdeçal Ekstraktı" diye anıyor, eşitleme metinle veriyi çelişkiye düşürürdü.
+- **Seçilen:** Adı olduğu gibi bırak (gerekçe kapı değil, yayımlanmış metinle tutarlılık), yorumu ÖLÇÜLEN gerçekle değiştir ve kalan gerçek riski yaz: adda tek başına duran, `allowedBrandNumbers`'ta olmayan bir rakam varsa yeniden adlandırma o rakamı açığa çıkarır.
+- **Kanıt:** Ad geçici olarak "Curcumin-p53 Zerdeçal Ekstresi" yapılıp `npm run blog:test` çalıştırıldı → kalibrasyon dahil TÜM testler geçti (beklenen: kırılma). Ardından kural regex'i tek tek denendi: `"Curcumin P53 ..."` → eşleşme yok, `"İmmu Life 8 ürünü"` → `8` eşleşiyor ama izinli listede.
+- **Rule:** "Ölçtük" kelimesini yalnızca gerçekten çalıştırdığın komuttan sonra yaz. Bir kod yolunun tehlikeli olduğunu iddia etmeden önce o yolu BOZ ve kırıldığını gör; kırılmıyorsa iddian değil, koruma haritan eksiktir.
+
 ## 2026-08-02 — Türkçe metinde `\b` kelime sınırı sessizce yanlış eşleşiyor
 - **Problem:** Yasaklı ifade taraması "yönleri" kelimesinin içinde "önler" yakaladı; kapı doğru yazılmış makaleyi reddetti ve sebebi log'da "önler" olarak göründüğü için hata regex'te değil içerikte sanıldı.
 - **Kök neden:** JS'in `\b` sınırı ASCII tabanlıdır. "ö" kelime karakteri SAYILMAZ, dolayısıyla "y**ö**nleri" içindeki "önler" dizisinin solunda `\b` sağlanır. Sınır çalışmıyor değil — Türkçe harfleri kelime dışı gördüğü için kelime ORTASINDA sınır uyduruyor.
