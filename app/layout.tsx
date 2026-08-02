@@ -93,6 +93,9 @@ export default function RootLayout({
               <Link href="/blog" className="hover:text-emerald-700">
                 Rehberler
               </Link>
+              <Link href="/urunler" className="hover:text-emerald-700">
+                Tüm Ürünler
+              </Link>
               <Link href="/hakkinda" className="hover:text-emerald-700">
                 Hakkında
               </Link>

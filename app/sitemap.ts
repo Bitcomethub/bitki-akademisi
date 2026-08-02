@@ -31,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       images: [coverUrl(SITE_COVER_SLUG)],
     },
     { url: `${base}/blog`, lastModified: newestPost, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/urunler`, lastModified: newestPost, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/hakkinda`, lastModified: newestPost, changeFrequency: "monthly", priority: 0.5 },
     ...posts.map((post) => ({
       url: `${base}/blog/${post.slug}`,
