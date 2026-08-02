@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/posts";
+import { CoverBand } from "@/components/cover-band";
 
 export const metadata: Metadata = {
   title: "Tüm Rehberler",
@@ -17,14 +18,23 @@ export default function BlogIndex() {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="block rounded-xl border border-stone-200 bg-white p-6 hover:shadow-md transition-shadow"
+            className="block overflow-hidden rounded-xl border border-stone-200 bg-white hover:shadow-md transition-shadow"
           >
-            <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mb-3">
-              {post.category}
-            </span>
-            <h2 className="font-bold text-lg text-stone-900 mb-2">{post.title}</h2>
-            <p className="text-sm text-stone-600">{post.excerpt}</p>
-            <p className="text-xs text-stone-400 mt-3">{post.date}</p>
+            <CoverBand
+              slug={post.slug}
+              category={post.category}
+              plant={post.plant}
+            />
+            <div className="p-6">
+              <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mb-3">
+                {post.category}
+              </span>
+              <h2 className="font-bold text-lg text-stone-900 mb-2">
+                {post.title}
+              </h2>
+              <p className="text-sm text-stone-600">{post.excerpt}</p>
+              <p className="text-xs text-stone-400 mt-3">{post.date}</p>
+            </div>
           </Link>
         ))}
       </div>

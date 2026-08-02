@@ -50,14 +50,21 @@
       "soğuk sıkım bitkisel yağlar",
       "kolloidal gümüş ve altın ürünleri"
     ],
-    "amazonSearchBase": "https://www.amazon.com.tr/s?k=immu-nat+"
+    "amazonSearchBase": "https://www.amazon.com.tr/s?k=immu-nat+",
+    "amazonProductBase": "https://www.amazon.com.tr/dp/"
   },
 
   "_productsReadme": [
     "İmmu-Nat'ın GERÇEK ürün hattı (15.01.2026 fiyat listesinden birebir).",
     "Kalite kapısı, makalede geçen 'İmmu-Nat <ürün>' ifadelerini bu listeye karşı",
     "doğrular — listede olmayan bir ürün adı uydurulamaz.",
-    "'plant' alanı makalenin konusu olan bitkidir; 'name' Immu-Nat ürün adıdır."
+    "'plant' alanı makalenin konusu olan bitkidir; 'name' Immu-Nat ürün adıdır.",
+    "",
+    "'asin' OPSİYONEL ve UYDURULAMAZ. Varsa link doğrudan ürün sayfasına gider",
+    "(amazon.com.tr/dp/<ASIN>) — arama sonucundan çok daha güvenilir görünür.",
+    "Yoksa arama linkine düşülür. YANLIŞ bir ASIN okuyucuyu BAŞKA SATICININ",
+    "ürününe götürür; bu yüzden ASIN yalnızca Seller Central'dan doğrulanarak",
+    "eklenir. Emin değilsen alanı hiç yazma."
   ],
   "products": [
     { "plant": "Alıç", "name": "Alıç Ekstraktı", "amazonQuery": "alic+ekstrakti" },
@@ -108,7 +115,15 @@
 
   "_natExtReadme": [
     "NAT-EXT® serisi — 11 sıvı ekstrakt formülü (fiyat listesi sayfa 2).",
-    "'contents' alanı formülün İÇİNDEKİLER sütunundan birebir alınmıştır."
+    "'contents' alanı formülün İÇİNDEKİLER sütunundan birebir alınmıştır.",
+    "",
+    "NE/11 DÜZELTMESİ: fiyat listesinde 'Panax Ginseng' yazmıyordu; Amazon'da",
+    "yayında olan ürün listesinde var. Çelişkide AMAZON LİSTESİ ESAS ALINIR —",
+    "müşterinin gördüğü etiket odur, fiyat listesi PDF'i eskiyebilir.",
+    "",
+    "BU LİSTE MAKALEDE BİLEŞEN UYDURMAYI ENGELLER: bir karışım ürününden",
+    "bahsedilirken SADECE buradaki bileşenler yazılabilir. Kapı, karışım",
+    "ürünü geçen metinlerde listede olmayan bileşen adı görürse reddeder."
   ],
   "natExt": [
     { "code": "NE/01", "contents": ["Zerdeçal"] },
@@ -121,7 +136,7 @@
     { "code": "NE/08", "contents": ["Isırgan", "Kırkkilit Otu", "Yakı Otu"] },
     { "code": "NE/09", "contents": ["Deve Dikeni", "Enginar Yaprağı", "Hindiba"] },
     { "code": "NE/10", "contents": ["Hayıt Tohumu", "Civan Perçemi", "Biberiye"] },
-    { "code": "NE/11", "contents": ["Çoban Çökerten", "Karabaş Otu", "Damar Otu", "Zencefil"] }
+    { "code": "NE/11", "contents": ["Panax Ginseng", "Çoban Çökerten", "Karabaş Otu", "Damar Otu", "Zencefil"] }
   ],
 
   "_guardrailsReadme": [
@@ -134,7 +149,12 @@
     "bannedHealthClaims: Türk mevzuatı takviye edici gıda ve bitkisel üründe hastalık",
     "  tedavi/önleme beyanını yasaklar (Türk Gıda Kodeksi Beslenme ve Sağlık Beyanları",
     "  Yönetmeliği). Bu kalıplar hem hukuki risk hem de AI motorlarında YMYL güven",
-    "  kaybıdır — üretimde otomatik ret sebebidir."
+    "  kaybıdır — üretimde otomatik ret sebebidir.",
+    "",
+    "  DİKKAT: kalıplar ALT DİZGİ olarak aranır, olumsuz biçimleri de yakalar.",
+    "  Bu yüzden 'garanti' tek başına listeye KONULAMAZ: 'aynı miktarı garanti",
+    "  ETMEZ' cümlesi yazının en dürüst cümlesidir ve kapıyı geçmelidir.",
+    "  Yalnızca olumlu çekimler (garanti eder/edilir/garantidir) yasaktır."
   ],
   "allowedBrandNumbers": ["2008", "250", "50", "0850", "840", "62", "92", "8", "11"],
   "bannedHealthClaims": [
@@ -161,6 +181,18 @@
     "bilimsel olarak kanıtlanmıştır",
     "klinik olarak kanıtlanmış",
     "tüm hastalıklara",
-    "her derde deva"
+    "her derde deva",
+    "garanti eder",
+    "garanti edilir",
+    "garanti ediyor",
+    "garantidir",
+    "garanti altına al",
+    "kesin iyileştirir",
+    "kesinlikle iyileştirir",
+    "hastalıktan korur",
+    "virüsü öldürür",
+    "bakteriyi öldürür",
+    "tümörü küçültür",
+    "bağışıklığı garanti"
   ]
 }

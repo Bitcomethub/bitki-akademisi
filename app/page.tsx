@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
+import { CoverBand } from "@/components/cover-band";
 
 export default function Home() {
   const posts = getAllPosts();
@@ -43,13 +44,22 @@ export default function Home() {
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="block rounded-xl border border-stone-200 bg-white p-6 hover:shadow-md transition-shadow"
+              className="block overflow-hidden rounded-xl border border-stone-200 bg-white hover:shadow-md transition-shadow"
             >
-              <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mb-3">
-                {post.category}
-              </span>
-              <h3 className="font-bold text-stone-900 mb-2">{post.title}</h3>
-              <p className="text-sm text-stone-600 line-clamp-3">{post.excerpt}</p>
+              <CoverBand
+                slug={post.slug}
+                category={post.category}
+                plant={post.plant}
+              />
+              <div className="p-6">
+                <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mb-3">
+                  {post.category}
+                </span>
+                <h3 className="font-bold text-stone-900 mb-2">{post.title}</h3>
+                <p className="text-sm text-stone-600 line-clamp-3">
+                  {post.excerpt}
+                </p>
+              </div>
             </Link>
           ))}
         </div>

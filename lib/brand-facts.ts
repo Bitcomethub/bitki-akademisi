@@ -15,6 +15,8 @@ export type BrandProduct = {
   plant: string;
   name: string;
   amazonQuery: string;
+  /** Gerçek Amazon.com.tr ürün kodu. Bilinmiyorsa ALAN HİÇ YAZILMAZ. */
+  asin?: string;
 };
 
 export const site = facts.site;
@@ -23,9 +25,31 @@ export const products: BrandProduct[] = facts.products;
 export const natExt = facts.natExt;
 export const bannedHealthClaims = facts.bannedHealthClaims;
 
-/** İlgili İmmu-Nat ürününün Amazon.com.tr arama sayfası. */
-export function amazonUrlFor(amazonQuery: string): string {
-  return `${brand.amazonSearchBase}${amazonQuery}`;
+/**
+ * İlgili İmmu-Nat ürününün Amazon.com.tr adresi.
+ *
+ * NEDEN ASIN TERCİH EDİLİYOR?
+ * Arama sonucu sayfası (`/s?k=...`) kullanıcıya "yönlendirildim" hissi verir:
+ * aradığı ürün listenin ortasında, yanında rakipler, bazen hiç çıkmıyor.
+ * Doğrudan ürün sayfası (`/dp/<ASIN>`) tıklayanın tam olarak beklediği yere
+ * götürür — güven farkı ölçülebilir ve bu sitenin tek sermayesi güven.
+ *
+ * NEDEN YİNE DE ARAMA YEDEĞİ VAR?
+ * ASIN'i bilinmeyen ürün için ASIN UYDURULAMAZ: yanlış bir ASIN, okuyucuyu
+ * BAŞKA BİR SATICININ ÜRÜNÜNE götürür. Bilinmeyen ASIN'de arama linkine
+ * düşmek, yanlış ürüne göndermekten kıyaslanamayacak kadar iyidir. Bu,
+ * projedeki diğer uydurma-karşıtı kararlarla aynı ilke: eksik bilgi tamam,
+ * uydurulmuş bilgi asla.
+ */
+export function amazonUrlFor(product: BrandProduct): string {
+  return product.asin
+    ? `${brand.amazonProductBase}${product.asin}`
+    : `${brand.amazonSearchBase}${product.amazonQuery}`;
+}
+
+/** Link doğrudan ürün sayfasına mı gidiyor? (CTA metnini bu belirler.) */
+export function isDirectProductLink(product: BrandProduct): boolean {
+  return Boolean(product.asin);
 }
 
 /** Bir bitki adına karşılık gelen ilk İmmu-Nat ürünü (yoksa undefined). */
