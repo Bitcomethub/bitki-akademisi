@@ -9,6 +9,8 @@ import {
   readingMinutes,
 } from "@/lib/posts";
 import { postGraph, postUrl } from "@/lib/post-schema";
+import { COVER_SIZE, coverPath } from "@/lib/cover";
+import { CoverBand } from "@/components/cover-band";
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -23,6 +25,15 @@ export async function generateMetadata({
   const post = getPostBySlug(slug);
   if (!post) return {};
   const url = postUrl(post.slug);
+  // Tek görsel, üç yerde: og:image, twitter:image ve JSON-LD image.
+  // metadataBase layout'ta tanımlı olduğu için göreli yol mutlak URL'e
+  // çevriliyor — adresi ikinci kez elle yazmıyoruz, ayrışma riski yok.
+  const cover = {
+    url: coverPath(post.slug),
+    width: COVER_SIZE.width,
+    height: COVER_SIZE.height,
+    alt: post.question,
+  };
   return {
     title: post.title,
     description: post.excerpt,
@@ -37,11 +48,13 @@ export async function generateMetadata({
       modifiedTime: post.updated ?? post.date,
       section: post.category,
       tags: post.keywords,
+      images: [cover],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
+      images: [cover],
     },
     alternates: { canonical: url },
   };
@@ -95,7 +108,18 @@ export default async function BlogPost({
         </ol>
       </nav>
 
-      <header>
+      {/* Şerit başlığın ÜSTÜNDE ama kısa cevap kutusunu ilk ekrandan
+          düşürmeyecek yükseklikte (mobilde 160px). Kapak PNG'sini buraya
+          gömseydik hem soru iki kez görünürdü hem de sayfanın en önemli
+          bloğu — motorun alıntıladığı cevap — katlamanın altına inerdi. */}
+      <CoverBand
+        slug={post.slug}
+        category={post.category}
+        plant={post.plant}
+        size="hero"
+      />
+
+      <header className="mt-6">
         <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
           {post.category}
         </span>
@@ -246,13 +270,20 @@ export default async function BlogPost({
               <Link
                 key={item.slug}
                 href={`/blog/${item.slug}`}
-                className="block rounded-xl border border-stone-200 bg-white p-5 hover:shadow-md transition-shadow"
+                className="block overflow-hidden rounded-xl border border-stone-200 bg-white hover:shadow-md transition-shadow"
               >
-                <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-700 mb-2">
-                  {item.category}
-                </span>
-                <span className="block font-semibold text-stone-900 text-sm leading-snug">
-                  {item.title}
+                <CoverBand
+                  slug={item.slug}
+                  category={item.category}
+                  plant={item.plant}
+                />
+                <span className="block p-5">
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-700 mb-2">
+                    {item.category}
+                  </span>
+                  <span className="block font-semibold text-stone-900 text-sm leading-snug">
+                    {item.title}
+                  </span>
                 </span>
               </Link>
             ))}
