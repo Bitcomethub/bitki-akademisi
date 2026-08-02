@@ -30,8 +30,15 @@ function buildLlmsTxt(): string {
     .map((f) => `- ${f.code}: ${f.contents.join(", ")}`)
     .join("\n");
 
+  // Not alanına excerpt değil keyTakeaway yazıyoruz: excerpt bir pazarlama
+  // özeti, keyTakeaway ise sorunun DOĞRUDAN CEVABI. Böylece llms.txt bir link
+  // listesi değil, tek dosyada okunabilen bir cevap indeksi oluyor — motor
+  // sayfayı hiç çekmeden bile hangi soruya kaynak olduğumuzu görebiliyor.
   const postLines = posts
-    .map((p) => `- [${p.title}](${site.url}/blog/${p.slug}): ${p.excerpt}`)
+    .map(
+      (p) =>
+        `- [${p.title}](${site.url}/blog/${p.slug}): ${p.question} — ${p.keyTakeaway}`
+    )
     .join("\n");
 
   const categories = [...new Set(posts.map((p) => p.category))].join(", ");

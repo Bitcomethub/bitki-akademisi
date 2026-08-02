@@ -1,0 +1,261 @@
+{
+  "_readme": [
+    "ELLE YAZILAN makaleler. Günlük pipeline buraya DOKUNMAZ — üretilen içerik",
+    "content/generated-posts.json'a yazılır. İkisi lib/posts.ts'te birleştirilir.",
+    "",
+    "Neden ikisi de JSON? Pipeline'ın slug tekilliğini kontrol etmek için elle",
+    "yazılmış makaleleri de okuması gerekiyor. Miamili'de bunlar .ts içindeydi ve",
+    "slug'lar regex ile kazınıyordu; JSON okumak hem basit hem kırılmaz.",
+    "",
+    "Yapı, kalite kapısının doğruladığı şemayla birebir aynıdır: intro (answer-first),",
+    "keyTakeaway, sections (soru başlıklı, kendi başına alıntılanabilir), faqs (>=4)."
+  ],
+  "posts": [
+    {
+      "slug": "corek-otu-faydalari-nelerdir",
+      "title": "Çörek Otu Faydaları Nelerdir? Bilimsel Bakış ve Kullanım Rehberi",
+      "question": "Çörek otunun faydaları nelerdir?",
+      "plant": "Çörek Otu",
+      "category": "Bağışıklık",
+      "date": "2026-08-02",
+      "keyTakeaway": "Çörek otu, timokinon adlı bileşeni sayesinde antioksidan ve bağışıklık destekleyici etkileriyle araştırılan bir tohumdur. Geleneksel kullanımda sindirim rahatlığı ve cilt bakımı için de tercih edilir. Kan sulandırıcı kullananların ve gebelerin hekime danışması gerekir.",
+      "excerpt": "Çörek otu (Nigella sativa), timokinon içeriğiyle antioksidan ve bağışıklık destekleyici etkileri en çok araştırılan tohumlardan biridir. Faydalarını, doğru kullanım şeklini, günlük miktarını ve kimlerin dikkatli olması gerektiğini bu rehberde topladık.",
+      "keywords": [
+        "çörek otu faydaları",
+        "çörek otu ne işe yarar",
+        "nigella sativa",
+        "timokinon",
+        "çörek otu nasıl kullanılır"
+      ],
+      "intro": [
+        "Çörek otu, içerdiği timokinon bileşiği sayesinde antioksidan ve bağışıklık destekleyici etkileriyle öne çıkan bir tohumdur; geleneksel kullanımda ayrıca sindirim rahatlığı ve cilt bakımı için tercih edilir. Bitkinin bilimsel adı Nigella sativa'dır ve Orta Doğu ile Akdeniz kuşağında binlerce yıldır hem mutfakta hem geleneksel tıpta kullanılır.",
+        "Aşağıda çörek otunun en çok sorulan yönlerini sırayla ele alıyoruz: hangi bileşenin ne işe yaradığı, günlük ne kadar tüketildiği, tohum ile ekstrakt arasındaki fark ve kimlerin dikkatli olması gerektiği."
+      ],
+      "sections": [
+        {
+          "heading": "Çörek otunu etkili kılan bileşen nedir?",
+          "body": [
+            "Çörek otunun üzerinde en çok durulan bileşeni timokinondur. Timokinon, tohumun uçucu yağ fraksiyonunda bulunan ve antioksidan özellikleri laboratuvar çalışmalarında yaygın biçimde incelenen bir maddedir. Antioksidanlar, hücrelerde oksidatif stres olarak adlandırılan yıpranmaya karşı vücudun doğal savunmasını destekleyen bileşiklerdir.",
+            "Tohum ayrıca linoleik ve oleik asit gibi doymamış yağ asitleri, az miktarda protein ve lif içerir. Bu yüzden çörek otu tek bir etken maddeye indirgenemez; etkisi bileşenlerin bütününden gelir. Piyasadaki standardize ekstraktlarda timokinon oranının belirtilmesinin sebebi de budur: aynı bitkiden elde edilen iki ürün, üretim yöntemine göre farklı yoğunlukta olabilir."
+          ]
+        },
+        {
+          "heading": "Çörek otu bağışıklık sistemine nasıl katkı sağlar?",
+          "body": [
+            "Çörek otunun bağışıklıkla ilişkisi, timokinonun bağışıklık hücrelerinin işleyişi üzerindeki etkilerini inceleyen çalışmalara dayanır. Bu araştırmaların önemli bölümü hücre kültürü ve hayvan modeli düzeyindedir; insanlarda yapılan çalışmalar daha sınırlı sayıdadır ve sonuçlar kullanılan doza, ürün formuna ve sürenin uzunluğuna göre değişir.",
+            "Pratikte bu şu anlama gelir: çörek otu bağışıklığı destekleyici bir takviye olarak konumlanır, hastalıktan koruyan bir kalkan olarak değil. Mevsim geçişlerinde düzenli kullanım tercih edenler, çoğunlukla birkaç haftalık kürler halinde tüketir. Uyku düzeni, beslenme ve hareket gibi temel faktörlerin yerini alması beklenen bir ürün değildir."
+          ]
+        },
+        {
+          "heading": "Çörek otu nasıl ve ne kadar kullanılır?",
+          "body": [
+            "Çörek otu üç yaygın formda tüketilir ve doğru miktar forma göre değişir. Ham tohum, günde yaklaşık bir tatlı kaşığı kadar, bal veya yoğurtla karıştırılarak alınır; çiğnenerek tüketildiğinde aroması yoğun olduğu için çoğu kişi karıştırmayı tercih eder.",
+            "Soğuk sıkım çörek otu yağı genellikle günde bir tatlı kaşığı, aç karnına kullanılır. Sıvı ekstrakt ve kapsül formlarında ise ürünün kendi etiketindeki günlük kullanım miktarı esastır — ekstraktlar konsantre olduğu için tohum miktarıyla kıyaslanamaz."
+          ],
+          "list": [
+            "Ham tohum: günde yaklaşık 1 tatlı kaşığı, bal veya yoğurtla",
+            "Soğuk sıkım yağ: günde 1 tatlı kaşığı, tercihen aç karnına",
+            "Sıvı ekstrakt veya kapsül: yalnızca ürün etiketindeki miktar",
+            "Kür mantığı: sürekli kullanım yerine birkaç haftalık dönemler yaygındır"
+          ]
+        },
+        {
+          "heading": "Çörek otu tohumu ile ekstraktı arasındaki fark nedir?",
+          "body": [
+            "Aradaki temel fark yoğunluk ve standartlıktır. Ham tohum, bitkinin tamamını içerir; besleyici yağ asitleri ve lif de tabaktadır, ancak timokinon oranı tohumun yetiştiği koşullara göre partiden partiye değişir. Bu, mutfak kullanımı için sorun değildir fakat düzenli ve öngörülebilir bir destek arayan kişi için belirsizlik yaratır.",
+            "Sıvı ekstrakt ve kapsül gibi formlar, bitkinin aktif fraksiyonunu çözücüyle ayırıp yoğunlaştırır. Avantajı tutarlılıktır: her kullanımda benzer miktarda aktif bileşen alınır. Dezavantajı, konsantre olduğu için etiket miktarının aşılmaması gerekmesidir. İmmu-Nat'ın 250 ml sıvı ekstrakt ve 50 ml damla formları bu ikinci gruba girer."
+          ]
+        },
+        {
+          "heading": "Çörek otunu kimler kullanmamalı veya dikkatli kullanmalı?",
+          "body": [
+            "Kan sulandırıcı ilaç kullananların çörek otunu hekimine danışmadan tüketmemesi önerilir, çünkü bitkisel ürünlerin pıhtılaşma üzerindeki olası etkileri ilaç etkisiyle birleşebilir. Aynı uyarı, planlı bir ameliyat öncesi dönem için de geçerlidir; cerrahi girişimden birkaç hafta önce bitkisel takviyelerin bırakılması sık verilen bir tavsiyedir.",
+            "Gebelik ve emzirme döneminde çörek otu takviyesi önerilmez; bu dönemlerde güvenlik verisi yeterli değildir. Şeker veya tansiyon ilacı kullananların da takip eden hekimini bilgilendirmesi gerekir. Mutfakta baharat olarak kullanılan miktarlar ile takviye dozları farklı şeylerdir; bu ayrım çoğu zaman gözden kaçar."
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Çörek otu her gün kullanılabilir mi?",
+          "a": "Mutfakta baharat olarak kullanılan miktarlar günlük tüketime uygundur. Takviye formlarında ise sürekli kullanım yerine birkaç haftalık kürler yaygındır ve ürünün kendi etiketindeki günlük miktar esas alınmalıdır. Düzenli ilaç kullanıyorsanız günlük kullanıma başlamadan önce hekiminize danışın."
+        },
+        {
+          "q": "Çörek otu yağı mı tohumu mu daha iyi?",
+          "a": "İkisi farklı amaçlara hizmet eder. Tohum, yağ asitleri ve lif dahil bitkinin tamamını içerir ve mutfak kullanımına uygundur. Yağ ve ekstrakt formları daha yoğundur ve her kullanımda benzer miktarda aktif bileşen sağladığı için düzenli destek arayanlar tarafından tercih edilir. Biri diğerinden mutlak olarak üstün değildir."
+        },
+        {
+          "q": "Çörek otunun yan etkileri var mı?",
+          "a": "Normal miktarlarda çoğu sağlıklı yetişkin tarafından iyi tolere edilir. Yüksek miktarlarda mide rahatsızlığı ve bulantı bildirilmiştir. Kan sulandırıcı, şeker veya tansiyon ilacı kullananlarda etkileşim ihtimali bulunduğu için hekim onayı gerekir. Cilde uygulanan yağ formlarında ilk kullanımda küçük bir alanda deneme yapılması önerilir."
+        },
+        {
+          "q": "Çörek otu hamilelikte kullanılır mı?",
+          "a": "Gebelik ve emzirme döneminde çörek otu takviyesi önerilmez, çünkü bu dönemler için güvenlik verisi yeterli değildir. Yemeklerde baharat olarak kullanılan küçük miktarlar ile takviye dozları aynı şey değildir. Bu dönemde herhangi bir bitkisel ürüne başlamadan önce takibinizi yapan hekime danışın."
+        },
+        {
+          "q": "Çörek otunun etkisi ne kadar sürede görülür?",
+          "a": "Bitkisel takviyelerde tek bir kullanımın ardından fark edilir bir değişim beklenmez; destekleyici etkiler düzenli kullanımla haftalar içinde değerlendirilir. Süre kişiden kişiye, kullanılan forma ve günlük miktara göre değişir. Belirli bir şikâyet için kullanıyorsanız, süreci hekiminizle birlikte takip etmek en doğrusudur."
+        }
+      ]
+    },
+    {
+      "slug": "ekinezya-nedir-ne-ise-yarar",
+      "title": "Ekinezya Nedir, Ne İşe Yarar? Soğuk Algınlığında Neden Tercih Edilir",
+      "question": "Ekinezya nedir ve ne işe yarar?",
+      "plant": "Ekinezya",
+      "category": "Bağışıklık",
+      "date": "2026-08-01",
+      "keyTakeaway": "Ekinezya, Kuzey Amerika kökenli bir papatyagiller bitkisidir ve bağışıklık sistemini destekleyici etkisi nedeniyle özellikle soğuk algınlığı mevsiminde kullanılır. Kısa süreli kürler halinde tüketilir; otoimmün hastalığı olanların hekime danışması gerekir.",
+      "excerpt": "Ekinezya (Echinacea), kış aylarında bağışıklık desteği için en çok tercih edilen bitkilerden biridir. Hangi türünün kullanıldığını, soğuk algınlığındaki rolünü, doğru kullanım süresini ve kimlerin uzak durması gerektiğini açıklıyoruz.",
+      "keywords": [
+        "ekinezya nedir",
+        "ekinezya ne işe yarar",
+        "ekinezya faydaları",
+        "echinacea",
+        "ekinezya nasıl kullanılır"
+      ],
+      "intro": [
+        "Ekinezya, bağışıklık sistemini destekleyici etkisi nedeniyle özellikle soğuk algınlığı mevsiminde kullanılan, Kuzey Amerika kökenli bir papatyagiller bitkisidir. Halk arasında mor koni çiçeği olarak da bilinir ve takviye ürünlerinde çoğunlukla kökü ile toprak üstü kısımları birlikte değerlendirilir.",
+        "Bu rehberde ekinezyanın hangi türünün kullanıldığını, üst solunum yolu şikâyetlerindeki rolünü, ne kadar süreyle kullanıldığını ve kimlerin dikkatli olması gerektiğini sırayla ele alıyoruz."
+      ],
+      "sections": [
+        {
+          "heading": "Ekinezyanın hangi türü takviye olarak kullanılır?",
+          "body": [
+            "Ekinezya cinsinin dokuz kadar türü vardır ancak takviye ürünlerinde üç tanesi öne çıkar: Echinacea purpurea, Echinacea angustifolia ve Echinacea pallida. Bunlar arasında en yaygın kullanılanı Echinacea purpurea'dır ve araştırmaların büyük bölümü de bu tür üzerinde yapılmıştır.",
+            "Türler arasındaki fark yalnızca isimden ibaret değildir; bitkinin hangi kısmının kullanıldığı da içeriği değiştirir. Kökten elde edilen preparatlar ile çiçekli toprak üstü kısımlardan elde edilenler farklı bileşen profiline sahiptir. Bu yüzden bir ekinezya ürününü değerlendirirken etiketteki tür adına ve kullanılan bitki kısmına bakmak, yalnızca \"ekinezya içerir\" ifadesine bakmaktan daha bilgilendiricidir."
+          ]
+        },
+        {
+          "heading": "Ekinezya soğuk algınlığında ne işe yarar?",
+          "body": [
+            "Ekinezyanın en çok araştırılan kullanım alanı üst solunum yolu şikâyetleridir. Bu alandaki çalışmalar, ekinezya preparatlarının belirtilerin süresi ve şiddeti üzerinde ölçülebilir bir etkisi olup olmadığını inceler. Sonuçlar tutarlı bir tablo çizmez: kullanılan tür, bitkinin hangi kısmından elde edildiği, hazırlama yöntemi ve başlama zamanı çalışmadan çalışmaya değiştiği için karşılaştırma yapmak güçtür.",
+            "Genel olarak kabul gören yaklaşım, ekinezyanın belirtiler başladıktan hemen sonra kısa süreli kullanıldığında destekleyici olabileceğidir. Soğuk algınlığını önleyen ya da geçiren bir ürün değildir; sıvı alımı, dinlenme ve gerekli durumlarda hekime başvurma yerine geçmez."
+          ]
+        },
+        {
+          "heading": "Ekinezya nasıl ve ne kadar süre kullanılır?",
+          "body": [
+            "Ekinezya kısa süreli kullanım için tasarlanmış bir bitkidir. Yaygın yaklaşım, belirtilerin başladığı dönemde bir ila iki hafta süreyle kullanmak ve ardından ara vermektir. Aylarca kesintisiz kullanım genellikle önerilmez; uzun süreli kullanımın destekleyici etkiyi artırdığına dair güçlü bir gerekçe yoktur.",
+            "Ürün formları arasında sıvı ekstrakt, damla, kapsül ve çay bulunur. Sıvı ekstraktlar ve damlalar konsantre olduğu için günlük miktar mutlaka etiketten takip edilmelidir. Çay formu en seyreltik olanıdır ve gün içinde birkaç fincan tüketilebilir. İmmu-Nat'ın ekinezya ekstraktı 250 ml sıvı ve 50 ml damla formlarında sunulur."
+          ]
+        },
+        {
+          "heading": "Ekinezyayı kimler kullanmamalı?",
+          "body": [
+            "Otoimmün hastalığı olanların ekinezyayı hekime danışmadan kullanmaması önerilir. Gerekçe basittir: ekinezya bağışıklık sistemini destekleyici yönde konumlanır ve bağışıklık sisteminin aşırı çalıştığı durumlarda bu istenmeyen bir yön olabilir. Aynı gerekçeyle bağışıklık baskılayıcı ilaç kullananların da hekimine sorması gerekir.",
+            "Papatyagiller ailesine (papatya, kadife çiçeği, pelin) karşı alerjisi olanlar dikkatli olmalıdır, çünkü ekinezya aynı botanik aileye aittir ve çapraz alerjik tepki bildirilmiştir. Gebelik ve emzirme döneminde kullanım için yeterli güvenlik verisi bulunmadığından, bu dönemlerde hekim onayı olmadan başlanmamalıdır."
+          ]
+        },
+        {
+          "heading": "Ekinezya çayı mı ekstraktı mı tercih edilmeli?",
+          "body": [
+            "Seçim, kullanım amacına ve tutarlılık beklentisine göre değişir. Ekinezya çayı en seyreltik formdur; sıcak içecek olarak tüketmenin verdiği rahatlama hissiyle birlikte gelir ve gün içine yayılabilir. Buna karşılık her demlemede aynı miktarda aktif bileşen aldığınızı garanti etmez, çünkü demleme süresi ve bitki miktarı değişkendir.",
+            "Sıvı ekstrakt ve damla formları bitkinin aktif fraksiyonunu yoğunlaştırır ve her kullanımda benzer bir miktar sağlar. Bu tutarlılık, kısa kürler halinde düzenli kullanım planlayanlar için avantajdır. Karşılığında etiket miktarına sadık kalmak gerekir — konsantre bir üründe \"biraz daha fazla\" mantığı geçerli değildir."
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Ekinezya ne kadar süre kullanılmalı?",
+          "a": "Ekinezya kısa süreli kullanım için uygundur; yaygın yaklaşım bir ila iki haftalık kürler halinde kullanıp ara vermektir. Aylarca kesintisiz kullanım genellikle önerilmez. Kullanım süresi ürün formuna göre de değişir, bu yüzden etiketteki öneriyi esas alın ve düzenli ilaç kullanıyorsanız hekiminize danışın."
+        },
+        {
+          "q": "Ekinezya çocuklarda kullanılabilir mi?",
+          "a": "Çocuklarda kullanım yaşa ve ürün formuna göre değişir; bazı ürünler belirli yaş grupları için uygun değildir. Alkol bazlı sıvı ekstraktlar çocuklar için genellikle tercih edilmez. Çocuğunuza ekinezya vermeden önce mutlaka çocuk hekimine danışın ve ürünün etiketindeki yaş sınırını kontrol edin."
+        },
+        {
+          "q": "Ekinezyanın yan etkileri nelerdir?",
+          "a": "Çoğu sağlıklı yetişkinde kısa süreli kullanımda iyi tolere edilir. Bildirilen yan etkiler arasında mide rahatsızlığı, bulantı ve ağızda geçici karıncalanma hissi bulunur. Papatyagiller ailesine alerjisi olanlarda alerjik tepki görülebilir. Otoimmün hastalığı olanlar ve bağışıklık baskılayıcı ilaç kullananlar hekime danışmadan kullanmamalıdır."
+        },
+        {
+          "q": "Ekinezya soğuk algınlığını önler mi?",
+          "a": "Ekinezya soğuk algınlığını önleyen veya geçiren bir ürün değildir; bağışıklığı destekleyici bir takviye olarak konumlanır. Bu alandaki araştırmalar tutarlı bir tablo çizmez ve sonuçlar kullanılan türe, bitki kısmına ve başlama zamanına göre değişir. Dinlenme, sıvı alımı ve gerektiğinde hekime başvurmanın yerine geçmez."
+        },
+        {
+          "q": "Ekinezya ile C vitamini birlikte alınabilir mi?",
+          "a": "Bu ikisi takviye ürünlerinde sıklıkla birlikte sunulur ve sağlıklı yetişkinlerde birlikte kullanımlarına dair bilinen bir engel yoktur. Yine de her iki ürünün de kendi günlük miktarını aşmamak gerekir. Birden fazla takviye kullanıyorsanız, içeriklerin çakışıp çakışmadığını kontrol etmek ve hekiminizi bilgilendirmek en doğrusudur."
+        }
+      ]
+    },
+    {
+      "slug": "zerdecal-curcumin-farki-nedir",
+      "title": "Zerdeçal ve Curcumin Farkı Nedir? Hangisini Seçmelisiniz?",
+      "question": "Zerdeçal ile curcumin arasındaki fark nedir?",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "date": "2026-07-30",
+      "keyTakeaway": "Zerdeçal bir bitki köküdür; curcumin ise o kökün içindeki aktif bileşenin adıdır. Kuru zerdeçal tozunun yalnızca yüzde birkaçı curcumindir ve curcumin tek başına zor emilir; bu yüzden standardize ekstraktlar ve piperinli formülasyonlar tercih edilir.",
+      "excerpt": "Zerdeçal ile curcumin sıkça birbirinin yerine kullanılıyor ama aynı şey değiller: biri bitkinin kendisi, diğeri içindeki aktif madde. Aradaki farkı, biyoyararlanım sorununu ve hangi durumda hangisinin tercih edildiğini anlatıyoruz.",
+      "keywords": [
+        "zerdeçal curcumin farkı",
+        "curcumin nedir",
+        "zerdeçal faydaları",
+        "biyoyararlanım",
+        "zerdeçal ekstraktı"
+      ],
+      "intro": [
+        "Zerdeçal bir bitki köküdür, curcumin ise o kökün içindeki aktif bileşenin adıdır — yani ikisi aynı şey değil, biri diğerinin içindedir. Kuru zerdeçal tozunun ağırlıkça yalnızca küçük bir yüzdesi curcuminoid denen bu bileşik grubundan oluşur; geri kalanı nişasta, lif, uçucu yağlar ve mineralleridir.",
+        "Bu ayrım pratikte önemlidir çünkü mutfakta kullandığınız zerdeçal ile takviye olarak alınan standardize curcumin ekstraktı, aynı bitkiden gelmelerine rağmen çok farklı yoğunluktadır. Aşağıda farkın nereden geldiğini, emilim sorununu ve hangi durumda hangisinin tercih edildiğini açıklıyoruz."
+      ],
+      "sections": [
+        {
+          "heading": "Zerdeçal ile curcumin arasındaki fark tam olarak nedir?",
+          "body": [
+            "Zerdeçal, Curcuma longa bitkisinin kurutulup öğütülmüş köküdür ve baharat olarak bildiğimiz sarı toz budur. Curcumin ise bu kökün içinde bulunan curcuminoid adlı bileşik ailesinin en bilinen üyesidir ve zerdeçalın karakteristik sarı rengini veren maddedir.",
+            "Aradaki oran farkı çarpıcıdır: kuru zerdeçal tozunun ağırlıkça yalnızca küçük bir kısmı curcuminoiddir. Yani bir çay kaşığı zerdeçal ile bir standardize curcumin kapsülünün içerdiği aktif madde miktarı kıyaslanamaz. Bu, zerdeçalı değersiz kılmaz; mutfak kullanımında bitkinin tamamı, uçucu yağları ve diğer bileşenleriyle birlikte alınır."
+          ]
+        },
+        {
+          "heading": "Biyoyararlanım neden bu kadar önemli?",
+          "body": [
+            "Biyoyararlanım, aldığınız bir maddenin ne kadarının gerçekten kan dolaşımına geçip vücutta kullanılabildiğini ifade eder. Curcuminin en bilinen sorunu tam da budur: suda çok az çözünür, bağırsaktan zayıf emilir ve karaciğerde hızla dönüştürülüp atılır. Bu yüzden ağızdan alınan sade curcuminin önemli bir kısmı vücutta iş görmeden uzaklaştırılır.",
+            "Takviye üreticilerinin bu soruna geliştirdiği çözümler birbirine benzer mantıkta çalışır: emilimi artıran bir yardımcı bileşen eklemek ya da curcumini yağ veya taşıyıcı moleküllerle birleştirmek. Bu yüzden bir curcumin ürününü değerlendirirken yalnızca miligram miktarına değil, emilimi nasıl çözdüğüne de bakmak gerekir."
+          ]
+        },
+        {
+          "heading": "Piperin ve yağla birlikte almak neyi değiştirir?",
+          "body": [
+            "Piperin, karabiberin keskinliğini veren bileşendir ve curcuminin emilimini artırmak için en yaygın kullanılan yardımcıdır. Bu yüzden birçok curcumin ürününün içeriğinde küçük miktarda karabiber ekstraktı bulunur ve geleneksel Hint mutfağında zerdeçalın karabiberle birlikte kullanılması sık rastlanan bir uygulamadır.",
+            "İkinci yaygın yaklaşım curcumini yağla birlikte almaktır. Curcumin yağda çözünen bir bileşik olduğu için, yağ içeren bir öğünle birlikte tüketildiğinde emilimi kolaylaşır. Pratik karşılığı basittir: zerdeçalı aç karnına suyla değil, zeytinyağı veya yoğurt gibi yağ içeren bir gıdayla birlikte tüketmek daha mantıklıdır."
+          ]
+        },
+        {
+          "heading": "Hangi durumda zerdeçal, hangi durumda curcumin ekstraktı?",
+          "body": [
+            "Günlük beslenmenin bir parçası olarak, mutfakta düzenli kullanım için zerdeçal tozu yeterlidir ve en ekonomik seçenektir. Yemeklere eklenen zerdeçal, bitkinin bütününü sunar ve gıda olarak tüketildiği için miktar konusunda geniş bir güvenlik aralığına sahiptir.",
+            "Belirli bir hedefe yönelik, düzenli ve öngörülebilir bir destek arayanlar ise standardize ekstraktlara yönelir; bunlarda curcuminoid oranı bilinir ve her kullanımda benzer miktar alınır. İmmu-Nat'ın ürün hattında bu grup Curcumin P53 Zerdeçal Ekstraktı adıyla yer alır. Ekstrakt seçiminde etiketteki günlük miktara sadık kalmak gerekir."
+          ]
+        },
+        {
+          "heading": "Zerdeçal ve curcumin kullanırken nelere dikkat edilmeli?",
+          "body": [
+            "Safra kesesi taşı veya safra yolu tıkanıklığı olanların zerdeçal takviyesinden kaçınması önerilir, çünkü zerdeçal safra akışını artırıcı yönde etkili olabilir. Kan sulandırıcı ilaç kullananların da yüksek doz curcumin ekstraktına hekime danışmadan başlamaması gerekir.",
+            "Planlı bir ameliyat öncesinde bitkisel takviyelerin bırakılması sık verilen bir tavsiyedir. Gebelik ve emzirme döneminde mutfakta baharat olarak kullanılan miktarlar ile takviye dozları farklıdır; takviye için hekim onayı gerekir. Demir takviyesi kullananlar, zerdeçalın emilimi etkileyebileceğini göz önünde bulundurarak iki ürünü aynı saatte almaktan kaçınabilir."
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Zerdeçal ile curcumin aynı şey mi?",
+          "a": "Hayır. Zerdeçal, Curcuma longa bitkisinin kurutulmuş köküdür; curcumin ise bu kökün içindeki aktif bileşiktir. Kuru zerdeçal tozunun ağırlıkça yalnızca küçük bir kısmı curcuminoiddir, geri kalanı nişasta, lif ve uçucu yağlardır. Yani curcumin zerdeçalın içindedir, ona eşit değildir."
+        },
+        {
+          "q": "Curcumin neden karabiberle birlikte alınır?",
+          "a": "Curcumin bağırsaktan zayıf emilir ve karaciğerde hızla dönüştürülüp atılır. Karabiberin keskinliğini veren piperin bileşeni, curcuminin emilimini artırmak için en yaygın kullanılan yardımcıdır. Bu yüzden birçok curcumin ürününde küçük miktarda karabiber ekstraktı bulunur ve geleneksel mutfakta ikisi sıkça birlikte kullanılır."
+        },
+        {
+          "q": "Zerdeçalı mutfakta kullanmak yeterli mi?",
+          "a": "Günlük beslenmenin parçası olarak zerdeçal tozu yeterlidir ve en ekonomik seçenektir; bitkinin bütününü sunar. Ancak mutfakta alınan curcumin miktarı standardize bir ekstraktla kıyaslanamayacak kadar düşüktür. Düzenli ve öngörülebilir bir destek arıyorsanız ekstrakt formları bu tutarlılığı sağlar."
+        },
+        {
+          "q": "Curcumin ekstraktının yan etkileri var mı?",
+          "a": "Yüksek miktarlarda mide rahatsızlığı, bulantı ve ishal bildirilmiştir. Safra kesesi taşı veya safra yolu tıkanıklığı olanların kullanmaması önerilir. Kan sulandırıcı ilaç kullananlar ve planlı ameliyatı olanlar hekime danışmalıdır. Demir takviyesiyle aynı saatte alınmaması, emilim etkileşimi ihtimali nedeniyle sık verilen bir tavsiyedir."
+        },
+        {
+          "q": "Zerdeçal ekstraktı ne zaman kullanılmalı?",
+          "a": "Curcumin yağda çözünen bir bileşik olduğu için, yağ içeren bir öğünle birlikte alındığında emilimi kolaylaşır. Bu nedenle aç karnına suyla değil, öğünle birlikte tüketmek yaygın öneridir. Ürünün kendi etiketinde farklı bir kullanım zamanı belirtiliyorsa etiket esas alınmalıdır."
+        }
+      ]
+    }
+  ]
+}
