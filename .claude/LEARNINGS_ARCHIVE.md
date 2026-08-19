@@ -14,6 +14,27 @@ familiar, the ruled-out options are usually the most valuable part.
 
 ---
 
+## 2026-08-19 — CSS katmanı hiç doğrulanmıyordu; tsc de eslint de ona bakmıyor
+- **Problem:** Yerel build AMFI yüzünden kırık olduğu için doğrulama `tsc --noEmit` + `eslint`'e indirilmişti. Bu ikisi CSS'e HİÇ bakmaz. Tailwind v4 tanımadığı bir utility'yi (yanlış yazılmış `@theme` anahtarı, üretilmeyen bir sınıf) hata vermeden ATLAR — sayfa varsayılan boyutta render olur, hiçbir gate ötmez. Tip sistemi eklerken bu kör nokta doğrudan yolun üstündeydi.
+- **Eliminated:** `@tailwindcss/cli` ile derlemek → lightningcss'e bağlı, AMFI'de aynı duvara çarpıyor. · PostCSS üzerinden koşmak → `@tailwindcss/postcss` de lightningcss yüklüyor. · "Vercel build'i beklerim" → doğru ama geri bildirim döngüsü commit+push başına ~2 dk; token/zaman israfı ve yanlış varsayımla push etmeyi teşvik ediyor.
+- **Chosen:** `tailwindcss`'in saf-JS `compile()` API'si (`node_modules/tailwindcss/dist/lib.mjs`). lightningcss'e hiç dokunmuyor; yalnızca minify/optimize katmanı native. `scripts/check-css.mjs` globals.css'i gerçekten derleyip çıktıda token'ları arıyor.
+- **Evidence:** `npm run css:check` → "25 kontrolün tamamı geçti (43037 bayt CSS derlendi)". Karşı-kanıt: ilk yazımda kontrol regex'lerinin 5'i kırmızı yandı, çünkü Tailwind utility'yi `font-size: var(--text-h1)` diye üretiyor, literal `clamp()` gömmüyor — yani harness gerçekten çıktıya bakıyor, "geçti" demiyor.
+- **Rule:** Bir doğrulama katmanı eklerken "hangi dosya türü hiçbir gate'ten geçmiyor" diye sor. `tsc` TypeScript'e, `eslint` JS'e bakar; CSS/şablon/JSON hiçbirine görünmez. Sessizce atlanan bir utility, hata veren bir utility'den tehlikelidir.
+
+## 2026-08-19 — `ch` ölçüsü, font'la AYNI kuralda tanımlanmazsa sessizce yanlışlanır
+- **Problem:** Satır uzunluğunu `max-width: 68ch` ile kapatmak istedim. `ch`, kullanıldığı elemanın KENDİ `font-size`/`font-family`'sine göre çözülür — kalıtıma değil. Ölçüyü bir sarmalayıcıya, okuma fontunu başka bir yere koyarsan 68ch bambaşka bir piksel değeri olur ve kimse fark etmez, çünkü sayfa yine "makul" görünür.
+- **Eliminated:** Sabit `max-w-2xl` (672px) → font değişince ölçü sessizce yanlışlanır, `ch`'in tek avantajı buydu. · `--measure`'ı yalnız `:root`'ta tanımlayıp her yerde kullanmak → `var()` token olarak yerine konur ama değer KULLANILDIĞI elemanda hesaplanır; yanlış fontlu bir elemanda kullanılırsa yanlış çıkar, üstelik CSS geçerli olduğu için hata da vermez.
+- **Chosen:** `.reading-column` tek kuralda üçünü birden tutuyor: `font-family`, `font-size` ve `width: min(100% - 2*var(--gutter), var(--measure))`. Ayrılmaları imkânsız. `padding` yerine `min()` kalıbı: border-box ile çakışmıyor.
+- **Evidence:** Canlı deploy CSS'inde `.reading-column{font-family:var(--font-serif);font-size:var(--text-body);...width:min(100% - 2*var(--gutter),var(--measure))}` ve `:root{--measure:68ch}` birlikte doğrulandı.
+- **Rule:** Font'a bağlı bir birim (`ch`, `ex`, `em`) kullanan kural, o fontu da kendisi tanımlamalı. Birimi tanımlayan yer ile fontu tanımlayan yer ayrılırsa bağ yalnızca kafada kalır, kodda kalmaz.
+
+## 2026-08-19 — Yerel doğrulama 9-50 dakika sürüyor: AMFI değil, iCloud I/O
+- **Problem:** `tsc --noEmit` 8dk52sn sürdü; `eslint` 50+ dakikada bitmedi; `npm run build` 10 dakikada banner'ı bile geçemedi. AMFI notu zaten vardı ama bu farklı bir şey: süreçler ÇÖKMÜYOR, bekliyor.
+- **Eliminated:** "AMFI native binary'yi engelliyor" → tek başına açıklamıyor; AMFI engellese süreç hızla HATA verirdi, 9 dakika beklemezdi. · "Proje büyük" → 8 sayfa, 5 lib dosyası; tsc'nin işi saniyeler sürmeli.
+- **Chosen:** Teşhis `time` çıktısından geldi: `4.50s user 1.76s system 1% cpu 8:52.29 total`. %1 CPU + 9 dakika duvar saati = hesaplama değil, I/O bekleme. Depo `~/Desktop` altında ve bu Mac'te Desktop iCloud-senkron; dosyalar dematerialize edilmiş, her okuma indirme tetikliyor. Aynı commit Vercel'in Linux runner'ında **7 saniyede** build oldu.
+- **Evidence:** `time node ./node_modules/typescript/bin/tsc --noEmit` → `1% cpu 8:52.29 total`, çıktı 0 satır, exit 0. Vercel build log: "✓ Compiled successfully in 1595ms … Build Completed in /vercel/output [7s]".
+- **Rule:** Bir komut yavaşsa ÖNCE `time` ile CPU yüzdesine bak. Düşük CPU + uzun duvar saati asla "ağır iş" değildir; I/O ya da ağ beklemesidir. Bu makinede Desktop altındaki depolarda yerel tam-proje taramaları (eslint/build) pratik değil — dosya-kapsamlı çalıştır ya da doğrudan CI'a bırak.
+
 ## 2026-08-03 — Ürün sahibinden gelen ASIN listesinde bildirilenden 3 fazla ölü link vardı
 - **Problem:** Sahibi 28 ASIN'lik listeyi verirken 2 ürünün ("Piyasaya Arz Öncesi Bildirim" uyum sorunu) delisted OLABİLECEĞİNİ bildirdi. Liste doğrudan `/dp/` linkine çevrilecekti; kırık ürün linki bu sitede uydurma cümleyle aynı maliyettedir — okuyucu sağlık içeriğine güvenip tıklar, Amazon'un 404'üne düşer.
 - **Kök neden:** Liste envanter/barkod sisteminden geliyor, Amazon yayın durumundan değil. İkisi ayrı gerçeklik; SKU'nun var olması listelemenin canlı olduğunu göstermez.
