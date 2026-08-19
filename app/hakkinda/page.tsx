@@ -51,31 +51,36 @@ const sections: { heading: string; body: string[] }[] = [
 
 export default function HakkindaPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl md:text-4xl font-bold text-stone-900 mb-3">
+    // Editoryal politika uzun soluklu okunan bir metin — makaleyle aynı
+    // ölçüyü hak ediyor. YMYL içeriğinde güveni taşıyan sayfa burası.
+    <main className="reading-column py-14">
+      <h1 className="mb-4 font-serif text-h1 font-bold text-stone-900">
         Hakkında ve Editoryal Politika
       </h1>
-      <p className="text-lg text-stone-600 mb-10">
+      <p className="mb-12 text-lede text-stone-600">
         Bu sayfa, {site.name}&apos;nin içeriği nasıl ürettiğini, neyi
         iddia etmediğini ve ticari bağlantısını açıkça beyan eder.
       </p>
 
       {sections.map((s) => (
-        <section key={s.heading} className="mb-10">
-          <h2 className="text-xl font-bold text-stone-900 mb-3">{s.heading}</h2>
-          {s.body.map((p, i) => (
-            <p key={i} className="text-stone-700 leading-relaxed mb-3">
-              {p}
-            </p>
-          ))}
+        <section key={s.heading} className="mb-12">
+          <h2 className="mb-4 font-serif text-h2 font-bold text-stone-900">
+            {s.heading}
+          </h2>
+          <div className="space-y-4 text-stone-700">
+            {s.body.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
         </section>
       ))}
 
-      <section className="rounded-xl border border-stone-200 bg-white p-6">
-        <h2 className="text-lg font-bold text-stone-900 mb-3">
+      {/* Künye prose değil, VERİ. Sans + etiket başlık; okunmuyor, bakılıyor. */}
+      <section className="rounded-2xl border border-stone-200 bg-white p-6 font-sans">
+        <h2 className="mb-4 text-label font-bold uppercase text-stone-500">
           {brand.displayName} künyesi
         </h2>
-        <dl className="text-sm text-stone-700 space-y-1">
+        <dl className="space-y-1.5 text-meta text-stone-700">
           <div>
             <dt className="inline font-semibold">Tüzel unvan: </dt>
             <dd className="inline">{brand.legalName}</dd>
@@ -95,7 +100,7 @@ export default function HakkindaPage() {
             <dd className="inline">
               <a
                 href={brand.website}
-                className="text-emerald-700 hover:underline"
+                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
                 rel="noopener"
               >
                 {brand.website}

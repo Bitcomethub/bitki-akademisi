@@ -1,13 +1,201 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-:root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
+/* ═══════════════════════════════════════════════════════════════════════
+   OKUMA SİSTEMİ
+
+   Bu site bir uygulama değil, bir OKUMA yüzeyi. Ziyaretçi Google'dan
+   "ısırgan otu ne işe yarar" diye gelir, 3-4 dakika okur, gider. O yüzden
+   buradaki her karar tek bir soruya bakar: uzun Türkçe metin ekranda
+   yorulmadan okunuyor mu?
+
+   Referans: awesome-ios-design-md (MIT) koleksiyonundaki sağlık/wellness
+   uygulamalarının DESIGN.md dosyaları — calm, headspace, flo, noom, oura.
+   Kopyalanan hiçbir marka rengi, fontu ya da metni yok; alınan şey BEŞİNİN
+   DE ÜZERİNDE ANLAŞTIĞI üç pratik:
+     1. Gövde satır yüksekliği 1.5–1.55 bandında (hiçbiri 1.4'ün altında).
+     2. Ağırlık bandı 400 / 600 / 700 ile sınırlı ("no light, no black").
+     3. Negatif harf aralığı SADECE büyük başlıkta; küçük büyük-harf
+        etiketlerde pozitif (~0.8pt); gövdede sıfır.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@theme static {
+  /* ── Aileler ─────────────────────────────────────────────────────────
+     İki aile, iki sabit iş. Asla takas edilmez:
+
+       serif → OKUNAN ses.  Yazı başlıkları (listede de, makalede de),
+               bölüm başlıkları, gövde paragrafları, kısa cevap. Literata
+               ekranda uzun metin için çizilmiş bir kitap serifi; 17px'te
+               göz yormuyor.
+       sans  → TARANAN ve KULLANILAN ses. Navigasyon, kategori rozeti,
+               tarih, okuma süresi, içindekiler, buton, kart özeti, yasal
+               uyarı — okunmayan, göz gezdirilen her şey.
+
+     Bir yazının başlığı listede de makalede de SERİF. Aynı içerik iki
+     farklı yüzde görünürse okuyucu ikisini aynı şey olarak tanımaz.
+
+     Ayrım Calm'ın "serif speaks, sans supports" ilkesinden alındı, ama
+     TERSİNE çevrildi: Calm'da anlatı serif / arayüz sans'tır çünkü orada
+     asıl içerik SESTİR. Burada asıl içerik METİNDİR, dolayısıyla okunan
+     yüzeyin tamamı serife verildi.
+
+     Değişkenleri next/font layout.tsx'te <html>'e basıyor. Buradaki
+     yedekler yalnızca o da yüklenemezse devreye girer. */
+  --font-serif: var(--font-literata), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Ölçek ───────────────────────────────────────────────────────────
+     Başlık merdiveni gövdeden 1.25 oranıyla çıkar:
+        17 → 21.25 → 26.6 → 33.2   (h3 / h2 / h1 alt sınırları)
+     Gövdenin ALTINDAKİ roller (meta, etiket) bu orana tabi değil; onlar
+     boyutla değil ağırlık + renk + harf aralığıyla ayrışıyor. Beş
+     referansın hepsi de meta/etiketi 11–14pt dar bir bantta tutup ayrımı
+     başka boyutlara yıkıyor.
+
+     Başlıklar akışkan (clamp), gövde SABİT. Bu bilinçli: gövde boyutunun
+     ekran genişliğiyle oynaması okuma ritmini bozar, başlığınki bozmaz. */
+
+  --text-label: 0.75rem; /* 12px — büyük harf etiket */
+  --text-label--line-height: 1.25;
+  --text-label--letter-spacing: 0.08em; /* ~1pt @12px; referansların bandı */
+
+  --text-meta: 0.875rem; /* 14px — tarih, okuma süresi, künye */
+  --text-meta--line-height: 1.55;
+
+  --text-body: 1.0625rem; /* 17px — gövde prose */
+  --text-body--line-height: 1.7;
+
+  --text-lede: 1.1875rem; /* 19px — giriş paragrafı, kısa cevap */
+  --text-lede--line-height: 1.6;
+
+  --text-h3: 1.3125rem; /* 21px */
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.006em;
+
+  --text-h2: clamp(1.625rem, 1.35rem + 1.25vw, 1.9375rem); /* 26 → 31px */
+  --text-h2--line-height: 1.22;
+  --text-h2--letter-spacing: -0.018em;
+
+  --text-h1: clamp(2.0625rem, 1.6rem + 2.2vw, 2.875rem); /* 33 → 46px */
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.028em;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+/* ── Ölçü ve oluk ──────────────────────────────────────────────────────
+   --measure neden `ch`?  Satır uzunluğu piksel değil KARAKTER meselesi.
+   `ch` birimi kullanıldığı elemanın kendi fontuna göre çözülür, yani font
+   değişirse ölçü kendiliğinden düzelir — sabit bir px değeri düzelmez.
+   68ch, Literata'da ~70 gerçek karaktere denk geliyor (hedef bant 65–75).
+
+   Eski hâl: max-w-3xl (768px) − 2×16px = 736px ≈ 90 karakter. Gözün satır
+   sonundan bir sonraki satır başına dönerken kaybolduğu genişlik burasıydı.
+
+   --gutter akışkan: telefonda 16px, geniş ekranda 32px. Beş referansın da
+   "whitespace philosophy" bölümü aynı şeyi söylüyor — kenar boşluğu
+   cömert olacak (16–24pt). */
+:root {
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+  --measure: 68ch;
+}
+
+@layer base {
+  html {
+    /* iOS'ta yatay çevirince metnin kendiliğinden büyümesini engeller;
+       yoksa tipografi ölçeği telefonda sessizce bozulur. */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-stone-50);
+    color: var(--color-stone-900);
+    font-family: var(--font-sans);
+    /* Değişken font tüm ağırlıkları gerçekten içeriyor; tarayıcının
+       sahte kalın üretmesine hiçbir koşulda izin verme. */
+    font-synthesis-weight: none;
+  }
+
+  /* Türkçe başlıklarda tek kelimelik dul satır çok sık çıkıyor — kelimeler
+     uzun, ekler kelimeyi daha da uzatıyor. `balance` başlığı satırlara
+     dengeli böler, `pretty` paragrafın son satırında yetim kelime bırakmaz. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* Sayılar hizalansın: tarih, okuma süresi, ürün sayısı. */
+  time {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Klavyeyle gezen okuyucu nerede olduğunu görmeli. Tarayıcı varsayılanı
+     bazı tarayıcılarda emerald zemin üzerinde neredeyse görünmez. */
+  :focus-visible {
+    outline: 2px solid var(--color-emerald-700);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: var(--color-emerald-200);
+    color: var(--color-emerald-950);
+  }
+}
+
+/* İçindekiler bağlantıları sayfa içine atlıyor; sıçrama yerine kayma
+   bağlamı korur. Hareket hassasiyeti olan okuyucu için kapalı. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* Okuma kolonu — makale gövdesi burada yaşar.
+     `ch` kendi font-size'ına göre çözüldüğü için okuma fontu ve ölçü AYNI
+     kuralda tanımlı olmak zorunda; ayrılırlarsa ölçü sessizce yanlışlanır.
+     width: min(...) kalıbı padding yerine kullanıldı — border-box ile
+     çakışmaz ve dar ekranda oluk kendiliğinden korunur. */
+  .reading-column {
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    /* Satır yüksekliği BURADA veriliyor ki kolonun içindeki her paragraf
+       ayrı ayrı sınıf almadan doğru aralıkla aksın. Yoksa `line-height:
+       normal` (~1.2) miras kalır ve 17px serif metin sıkışır. */
+    line-height: var(--text-body--line-height, 1.7);
+    width: min(100% - 2 * var(--gutter), var(--measure));
+    margin-inline: auto;
+  }
+
+  /* Geniş kolon — liste ızgaraları, başlık şeridi, alt bilgi.
+     Kartlar prose değil; onları 68ch'e sıkıştırmak yer israfı olur. */
+  .wide-column {
+    width: min(100% - 2 * var(--gutter), 64rem);
+    margin-inline: auto;
+  }
+
+  /* Orta kolon — [ad ......... buton] biçimindeki ürün listesi.
+     64rem'de ad ile buton arasında okunamayacak kadar boşluk kalıyor,
+     68ch'de ise buton adı sıkıştırıyor. Üç genişlik, üç iş:
+       reading (~68ch) okunur · list (46rem) taranır · wide (64rem) ızgara */
+  .list-column {
+    width: min(100% - 2 * var(--gutter), 46rem);
+    margin-inline: auto;
+  }
 }

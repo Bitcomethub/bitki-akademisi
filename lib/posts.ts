@@ -143,3 +143,24 @@ export function readingMinutes(post: PostSource): number {
     .filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
+
+/**
+ * ISO tarihi okunur Türkçe tarihe çevirir: "2026-08-19" → "19 Ağustos 2026".
+ *
+ * Makale sayfasında yerel bir kopyası vardı, liste sayfasında ise hiç yoktu —
+ * liste ham ISO dizgisini basıyordu. Tek yerde tanımlanınca iki sayfanın
+ * tarihi ayrışamaz.
+ *
+ * timeZone:"UTC" ve sona eklenen "T00:00:00Z" birlikte ZORUNLU: yalnız
+ * "2026-08-19" verilirse tarayıcı bunu UTC gece yarısı sayar, sonra yerel
+ * saate çevirir ve UTC'nin batısındaki bir okuyucuya bir gün ÖNCESİNİ
+ * gösterir.
+ */
+export function formatPostDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("tr-TR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}

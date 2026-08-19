@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
+  formatPostDate,
   getAllPosts,
   getPostBySlug,
   getRelatedPosts,
@@ -60,15 +61,6 @@ export async function generateMetadata({
   };
 }
 
-function formatDate(iso: string): string {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
 export default async function BlogPost({
   params,
 }: {
@@ -82,7 +74,9 @@ export default async function BlogPost({
   const minutes = readingMinutes(post);
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10">
+    // Ölçü kapağı burada: max-w-3xl (736px ≈ 90 karakter) yerine 68ch.
+    // Gerekçe ve `ch` seçiminin nedeni globals.css'te.
+    <main className="reading-column py-10">
       {/* Article + FAQPage + BreadcrumbList — hepsi aşağıda render edilen
           metinden türetilir, elle yazılmış tek bir alan yok. */}
       <script
@@ -90,7 +84,10 @@ export default async function BlogPost({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postGraph(post)) }}
       />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-stone-500 mb-6">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-6 font-sans text-meta text-stone-500"
+      >
         <ol className="flex flex-wrap items-center gap-1.5">
           <li>
             <Link href="/" className="hover:text-emerald-700">
@@ -119,21 +116,25 @@ export default async function BlogPost({
         size="hero"
       />
 
-      <header className="mt-6">
-        <span className="inline-block text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+      <header className="mt-7">
+        {/* Kategori rozeti: küçük, BÜYÜK HARF, pozitif harf aralıklı sans.
+            Beş referansın üçü (oura, noom, flo) kategorik etiketi tam olarak
+            böyle ayırıyor — büyük harf burada "bağırmak" değil, "bu bir
+            etiket, cümle değil" demenin tipografik yolu. */}
+        <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 font-sans text-label font-bold uppercase text-emerald-700">
           {post.category}
         </span>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-stone-900 mt-4 mb-3">
+        <h1 className="mt-5 mb-3 font-serif text-h1 font-bold text-stone-900">
           {post.title}
         </h1>
-        <p className="text-sm text-stone-500">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
+        <p className="font-sans text-meta text-stone-500">
+          <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           {post.updated && post.updated !== post.date && (
             <>
               {" · "}
               <span>
                 Güncelleme:{" "}
-                <time dateTime={post.updated}>{formatDate(post.updated)}</time>
+                <time dateTime={post.updated}>{formatPostDate(post.updated)}</time>
               </span>
             </>
           )}
@@ -149,20 +150,31 @@ export default async function BlogPost({
           olup sayfada olmayan alan bırakmıyoruz. */}
       <section
         aria-labelledby="kisa-cevap"
-        className="geo-answer mt-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6"
+        className="geo-answer mt-9 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-7"
       >
-        <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800 mb-2">
+        <p className="mb-2 font-sans text-label font-bold uppercase text-emerald-800">
           Kısa cevap
         </p>
-        <h2 id="kisa-cevap" className="text-lg font-bold text-emerald-950 mb-3">
+        {/* Sayfanın en çok alıntılanan bloğu, en okunaklı ölçüsünü hak
+            ediyor: soru h3 ölçeğinde, cevap gövdeden bir kademe büyük.
+            Ölçek merdiveninde yükselmek, kutuyu renkle bağırtmadan
+            "burası önemli" demenin sessiz yolu. */}
+        <h2
+          id="kisa-cevap"
+          className="mb-3 font-serif text-h3 font-bold text-emerald-950"
+        >
           {post.question}
         </h2>
-        <p className="text-stone-800 leading-relaxed">{post.keyTakeaway}</p>
+        <p className="font-serif text-lede text-stone-800">
+          {post.keyTakeaway}
+        </p>
       </section>
 
-      <div className="mt-8 space-y-4">
+      {/* Giriş = spot. Gövdeden bir kademe büyük, böylece okuyucu nereden
+          başlayacağını aramıyor. */}
+      <div className="mt-9 space-y-4">
         {post.intro.map((paragraph, i) => (
-          <p key={i} className="text-lg text-stone-700 leading-relaxed">
+          <p key={i} className="text-lede text-stone-700">
             {paragraph}
           </p>
         ))}
@@ -170,10 +182,15 @@ export default async function BlogPost({
 
       <nav
         aria-label="İçindekiler"
-        className="mt-10 rounded-xl border border-stone-200 bg-white p-6"
+        className="mt-11 rounded-2xl border border-stone-200 bg-white p-6 font-sans"
       >
-        <h2 className="text-sm font-semibold text-stone-900 mb-3">İçindekiler</h2>
-        <ol className="space-y-2 text-sm text-stone-600 list-decimal list-inside">
+        {/* Tamamı sans: içindekiler okunan metin değil, KULLANILAN bir
+            araç. Aile ayrımı okuyucuya "burası gezinme" sinyalini boyut ya
+            da renk harcamadan veriyor. */}
+        <h2 className="mb-3 text-label font-bold uppercase text-stone-500">
+          İçindekiler
+        </h2>
+        <ol className="list-inside list-decimal space-y-2 text-meta text-stone-600">
           {post.sections.map((section) => (
             <li key={section.heading}>
               <a
@@ -192,23 +209,27 @@ export default async function BlogPost({
         </ol>
       </nav>
 
-      <article className="mt-10 space-y-10">
+      {/* Bölümler arası boşluk (space-y-12) başlık-gövde boşluğundan
+          (mb-4) belirgin biçimde büyük. Ritim hiyerarşiyi boyuttan bağımsız
+          olarak da taşıyor: nerede yeni bir konu başladığı, başlığı
+          okumadan önce boşluktan anlaşılıyor. */}
+      <article className="mt-12 space-y-12">
         {post.sections.map((section) => (
           <section key={section.heading} id={headingId(section.heading)}>
-            <h2 className="text-2xl font-bold text-stone-900 mb-4 scroll-mt-8">
+            <h2 className="mb-4 scroll-mt-8 font-serif text-h2 font-bold text-stone-900">
               {section.heading}
             </h2>
             <div className="space-y-4">
               {section.body.map((paragraph, i) => (
-                <p key={i} className="text-stone-700 leading-relaxed">
+                <p key={i} className="text-stone-700">
                   {paragraph}
                 </p>
               ))}
             </div>
             {section.list && (
-              <ul className="mt-4 space-y-2 list-disc list-outside pl-5 text-stone-700">
+              <ul className="mt-5 list-outside list-disc space-y-2 pl-5 text-stone-700 marker:text-emerald-600">
                 {section.list.map((item) => (
-                  <li key={item} className="leading-relaxed">
+                  <li key={item} className="pl-1">
                     {item}
                   </li>
                 ))}
@@ -218,18 +239,24 @@ export default async function BlogPost({
         ))}
       </article>
 
-      <section id="sikca-sorulan-sorular" className="mt-14 scroll-mt-8">
-        <h2 className="text-2xl font-bold text-stone-900 mb-6">
+      {/* SSS artık kart yığını DEĞİL, ince çizgiyle ayrılmış bir liste.
+          Beş özdeş kutu alt alta dizildiğinde her biri kendi çerçevesiyle
+          dikkat istiyor ve blok bir "widget" gibi okunuyor; oysa burası
+          yazının devamı. Çerçeveyi kaldırınca sayfada tek bir okuma yüzeyi
+          kalıyor. Yapı (h3 = soru, p = cevap) aynen korundu — FAQPage
+          şeması post.faqs'ten türüyor, DOM'dan değil, ama görünen sırayla
+          şemanın örtüşmesi bilinçli. */}
+      <section id="sikca-sorulan-sorular" className="mt-16 scroll-mt-8">
+        <h2 className="mb-2 font-serif text-h2 font-bold text-stone-900">
           Sıkça sorulan sorular
         </h2>
-        <div className="space-y-4">
+        <div className="divide-y divide-stone-200 border-t border-stone-200">
           {post.faqs.map((faq) => (
-            <div
-              key={faq.q}
-              className="rounded-xl border border-stone-200 bg-white p-6"
-            >
-              <h3 className="font-semibold text-stone-900 mb-2">{faq.q}</h3>
-              <p className="text-stone-700 leading-relaxed">{faq.a}</p>
+            <div key={faq.q} className="py-6">
+              <h3 className="mb-2 font-serif text-h3 font-bold text-stone-900">
+                {faq.q}
+              </h3>
+              <p className="text-stone-700">{faq.a}</p>
             </div>
           ))}
         </div>
@@ -280,7 +307,7 @@ export default async function BlogPost({
         </aside>
       )}
 
-      <p className="mt-8 text-sm text-stone-500 leading-relaxed border-t border-stone-200 pt-6">
+      <p className="mt-10 border-t border-stone-200 pt-6 font-sans text-meta text-stone-500">
         Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez ve
         hastalık teşhis, tedavi veya önleme iddiası içermez. Aktarılan
         kullanımlar geleneksel bilgi ve genel kaynaklara dayanır; kendi
@@ -289,8 +316,8 @@ export default async function BlogPost({
       </p>
 
       {related.length > 0 && (
-        <section className="mt-14">
-          <h2 className="text-xl font-bold text-stone-900 mb-6">
+        <section className="mt-16">
+          <h2 className="mb-6 font-serif text-h2 font-bold text-stone-900">
             İlgili rehberler
           </h2>
           <div className="grid sm:grid-cols-3 gap-4">
@@ -305,11 +332,11 @@ export default async function BlogPost({
                   category={item.category}
                   plant={item.plant}
                 />
-                <span className="block p-5">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-700 mb-2">
+                <span className="block p-5 font-sans">
+                  <span className="mb-2 block text-label font-bold uppercase text-emerald-700">
                     {item.category}
                   </span>
-                  <span className="block font-semibold text-stone-900 text-sm leading-snug">
+                  <span className="block text-meta font-semibold leading-snug text-stone-900">
                     {item.title}
                   </span>
                 </span>
