@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Literata, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import {
   organizationSchema,
@@ -9,6 +10,35 @@ import {
 import { COVER_SIZE, SITE_COVER_SLUG, coverPath } from "@/lib/cover";
 
 const siteUrl = "https://bitkiakademisi.com";
+
+/**
+ * İKİ AİLE, İKİ İŞ. Ayrıntılı gerekçe globals.css'in başında.
+ *
+ * `latin-ext` alt kümesi SÜS DEĞİL, ZORUNLU: `latin` alt kümesi tek başına
+ * ı, İ, ğ, Ğ, ş, Ş karakterlerini İÇERMEZ. Yalnızca `latin` yüklenirse
+ * tarayıcı bu harfleri sistem fontundan tamamlar ve "ışığı" gibi bir kelime
+ * KELİME ORTASINDA font değiştirir. Türkçe bir sitede bu gözle görülür bir
+ * kırıklıktır ve tam da fark edilmesi en zor hata türüdür — İngilizce test
+ * metniyle bakan biri asla göremez.
+ *
+ * display:"swap" + next/font'un ürettiği size-adjust'lı yerel yedek: font
+ * inerken metin görünür kalır, indiğinde sayfa zıplamaz.
+ *
+ * italic BİLEREK yüklenmiyor: içerik JSON'unda vurgu işaretlemesi yok
+ * (`grep -rn "italic|<em>"` boş döndü), yüklenseydi hiç kullanılmayan bir
+ * dosya indirilecekti.
+ */
+const literata = Literata({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-literata",
+});
+
+const hanken = Hanken_Grotesk({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-hanken",
+});
 
 const siteCover = {
   url: coverPath(SITE_COVER_SLUG),
@@ -73,20 +103,29 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="tr">
+    <html lang="tr" className={`${literata.variable} ${hanken.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraph) }}
         />
       </head>
-      <body className="antialiased bg-stone-50 text-stone-900">
+      {/* Zemin, metin rengi ve varsayılan aile globals.css'te tanımlı —
+          burada tekrar edilirse iki kaynak ayrışır. */}
+      <body className="antialiased">
+        {/* flex-wrap ZORUNLU: logo + dört bağlantı 375px'e sığmıyor
+            (ölçüldü ~470px). Sarmalama olmadan nav ya taşıyor ya da
+            bağlantılar birbirine yapışıyor. Mobilde menüyü gizlemek yerine
+            ikinci satıra indiriyoruz — dört bağlantının dördü de gerekli. */}
         <header className="border-b border-stone-200 bg-white">
-          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold tracking-tight text-emerald-800">
+          <div className="wide-column flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-4">
+            <Link
+              href="/"
+              className="font-serif text-h3 font-bold text-emerald-800"
+            >
               🌿 Bitki Akademisi
             </Link>
-            <nav className="flex gap-6 text-sm font-medium text-stone-600">
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-meta font-semibold text-stone-600">
               <Link href="/" className="hover:text-emerald-700">
                 Anasayfa
               </Link>
@@ -103,21 +142,30 @@ export default function RootLayout({
           </div>
         </header>
         {children}
-        <footer className="border-t border-stone-200 mt-16 py-10 px-4 text-center text-sm text-stone-500">
-          <p className="max-w-2xl mx-auto mb-3">
-            Tüm içerikler bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez.
-            Hastalık teşhis, tedavi veya önleme iddiası içermez.
-          </p>
-          <p className="max-w-2xl mx-auto mb-3">
-            Bitki Akademisi bağımsız bir içerik sitesidir ve ürün
-            yönlendirmelerinde İmmu-Nat markasının Amazon.com.tr sayfalarına
-            bağlantı verir.{" "}
-            <Link href="/hakkinda" className="text-emerald-700 hover:underline">
-              Editoryal politika
-            </Link>
-            .
-          </p>
-          <p>© {new Date().getFullYear()} Bitki Akademisi</p>
+        {/* Alt bilgi SOLA hizalı. Ortalanmış çok satırlı metinde her satırın
+            başlangıcı farklı yerde olur; göz her satırda yeniden yer arar.
+            İki cümlelik yasal bir uyarıda bunun bedeli küçük değil — burası
+            YMYL içeriğinde okunması en gereken yazı. */}
+        <footer className="mt-20 border-t border-stone-200 bg-white py-12">
+          <div className="reading-column space-y-3 font-sans text-meta text-stone-500">
+            <p>
+              Tüm içerikler bilgilendirme amaçlıdır, tıbbi tavsiye yerine
+              geçmez. Hastalık teşhis, tedavi veya önleme iddiası içermez.
+            </p>
+            <p>
+              Bitki Akademisi bağımsız bir içerik sitesidir ve ürün
+              yönlendirmelerinde İmmu-Nat markasının Amazon.com.tr sayfalarına
+              bağlantı verir.{" "}
+              <Link
+                href="/hakkinda"
+                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+              >
+                Editoryal politika
+              </Link>
+              .
+            </p>
+            <p className="pt-2">© {new Date().getFullYear()} Bitki Akademisi</p>
+          </div>
         </footer>
       </body>
     </html>

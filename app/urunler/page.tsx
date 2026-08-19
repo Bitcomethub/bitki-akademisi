@@ -76,13 +76,18 @@ function ProductCard({
     <li className="border-b border-stone-200 py-4 last:border-0">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-medium text-stone-900">{title}</p>
-          <p className="text-sm text-stone-500">{subtitle}</p>
+          {/* Ürün adı serif: bu bir "başlık", satır içi veri değil.
+              Künye (subtitle) sans + meta — ikisi arasındaki aile farkı
+              boyut farkından daha net ayırıyor. */}
+          <p className="font-serif text-h3 font-semibold text-stone-900">
+            {title}
+          </p>
+          <p className="font-sans text-meta text-stone-500">{subtitle}</p>
         </div>
         <AmazonCta url={url} direct={direct} />
       </div>
       {blurb && (
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-stone-600">
+        <p className="mt-2 max-w-[68ch] font-sans text-meta text-stone-600">
           {blurb}
         </p>
       )}
@@ -109,25 +114,31 @@ export default function UrunlerPage() {
   const total = products.length + natExt.length;
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12">
-      <Link href="/" className="text-sm text-emerald-700 hover:underline">
+    <main className="list-column py-14">
+      <Link
+        href="/"
+        className="font-sans text-meta font-semibold text-emerald-700 hover:text-emerald-800 hover:underline"
+      >
         ← Anasayfa
       </Link>
-      <h1 className="text-3xl md:text-4xl font-bold text-stone-900 mt-4 mb-2">
+      <h1 className="mt-5 mb-3 font-serif text-h1 font-bold text-stone-900">
         Tüm İmmu-Nat Ürünleri
       </h1>
-      <p className="text-stone-600 mb-1">
+      <p className="mb-2 max-w-[68ch] font-serif text-lede text-stone-600">
         {brand.displayName}&apos;ın tüm bitkisel sıvı ekstrakt ve Nat-Ext
         karışım ürünlerinin tam listesi ({total} ürün, {directCount} tanesi
         doğrudan ürün sayfasına bağlı).
       </p>
-      <p className="text-xs text-stone-400 mb-10">
+      {/* stone-400 beyaz üzerinde 2.59:1 ölçüldü — WCAG AA (4.5:1) altında.
+          stone-500 4.81:1. Bu iki paragraf sayfanın en önemli yasal/dürüstlük
+          notu; okunamaz gri en yanlış yerde duruyordu. */}
+      <p className="mb-8 max-w-[68ch] font-sans text-meta text-stone-500">
         Bazı ürünler için ASIN henüz doğrulanmadığı ya da ürün Amazon&apos;da
         şu an satışta olmadığı için &quot;Amazon&apos;da Ara&quot; bağlantısı
         gösterilir — bu, yanlış bir ürüne yönlendirmektense okuyucuyu
         Amazon&apos;un kendi arama sonucuna bırakmak içindir.
       </p>
-      <p className="text-xs text-stone-400 mb-10">
+      <p className="mb-12 max-w-[68ch] font-sans text-meta text-stone-500">
         Ürün açıklamaları bitkilerin <strong>geleneksel kullanım alanlarını</strong>{" "}
         anlatır; tedavi, teşhis ya da tıbbi tavsiye değildir. Her açıklama
         yayımlanmadan önce yasaklı sağlık iddiaları, uydurulmuş istatistik ve
@@ -135,14 +146,14 @@ export default function UrunlerPage() {
       </p>
 
       <section className="mb-12">
-        <h2 className="text-xl font-bold text-stone-900 mb-1">
+        <h2 className="mb-1 font-serif text-h2 font-bold text-stone-900">
           Nat-Ext Karışımları
         </h2>
-        <p className="text-sm text-stone-500 mb-4">
+        <p className="mb-5 font-sans text-meta text-stone-500">
           Birden fazla bitkisel ekstraktın bir arada sunulduğu karışım
           ürünleri.
         </p>
-        <ul className="rounded-xl border border-stone-200 bg-white px-5">
+        <ul className="rounded-2xl border border-stone-200 bg-white px-5">
           {natExt.map((item) => {
             const { url, direct } = natExtAmazonUrl(item);
             return (
@@ -160,13 +171,13 @@ export default function UrunlerPage() {
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-stone-900 mb-1">
+        <h2 className="mb-1 font-serif text-h2 font-bold text-stone-900">
           Tekli Bitkisel Ekstraktlar
         </h2>
-        <p className="text-sm text-stone-500 mb-4">
+        <p className="mb-5 font-sans text-meta text-stone-500">
           Tek bitkiye dayalı sıvı ekstrakt, yağ ve karışım ürünleri.
         </p>
-        <ul className="rounded-xl border border-stone-200 bg-white px-5">
+        <ul className="rounded-2xl border border-stone-200 bg-white px-5">
           {products.map((p) => (
             <ProductRow key={p.name} product={p} />
           ))}
