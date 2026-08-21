@@ -784,7 +784,7 @@ async function callModel(messages) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 8000,
+      max_tokens: 16000,
       system: systemPrompt(),
       messages,
       output_config: { format: { type: "json_schema", schema: OUTPUT_SCHEMA } },
@@ -796,7 +796,13 @@ async function callModel(messages) {
   }
   const data = await res.json();
   const text = data.content.filter((b) => b.type === "text").map((b) => b.text).join("");
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    throw new Error(
+      `JSON parse hatası: ${err.message} | stop_reason=${data.stop_reason} | output_tokens=${data.usage?.output_tokens} | text_length=${text.length} | text_tail=${text.slice(-200)}`
+    );
+  }
 }
 
 /** Bir kez yeniden dene: ilk denemenin hataları geri bildirim olarak verilir. */
