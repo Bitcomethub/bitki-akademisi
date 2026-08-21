@@ -7,5 +7,100 @@
     "Elle yazılan makaleler content/seed-posts.json içindedir.",
     "İkisi lib/posts.ts'te birleştirilir; çakışan slug'da seed kazanır."
   ],
-  "posts": []
+  "posts": [
+    {
+      "slug": "zerdecal-faydalari-nelerdir",
+      "title": "Zerdeçal Faydaları Nelerdir? Bilinenler ve Bilinmeyenler",
+      "question": "Zerdeçal faydaları nelerdir?",
+      "plant": "Zerdeçal",
+      "category": "Eklem & İltihap",
+      "date": "2026-08-21",
+      "keyTakeaway": "Zerdeçal faydaları, kökünde bulunan kürkümin bileşeni sayesinde geleneksel tıpta sindirim rahatlığı ve eklem konforu için tercih edilmesiyle öne çıkar. Güncel araştırmalarda antioksidan ve iltihap karşıtı özellikleri incelenmekte olup, kesin etki ve doz bilgisi için ürün etiketi ile ilgili uzman kaynaklara başvurulması önerilir.",
+      "excerpt": "Zerdeçalın kürkümin içeriği neden bu kadar konuşuluyor? Bilinenleri ve araştırmaların sınırlarını kısaca özetliyoruz.",
+      "keywords": [
+        "zerdeçal faydaları",
+        "zerdeçal nedir",
+        "zerdeçal ne işe yarar",
+        "zerdeçal neye iyi gelir",
+        "zerdeçal ekstraktı"
+      ],
+      "intro": [
+        "Zerdeçal (Curcuma longa), zencefilgiller familyasından bir bitki olup toprak altındaki kök gövdesi hem baharat hem de geleneksel tıp uygulamalarında binlerce yıldır kullanılır. Karakteristik sarı-turuncu renginin kaynağı kürkümin adlı bileşiktir.",
+        "Bu rehberde zerdeçalın ne olduğu, öne çıkan bileşenleri ve hangi sağlık alanlarında araştırıldığı ele alınmaktadır. Kullanım miktarı ve güvenlik gibi konular ise ayrı bir rehberin kapsamındadır."
+      ],
+      "sections": [
+        {
+          "heading": "Zerdeçal nedir?",
+          "body": [
+            "Zerdeçal, Curcuma longa bitkisinin kök gövdesinden elde edilen, Hindistan ve Güneydoğu Asya kökenli sarı renkli bir baharat ve geleneksel tıp bitkisidir. Zencefile yakın bir familyaya ait olan bu bitkinin kökü kurutulup toz haline getirildiğinde mutfaklarda yaygın olarak kullanılır.",
+            "Ayurveda ve geleneksel Çin tıbbında yüzyıllardır bilinen zerdeçal, günümüzde hem gıda hem de takviye formunda tüketilmektedir. Bitkinin öne çıkan özelliği, içerdiği kürkümin grubu bileşiklerden kaynaklanmaktadır ve bu bileşikler bilimsel araştırmaların odak noktasını oluşturur."
+          ]
+        },
+        {
+          "heading": "Zerdeçalın içindeki kürkümin nedir?",
+          "body": [
+            "Kürkümin, zerdeçalın kök gövdesinde bulunan ve bitkiye karakteristik sarı rengini veren ana bileşiktir. Kürküminoidler adı verilen bir grup bileşiğin en bilinen üyesi olarak kabul edilir ve zerdeçal araştırmalarının büyük çoğunluğu bu bileşen üzerine yoğunlaşır.",
+            "Araştırmalarda kürküminin antioksidan özellikleri incelenmekte, hücresel düzeydeki oksidatif strese karşı olası etkileri değerlendirilmektedir. Ancak kürküminin vücutta emilimi doğal olarak sınırlı olduğundan, bu konu ayrı bir araştırma alanı haline gelmiştir ve ekstrakt formülasyonlarında dikkate alınan bir husustur."
+          ]
+        },
+        {
+          "heading": "Zerdeçal eklem sağlığı için neden araştırılır?",
+          "body": [
+            "Zerdeçal eklem sağlığı bağlamında, geleneksel tıpta eklem konforunu desteklemek amacıyla tarihsel olarak kullanılmış bir bitkidir. Bu kullanım, günümüzde bilimsel çalışmaların ilgisini çeken bir araştırma alanına dönüşmüştür.",
+            "Bazı klinik çalışmalarda kürküminin iltihap süreçleriyle ilişkili bazı belirteçler üzerindeki olası etkileri incelenmektedir. Bu araştırmalar, zerdeçalın eklem konforunu desteklemeye yardımcı olabileceği yönünde ön bulgular sunsa da, sonuçlar kişiden kişiye değişebilir ve konunun tıbbi bir tedavi yöntemi olarak değerlendirilmemesi gerekir."
+          ]
+        },
+        {
+          "heading": "Zerdeçal sindirim sistemi için neye iyi gelir?",
+          "body": [
+            "Zerdeçal sindirim sistemi açısından geleneksel tıpta safra akışını desteklemek ve sindirimi rahatlatmak amacıyla kullanılan bitkilerden biridir. Halk hekimliğinde şişkinlik hissi sonrası rahatlama amacıyla tercih edildiği bilinmektedir.",
+            "Güncel araştırmalarda zerdeçalın safra kesesi fonksiyonları ve genel sindirim konforu üzerindeki olası katkıları incelenmektedir. Bu alandaki çalışmalar henüz sınırlı olup, zerdeçalın sindirim sağlığı için tek başına yeterli bir çözüm olarak görülmemesi, dengeli beslenme alışkanlıklarıyla birlikte değerlendirilmesi önerilir."
+          ]
+        },
+        {
+          "heading": "Zerdeçal ekstraktı ham zerdeçaldan nasıl farklıdır?",
+          "body": [
+            "Zerdeçal ekstraktı, ham zerdeçal tozuna kıyasla belirli oranda standardize edilmiş kürkümin içeriğine sahip yoğunlaştırılmış bir formdur. Bu standardizasyon, ekstraktın içerdiği aktif bileşen miktarının daha tutarlı olmasını amaçlar.",
+            "Kürküminin doğal emiliminin sınırlı olması nedeniyle, bazı ekstrakt formülasyonlarında biyoyararlanımı desteklemesi araştırılan katkı maddeleriyle birleştirilmesi tercih edilmektedir. Ekstrakt seçiminde standardizasyon oranı ve üretim kalitesi önemli kriterler arasında yer alır; miktar ve kullanım şekli konusunda ürün etiketindeki bilgiler esas alınmalıdır."
+          ]
+        },
+        {
+          "heading": "Zerdeçal hangi diğer alanlarda araştırılmaktadır?",
+          "body": [
+            "Zerdeçal, eklem ve sindirim konforunun ötesinde pek çok farklı sağlık alanında bilimsel merakın odağı haline gelmiştir ve bu ilgi giderek artmaktadır. Bu araştırmaların büyük bölümü, bitkinin içerdiği kürküminin antioksidan ve hücresel koruyucu özellikleriyle ilişkilendirilmektedir.",
+            "Aşağıda listelenen alanlar, zerdeçalla ilgili güncel bilimsel araştırmaların yürütüldüğü konular arasında yer almaktadır. Bu bulguların önemli bir kısmı henüz erken aşamada olduğundan, konunun daha iyi anlaşılabilmesi için ileride yapılacak kapsamlı klinik çalışmalara ihtiyaç duyulduğu belirtilmektedir."
+          ],
+          "list": [
+            "Cilt sağlığı ve genel görünüm desteği",
+            "Kardiyovasküler sistem ile ilgili antioksidan etkiler",
+            "Bilişsel fonksiyonlar ve genel zihinsel canlılık",
+            "Genel bağışıklık desteği araştırmaları",
+            "Metabolik sağlıkla ilişkili ön çalışmalar"
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Zerdeçal her gün tüketilebilir mi?",
+          "a": "Zerdeçal baharat olarak günlük beslenmede yaygın şekilde kullanılabilir; ancak takviye formundaki kullanım miktarı ve sıklığı ayrı bir konudur. Bu konuda ürün etiketindeki öneriler ve ayrı bir dozaj rehberi dikkate alınmalıdır."
+        },
+        {
+          "q": "Zerdeçal karabiberle neden birlikte tüketilir?",
+          "a": "Karabiberdeki piperin bileşeninin, kürküminin vücuttaki emilimini desteklemeye yardımcı olabileceği bazı araştırmalarda incelenmiştir. Bu nedenle bazı formülasyonlarda iki bileşen birlikte kullanılmaktadır, ancak kesin etki bireysel farklılık gösterebilir."
+        },
+        {
+          "q": "Zerdeçal kimler için uygun olmayabilir?",
+          "a": "Safra kesesi rahatsızlığı olanlar, hamileler veya belirli ilaç kullananlar için zerdeçal takviyeleri dikkat gerektirebilir. Bu konudaki detaylı güvenlik bilgileri ayrı bir rehberin kapsamında ele alınmaktadır."
+        },
+        {
+          "q": "Zerdeçal nasıl tüketilir?",
+          "a": "Zerdeçal toz baharat, kapsül, ekstrakt veya bitki çayı gibi farklı formlarda tüketilebilir. Tercih edilen form, kullanım amacına ve kişisel alışkanlıklara göre değişiklik gösterebilir."
+        },
+        {
+          "q": "Zerdeçal ekstraktı seçerken nelere dikkat edilmeli?",
+          "a": "Standardize kürkümin oranı, üretim kalitesi ve ek katkı maddelerinin şeffaf şekilde belirtilmesi önemli kriterlerdir. Ürün etiketindeki içerik bilgileri dikkatle incelenmeli, gerekirse ilgili uzmanlara danışılmalıdır."
+        }
+      ]
+    }
+  ]
 }
