@@ -685,16 +685,14 @@ const OUTPUT_SCHEMA = {
   properties: {
     keyTakeaway: { type: "string" },
     excerpt: { type: "string" },
-    intro: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
+    intro: { type: "array", items: { type: "string" } },
     sections: {
       type: "array",
-      minItems: 4,
-      maxItems: 6,
       items: {
         type: "object",
         properties: {
           heading: { type: "string" },
-          body: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 3 },
+          body: { type: "array", items: { type: "string" } },
           list: { type: "array", items: { type: "string" } },
         },
         required: ["heading", "body"],
@@ -703,8 +701,6 @@ const OUTPUT_SCHEMA = {
     },
     faqs: {
       type: "array",
-      minItems: 4,
-      maxItems: 6,
       items: {
         type: "object",
         properties: { q: { type: "string" }, a: { type: "string" } },
