@@ -13,10 +13,24 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-emerald-900 mb-4">
             Hangi bitki neye iyi gelir?
           </h1>
-          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+          <p className="text-lg text-stone-600 max-w-2xl mx-auto mb-8">
             Bitki Akademisi, şifalı bitkiler ve bitkisel ekstraktlar hakkında
             güvenilir, sade ve bilimsel temelli rehberler sunar.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/urunler"
+              className="inline-block rounded-full bg-emerald-700 text-white px-6 py-3 font-semibold hover:bg-emerald-800 transition-colors"
+            >
+              İmmu-Nat ürünlerini incele
+            </Link>
+            <Link
+              href="/blog"
+              className="inline-block rounded-full border border-emerald-700 text-emerald-800 px-6 py-3 font-semibold hover:bg-emerald-100 transition-colors"
+            >
+              Rehberleri keşfet
+            </Link>
+          </div>
         </div>
       </section>
 
