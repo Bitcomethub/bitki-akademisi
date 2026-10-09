@@ -42,7 +42,7 @@ const readJson = (rel) => JSON.parse(readFileSync(p(rel), "utf8"));
  * Kaliteyi model tercihi değil KALİTE KAPISI + yeniden deneme korur.
  * Bütçe uygunsa tek değişkenle yükseltilir:  BLOG_MODEL=claude-opus-5
  */
-const MODEL = process.env.BLOG_MODEL || "claude-sonnet-5";
+const MODEL = process.env.BLOG_MODEL || "claude-sonnet-5-5";
 
 const facts = readJson("content/brand-facts.json");
 const backlog = readJson("content/blog-topic-backlog.json");
