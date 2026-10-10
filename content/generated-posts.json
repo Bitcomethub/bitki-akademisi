@@ -2655,6 +2655,86 @@
           "a": "Düzenli ilaç kullananlarda ısırgan otuna başlama kararı kişiye göre değişir. Bazı ilaçlarla etkileşim ihtimali bulunduğu için kullandığınız ilaçları hekiminize veya eczacınıza göstererek birlikte karar vermek en doğru yoldur; ürün etiketindeki miktar esastır."
         }
       ]
+    },
+    {
+      "slug": "isirgan-otu-sac-dokulmesi-icin-nasil-kullanilir",
+      "title": "Isırgan Otu Saç Dökülmesi İçin Nasıl Kullanılır?",
+      "question": "Isırgan otu saç dökülmesine karşı nasıl kullanılır?",
+      "plant": "Isırgan",
+      "category": "Saç & Cilt",
+      "date": "2026-10-10",
+      "keyTakeaway": "Isırgan otu saç bakımında geleneksel olarak harici (durulama suyu, şampuan, yağ) ve dahili (bitki çayı, ekstre) biçimde kullanılır. Saç dökülmesine etkisine dair kanıt sınırlıdır; ürün etiketindeki miktar esastır. Ani ya da yaygın dökülmede önce hekime danışılmalıdır.",
+      "excerpt": "Isırgan suyu, şampuanı ve çayı arasındaki farkı, dikkat edilecek noktaları ve saç dökülmesinde makul beklentiyi tek rehberde topladık.",
+      "keywords": [
+        "ısırgan otu saç",
+        "ısırgan otu saç dökülmesi",
+        "ısırgan otu şampuanı",
+        "ısırgan suyu saça"
+      ],
+      "intro": [
+        "Isırgan otu, Anadolu'da saç bakımı denince akla gelen geleneksel bitkilerden biridir. Ancak harici ve dahili kullanımın amacı, yöntemi ve dikkat edilecek noktaları birbirinden oldukça farklıdır.",
+        "Bu rehberde ısırgan otunun saça nasıl uygulandığını, dahili kullanımda nelere dikkat edilmesi gerektiğini ve saç dökülmesinde gerçekçi beklentinin ne olduğunu, her iddianın dayanak türünü belirterek ele alıyoruz.",
+        "Amacımız vaat vermek değil, okuyucunun bilinçli karar vermesine yardımcı olmaktır."
+      ],
+      "sections": [
+        {
+          "heading": "Isırgan otu saç bakımında neden geleneksel olarak tercih edilir?",
+          "body": [
+            "Isırgan otu, halk hekimliğinde saç ve saç derisi bakımı için kuşaklardır başvurulan bir bitkidir. Yaprakları mineraller ve fenolik bileşikler içerdiği için araştırmalarda incelenmektedir. Isırgan suyuyla saç durulama Anadolu'da yaygın bir uygulamadır; ancak bu kullanım geleneksel deneyime dayanır ve saç dökülmesi üzerinde belirgin bir etki sağladığı söylenemez.",
+            "Saç derisinde yağlanmayı dengelemeye yardımcı olabileceği ve ferah bir his verebileceği düşünüldüğü için şampuan ve losyonlarda da yer alır. Bu beklentiler çoğunlukla kullanıcı deneyimlerine dayanır; güçlü klinik kanıt henüz sınırlıdır."
+          ]
+        },
+        {
+          "heading": "Isırgan suyu saça harici olarak nasıl uygulanır?",
+          "body": [
+            "Isırgan suyu saça uygulanırken en yaygın yöntem, kurutulmuş ısırgan yaprağının demlenip soğutulduktan sonra şampuan sonrası son durulama olarak kullanılmasıdır. Bitki miktarı ve demleme süresi için ürün ambalajındaki tarif esastır. Taze ısırgan tüyleri ciltte batabileceği için eldiven kullanılmalıdır; kurutulmuş yaprak tercih etmek bu sorundan kaçınmaya yardımcı olabilir.",
+            "Demlenen su tamamen soğutulmalı, süzülmeli ve saç derisine nazikçe masajla uygulanmalıdır. Bitkisel sular çabuk bozulabileceğinden taze hazırlanıp bekletilmeden kullanılmalıdır. İlk kullanımdan önce kolun iç tarafında yama testi yapmak, hassasiyeti anlamaya yardımcı olabilir. Kızarıklık veya kaşıntı olursa kullanım bırakılmalıdır."
+          ]
+        },
+        {
+          "heading": "Isırgan otu şampuanı ve yağı seçilirken nelere bakılmalıdır?",
+          "body": [
+            "Isırgan otu şampuanı, bitki ekstresinin temizleyici bir baz içinde sunulduğu üründür; saçla kısa süre temas ettiği için etkisi sınırlı kalabilir. Seçerken içerik listesinde ısırganın hangi biçimde (ekstre, yağ, su) yer aldığına, ürünün kozmetik mevzuata uygun üretildiğine ve tahriş edebilecek yoğun parfüm gibi katkıların bulunup bulunmadığına bakılmalıdır.",
+            "Isırgan yağı genellikle yaprakların taşıyıcı bir bitkisel yağda bekletilmesiyle hazırlanır. Kullanımda etiketteki talimat izlenmeli, yağ saç derisine masajla uygulanmalı ve ardından şampuanla iyice yıkanmalıdır. Saç dökülmesini ortadan kaldırdığını öne süren iddialara temkinli yaklaşmak gerekir."
+          ]
+        },
+        {
+          "heading": "Isırgan otu dahili olarak nasıl kullanılır ve kimler dikkat etmelidir?",
+          "body": [
+            "Isırgan otunun dahili kullanımı geleneksel olarak yapraktan hazırlanan bitki çayı ya da ekstre içeren takviyeler biçiminde görülür. Miktar ve süre için ürün etiketindeki miktar esastır; kendi başına artırmak önerilmez. Dahili kullanımın saç üzerindeki etkisi doğrudan gösterilmiş değildir; genel beslenme desteği amacıyla tercih edilir.",
+            "Hamilelik ve emzirme döneminde, kan şekeri, tansiyon veya kan sulandırıcı ilaç kullananlarda ve idrar söktürücü ilaç alanlarda ısırgan otu için etkileşim olasılığı bildirilmektedir. Bu gruptaki kişilerin kullanmadan önce hekim veya eczacıya danışması gerekir. Mide hassasiyeti ve alerjik reaksiyon da bildirilebilir."
+          ]
+        },
+        {
+          "heading": "Isırgan otu ile saç dökülmesinde gerçekçi beklenti nedir?",
+          "body": [
+            "Isırgan otu ile saç dökülmesinde gerçekçi beklenti, bitkinin destekleyici bir bakım unsuru olabileceği, tek başına çözüm olmadığıdır. Saç dökülmesi demir eksikliği, tiroid dengesizliği, hormonal değişimler, stres, mevsimsel döngü ve doğum sonrası dönem gibi birçok nedene bağlı olabilir; bitkisel uygulama bu nedenlerin yerini tutmaz.",
+            "Saç döngüsü yavaş işlediği için herhangi bir bakım rutininin değerlendirilmesi birkaç ay sürebilir. Dökülme ani başladıysa, saçsız yamalar oluştuysa ya da baş derisinde ağrı, kızarıklık veya pullanma varsa dermatoloğa başvurulmalıdır. Isırgan uygulaması, hekim değerlendirmesiyle birlikte yürütülürse makul bir destek olarak düşünülebilir."
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Isırgan suyu saçın rengini etkiler mi?",
+          "a": "Kullanıcı deneyimlerine göre ısırgan suyu, özellikle açık renkli ve boyalı saçlarda hafif bir ton değişimine yol açabilir. Emin olmak için önce küçük bir saç tutamında deneme yapılması ve ürün tarifinin izlenmesi daha güvenlidir."
+        },
+        {
+          "q": "Isırgan suyu ile durulama ne sıklıkla yapılır?",
+          "a": "Sıklık için ürün etiketindeki ya da tarifteki yönerge esastır. Saç derisi hassasiyetine göre değişebileceğinden, kuruluk veya tahriş fark edilirse kullanım seyreltilmeli ya da bırakılmalı, gerekirse bir uzmana danışılmalıdır."
+        },
+        {
+          "q": "Taze ısırgan ile kurutulmuş ısırgan arasında fark var mı?",
+          "a": "Taze ısırganın tüyleri ciltte batma ve kaşıntı yapabildiği için eldivenle işlenmesi gerekir. Kurutulmuş yaprak kullanımı daha pratiktir. Bitkinin doğru toplanması ve temiz kurutulması, kalite açısından önemlidir."
+        },
+        {
+          "q": "Isırgan uygulaması sonrası kaşıntı olursa ne yapılmalı?",
+          "a": "Kullanım hemen bırakılmalı ve saç derisi bol ılık suyla durulanmalıdır. Kızarıklık, şişlik veya kaşıntı sürüyorsa dermatoloğa başvurulmalıdır. Bu durum, kişinin bitkiye karşı hassasiyeti olabileceğine işaret eder."
+        },
+        {
+          "q": "Harici ve dahili ısırgan kullanımı birlikte yapılmalı mı?",
+          "a": "Zorunlu değildir; iki kullanım ayrı amaçlara hizmet eder. Dahili kullanım ilaç etkileşimi ve özel durumlar nedeniyle daha fazla dikkat gerektirir. Birlikte kullanmak isteyenlerin hekim veya eczacıya danışması uygun olur."
+        }
+      ]
     }
   ]
 }
