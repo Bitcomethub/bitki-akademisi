@@ -12,7 +12,8 @@
     "blog:next": "node scripts/generate-blog-post.mjs --next",
     "blog:generate": "node scripts/generate-blog-post.mjs",
     "blog:image": "node scripts/generate-cover-image.mjs",
-    "asin:check": "node scripts/check-asins.mjs"
+    "asin:check": "node scripts/check-asins.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "next": "16.2.12",

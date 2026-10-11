@@ -34,12 +34,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
-    # İş düzeyinde tanımlı, çünkü adım `if:` koşulunda `env` bağlamı yalnızca
-    # iş/workflow düzeyindeki değişkenleri görür — adımın kendi env bloğunu
-    # görmez. Adım env'inde bıraksaydık koşul her zaman boş okunurdu.
-    env:
-      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -152,30 +146,27 @@ jobs:
           git push origin "HEAD:${{ github.ref_name }}"
 
       # IndexNow, Bing ve Yandex'e "bu URL yeni" diye haber verir; taranmayı
-      # günlerden dakikalara indirir. Vercel'in yeni build'i yayına alması
-      # için önce bekliyoruz — yayında olmayan URL'i bildirmek işe yaramaz.
+      # günlerden dakikalara indirir.
       #
-      # KURULUM (iki adım, ikisi de yapılmadan bu adım sessizce atlanır):
-      #   1. Rastgele bir anahtar üret, public/<anahtar>.txt dosyasına
-      #      içeriği anahtarın kendisi olacak şekilde yaz ve commit'le.
-      #   2. Aynı anahtarı INDEXNOW_KEY reposu secret'ı olarak ekle.
+      # ── BU ADIM BİR SÜRE HİÇ KOŞMADI ──
+      # `if:` koşulu `env.INDEXNOW_KEY != ''` idi ve o secret bu repoda hiç
+      # tanımlanmadı; adım her sabah sessizce atlandı, hiçbir yerde kırmızı
+      # düşmedi. Anahtar artık `scripts/indexnow.mjs` tarafından YAYIMLANAN
+      # `public/<key>.txt` dosyasından okunuyor — secret'a bağımlılık yok,
+      # dolayısıyla "anahtar" ile "anahtar dosyası"nın ayrışması (IndexNow'un
+      # 403 verdiği tek durum) yapısal olarak imkânsız.
+      #
+      # Sabit `sleep 180` yerine `--wait-for-key`: anahtar dosyası gerçekten
+      # yayına girene kadar bekler, girmezse ping atmaz.
+      # Hata deploy'u KIRMAZ: script `--strict` olmadan her zaman 0 döner.
       - name: IndexNow bildirimi
-        if: steps.generate.outputs.status == 'published' && env.INDEXNOW_KEY != ''
+        if: steps.generate.outputs.status == 'published'
+        continue-on-error: true
         run: |
-          echo "Vercel deploy'u bekleniyor..."
-          sleep 180
-          curl -sS -X POST "https://api.indexnow.org/indexnow" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"host\": \"bitkiakademisi.com\",
-              \"key\": \"$INDEXNOW_KEY\",
-              \"keyLocation\": \"https://bitkiakademisi.com/$INDEXNOW_KEY.txt\",
-              \"urlList\": [
-                \"https://bitkiakademisi.com/blog/${{ steps.generate.outputs.slug }}\",
-                \"https://bitkiakademisi.com/blog\",
-                \"https://bitkiakademisi.com/llms.txt\"
-              ]
-            }" || echo "IndexNow bildirimi başarısız (kritik değil)"
+          node scripts/indexnow.mjs \
+            "https://bitkiakademisi.com/blog/${{ steps.generate.outputs.slug }}" \
+            "https://bitkiakademisi.com/blog" \
+            --wait-for-key
 
       # En sona bırakıldı: reddedilen taslak commit'lendikten SONRA fail et,
       # yoksa inceleme için gereken taslak kaybolur.
