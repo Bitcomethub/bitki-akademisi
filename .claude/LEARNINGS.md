@@ -57,10 +57,8 @@ Anlatılar `.claude/LEARNINGS_ARCHIVE.md`'de; bu dosya her session başında oku
 - **Kanıt:** Önizleme HTML'inde `<h1>` öncesi görünür soru + `FAQPage` içindeki her soru sayfada birebir mevcut; SSS şeması HTML blob'undan değil aynı diziden üretiliyor.
 - **Rule:** Şemaya yalnızca sayfada GÖRÜNEN veriyi koy ve ikisini tek kaynaktan türet. HTML blob'undan FAQPage şeması türetilemez — bu yüzden içerik modeli baştan yapısal olmalıdır.
 
-## 2026-08-02 — Vercel Cron günlük içerik motorunu çalıştıramaz
-- **Problem:** Günlük makale üretimi doğal olarak Vercel Cron'a benziyor (site zaten Vercel'de), ama iş üretilen makaleyi dosyaya YAZIP commit etmek zorunda.
-- **Elenen:** Vercel Cron + function — function dosya sistemi salt okunur ve deploy'a commit atamaz; yazı bir sonraki deploy'da kaybolur. Cron + harici veritabanı — build anında türetilen `sitemap.xml`/`llms.txt` içeriği göremez, ek altyapı maliyeti.
-- **Seçilen:** GitHub Actions. `checkout` gerçek bir çalışma dizini verir; commit + push Vercel build'ini tetikler, sitemap ve llms.txt kendiliğinden güncellenir.
-- **Kanıt:** İş akışı sırası bilinçli — kapı testleri → üretim → **gerçek build (commit'ten ÖNCE)** → commit → IndexNow → fail en sonda. Bozuk JSON repoya giremiyor; reddedilen taslak inceleme için yine de commit'leniyor.
-- **Rule:** Zamanlanmış iş depoya dosya yazacaksa Actions kullan, Vercel Cron değil. Kararı "hangi platformdayız" değil, "iş yazma yapıyor mu" belirler.
+## 2026-10-16 — layout'taki canonical, override etmeyen HER sayfaya miras kalıyor
+- **Problem:** `/blog` listesinin canlı HTML'inde `<link rel="canonical" href="https://bitkiakademisi.com">` — sayfa kendini ANA SAYFA ilan ediyordu. İki URL aynı görününce motor birini seçer ve genelde liste sayfası indeksten düşer.
+- **Kök neden:** `app/layout.tsx` site geneli `alternates.canonical` olarak anasayfa URL'ini tanımlıyor (anasayfanın kendisi için doğru). Next.js bu değeri override ETMEYEN her sayfaya miras bırakıyor; `app/blog/page.tsx` kendi `alternates`'ını vermediği için anasayfanın canonical'ını taşıyordu.
+- **Rule:** Layout'ta tanımlı `alternates.canonical` bir varsayılan değil, o sayfaya özel bir değerdir ve tüm alt sayfalara miras kalır. URL'i farklı olan HER sayfa `alternates.canonical`'ını açıkça vermeli — yoksa sessizce kendini anasayfa ilan eder. Doğrulaması: canlı HTML'de `<link rel="canonical">` sayfanın kendi URL'ini gösteriyor mu.
 

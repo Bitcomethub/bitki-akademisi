@@ -1,11 +1,24 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/posts";
+import { site } from "@/lib/brand-facts";
 import { CoverBand } from "@/components/cover-band";
 
+/**
+ * canonical AÇIKÇA verilir — mirasa BIRAKILMAZ.
+ *
+ * layout.tsx site geneli `alternates.canonical` olarak ANA SAYFAYI tanımlıyor
+ * (anasayfanın kendisi için doğru). Ama Next.js bu değeri override etmeyen
+ * HER sayfaya miras bırakır: bu alan olmadan /blog kendini "ana sayfa" ilan
+ * ediyordu. Aynı içerik iki URL'de görününce arama motoru ikisinden birini
+ * seçer ve genelde yanlış olanı seçer — liste sayfası indeksten düşer, sıra
+ * ana sayfaya kayar. Canonical'ın kendi URL'ini göstermesi bu sayfanın
+ * indekslenebilirliğinin ön koşulu.
+ */
 export const metadata: Metadata = {
   title: "Tüm Rehberler",
   description: "Şifalı bitkiler ve doğal sağlık üzerine tüm rehber yazılarımız.",
+  alternates: { canonical: `${site.url}/blog` },
 };
 
 export default function BlogIndex() {

@@ -98,6 +98,7 @@ ${postLines}
 
 - [Ana Sayfa](${site.url}): Site tanıtımı ve öne çıkan rehberler
 - [Tüm Rehberler](${site.url}/blog): Yayımlanan bütün bitki rehberlerinin listesi
+- [Tam İçerik](${site.url}/llms-full.txt): Bütün rehberlerin gövde metni, tek düz metin
 - [Site Haritası](${site.url}/sitemap.xml): Makine-okunur URL listesi
 
 ## Alıntı Kuralları
