@@ -10,6 +10,7 @@ import {
 } from "@/lib/posts";
 import { postGraph, postUrl } from "@/lib/post-schema";
 import { COVER_SIZE, coverPath } from "@/lib/cover";
+import { metaTitle, metaDescription } from "@/lib/seo";
 import { CoverBand } from "@/components/cover-band";
 
 export function generateStaticParams() {
@@ -35,12 +36,16 @@ export async function generateMetadata({
     alt: post.question,
   };
   return {
-    title: post.title,
-    description: post.excerpt,
+    // Başlık/açıklama şablonda SERP sınırına çekilir (lib/seo.ts): H1 uzun
+    // kalabilir ama Google'a giden <title> ≤60, <meta description> ≤155 olur.
+    // `absolute` şart — aksi halde layout'taki "%s | Bitki Akademisi" şablonu
+    // eklenip sınırı yeniden aşardı.
+    title: { absolute: metaTitle(post.title) },
+    description: metaDescription(post.excerpt),
     keywords: post.keywords,
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle(post.title),
+      description: metaDescription(post.excerpt),
       type: "article",
       url,
       locale: "tr_TR",
@@ -52,8 +57,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle(post.title),
+      description: metaDescription(post.excerpt),
       images: [cover],
     },
     alternates: { canonical: url },

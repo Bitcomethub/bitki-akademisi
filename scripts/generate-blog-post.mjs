@@ -476,7 +476,10 @@ function scanClaimHedging(fields) {
 const LIMITS = {
   keyTakeaway: [25, 70],
   keyTakeawayFirstSentence: 34,
-  excerpt: [12, 40],
+  // excerpt artık KARAKTER ile ölçülür. Eskiden kelime eşiğiydi ([12,40]) ve
+  // Türkçede 40 kelime ≈ 250-280 karakter eder — yani her uzun excerpt SERP'te
+  // kırpılıyordu. Google <meta description>'ı ~155 karakterde keser.
+  excerptChars: [100, 155],
   introTotal: [50, 130],
   introFirstSentence: 34,
   sectionBody: [55, 160],
@@ -484,6 +487,17 @@ const LIMITS = {
   totalWords: [600, 1500],
   sections: [4, 6],
   faqs: [4, 6],
+};
+
+/**
+ * SERP karakter sınırları — lib/seo.ts'teki TITLE_SUFFIX / MAX_* ile AYNI
+ * değerler. O modül TypeScript; bu script import edemez, o yüzden burada
+ * kopyalanıyor. Birini değiştirirken diğerini de değiştir.
+ */
+const SEO = {
+  titleSuffix: " | Bitki Akademisi",
+  titleMax: 60,
+  descriptionMax: 155,
 };
 
 /** Bağlamsız okunamayan paragraf açılışları — alıntılanabilirliği bozar. */
@@ -656,8 +670,12 @@ export function validatePost(post, topic) {
   }
 
   // --- R9: özet ve uzunluk ---------------------------------------------
-  if (!range(wc(post.excerpt), LIMITS.excerpt)) {
-    fail(`excerpt ${wc(post.excerpt)} kelime; ${LIMITS.excerpt.join("-")} olmalı`);
+  // Karakter ölçülür (kelime değil): Google'ın kırptığı birim karakter.
+  if (!range(post.excerpt.length, LIMITS.excerptChars)) {
+    fail(
+      `excerpt ${post.excerpt.length} karakter; ` +
+        `${LIMITS.excerptChars.join("-")} olmalı (SERP ${SEO.descriptionMax}'te kırpar)`
+    );
   }
   const total = introWords + wc(post.keyTakeaway) +
     post.sections.reduce((n, s) => n + s.body.reduce((m, x) => m + wc(x), 0) +
@@ -748,7 +766,7 @@ Bir formülün içeriğine listede olmayan bir bitki EKLEME. Karışıma "mantı
 
 ## Uzunluk (Türkçe için kalibre edildi)
 - keyTakeaway: ${LIMITS.keyTakeaway.join("-")} kelime
-- excerpt: ${LIMITS.excerpt.join("-")} kelime, meraklandıran tek cümle
+- excerpt: ${LIMITS.excerptChars.join("-")} karakter, meraklandıran tek cümle
 - intro: 2-3 paragraf, toplam ${LIMITS.introTotal.join("-")} kelime
 - her bölüm gövdesi: ${LIMITS.sectionBody.join("-")} kelime
 - her SSS cevabı: ${LIMITS.faqAnswer.join("-")} kelime
@@ -1229,6 +1247,18 @@ async function main() {
   }
 
   console.log(`Konu: ${topic.slug}  (${topic.archetype}, tier ${topic.tier}, model ${MODEL})`);
+
+  // SERP başlık uyarısı. <title> şablonda ≤60'a kırpılıyor (lib/seo.ts) ve H1
+  // etkilenmiyor — yani yayın güvenli. Ama kaynak başlık kısaysa marka eki de
+  // sığar; backlog'a yeni konu eklerken bunu bilmek işe yarar, o yüzden sessiz
+  // kalmak yerine yazıyoruz.
+  const titleLen = topic.title.length + SEO.titleSuffix.length;
+  if (titleLen > SEO.titleMax) {
+    console.log(
+      `Not: başlık ${titleLen} karakter (>${SEO.titleMax}); meta <title> şablonda kırpılacak (H1 etkilenmez). ` +
+        `Backlog başlığını ≤${SEO.titleMax - SEO.titleSuffix.length} tutarsan marka eki sığar.`
+    );
+  }
 
   const { draft, problems, attempt } = await generate(topic);
 
