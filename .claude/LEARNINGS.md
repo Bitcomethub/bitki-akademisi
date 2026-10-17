@@ -2,14 +2,6 @@
 
 Anlatılar `.claude/LEARNINGS_ARCHIVE.md`'de; bu dosya her session başında okunur.
 
-## 2026-08-03 — Ürün sahibinden gelen ASIN listesinde bildirilenden 3 fazla ölü link vardı
-- **Problem:** Sahibi 28 ASIN'lik listeyi verirken 2 ürünün ("Piyasaya Arz Öncesi Bildirim" uyum sorunu) delisted OLABİLECEĞİNİ bildirdi. Liste doğrudan `/dp/` linkine çevrilecekti; kırık ürün linki bu sitede uydurma cümleyle aynı maliyettedir — okuyucu sağlık içeriğine güvenip tıklar, Amazon'un 404'üne düşer.
-- **Kök neden:** Liste envanter/barkod sisteminden geliyor, Amazon yayın durumundan değil. İkisi ayrı gerçeklik; SKU'nun var olması listelemenin canlı olduğunu göstermez.
-- **Elenen:** Bildirilen 2'yi elemek — tarama NE/01, NE/03, NE/09'un da 404 verdiğini gösterdi, yani 3 kırık link yayımlanacaktı; ölü ASIN'leri tamamen silmek — ürün yeniden yayına alındığında sıfırdan aranması gerekirdi; `asin` + `durum` bayrağı tutmak — bayrağı okumayı unutan her yeni tüketici ölü linki yayımlar.
-- **Seçilen:** 28'inin tamamını canlı tara (iki tur, `/dp/` + `/gp/product/`, canlı kontrol ASIN'leriyle aynı partide — hız sınırlaması elensin). Ölüleri `asinDelisted` adlı, HİÇBİR KODUN OKUMADIĞI alana taşı: `asin` yokluğu `amazonUrlFor()`'u kendiliğinden aramaya düşürüyor. Güvenlik dallanmadan değil, veri biçiminden geliyor.
-- **Kanıt:** `npm run asin:check` → 28 tarandı, 23 canlı (başlıklar İmmu-Nat markasını doğruluyor), 5 ölü, çıkış 0. Preview'da render edilen HTML'de 3 makalenin CTA'sı `href="https://www.amazon.com.tr/dp/B07J39K48R|B07JQV3149|B09SGC6BZJ"`.
-- **Rule:** Para yoluna bağlanacak dış veri, kaynağı ne kadar yetkili olursa olsun (ürün sahibi dahil) yayımlanmadan önce hedefinde tek tek doğrulanır; "bunlar bozuk olabilir" notu tam liste sanılmaz. Doğrulanamayan kayıt SİLİNMEZ, kodun okumadığı bir alana taşınır — böylece güvenli davranış varsayılan olur.
-
 ## 2026-08-03 — Kapının kırılganlığı hakkında ölçmeden yazdığım yorum yanlış çıktı
 - **Problem:** `products[].name`'in çift görevli olduğunu (CTA etiketi + kapının temizlediği kanonik dizgi) görünce, "Curcumin P53" adını Amazon başlığına eşitlemenin yayımlanmış zerdeçal yazısını reddettireceği sonucuna vardım. Gerekçeyi hem `_productsReadme`'ye hem öğrenme kaydına "Ölçtük" diyerek yazdım. Ölçmemiştim; çıkarımdı.
 - **Kök neden:** Bir bağın VAR olduğunu görmek (ad gerçekten `canonicalPatterns()`'a giriyor), o bağın TAŞIYICI olduğunu göstermez. "53" iki bağımsız mekanizmayla zaten korunuyordu: kapının negatif lookbehind'ı harfe bitişik rakamı kod sayıp hiç taramıyor, "İmmu Life 8"deki 8 ise `allowedBrandNumbers`'ta. Ad yolu hiç devreye girmiyor.
@@ -61,4 +53,12 @@ Anlatılar `.claude/LEARNINGS_ARCHIVE.md`'de; bu dosya her session başında oku
 - **Problem:** `/blog` listesinin canlı HTML'inde `<link rel="canonical" href="https://bitkiakademisi.com">` — sayfa kendini ANA SAYFA ilan ediyordu. İki URL aynı görününce motor birini seçer ve genelde liste sayfası indeksten düşer.
 - **Kök neden:** `app/layout.tsx` site geneli `alternates.canonical` olarak anasayfa URL'ini tanımlıyor (anasayfanın kendisi için doğru). Next.js bu değeri override ETMEYEN her sayfaya miras bırakıyor; `app/blog/page.tsx` kendi `alternates`'ını vermediği için anasayfanın canonical'ını taşıyordu.
 - **Rule:** Layout'ta tanımlı `alternates.canonical` bir varsayılan değil, o sayfaya özel bir değerdir ve tüm alt sayfalara miras kalır. URL'i farklı olan HER sayfa `alternates.canonical`'ını açıkça vermeli — yoksa sessizce kendini anasayfa ilan eder. Doğrulaması: canlı HTML'de `<link rel="canonical">` sayfanın kendi URL'ini gösteriyor mu.
+
+## 2026-10-17 — SERP sınırı KARAKTER ölçülür; eşiği kelimeyle ölçmek sessiz borç üretir
+- **Problem/Kök neden:** Kalite kapısı excerpt'i KELİME aralığıyla (`[12,40]` kelime) ölçüyordu; Türkçe sondan eklemeli olduğu için 40 kelime ≈ 250-280 KARAKTER. Kapı yeşil kalırken üretilen her makalenin `<title>`'ı 60, description'ı 155 karakteri aşıyordu (canlıda 38 başlık + 8 açıklama).
+- **Rule:** Arama motoruna giden metnin sınırı KARAKTER'dir (title ≤60, description ≤155); hem üretim eşiği hem kalite kapısı karakter ölçmelidir. Eşiği kelimeyle ölçüp çıktıyı karakterle kırpmak = her yayında sessiz borç. Kırpma tercihen üretimde; render'da `lib/seo.ts metaTitle/metaDescription` son savunma. `title.template` miras alan projede kırpılmış başlığa `{absolute:…}` ŞART — yoksa marka eki sınırı yeniden aşar. (Not: 60/155 sabitleri `lib/seo.ts` + `scripts/generate-blog-post.mjs` içinde ÇİFT kaynak; birini değiştirince diğerini de değiştir.)
+
+## 2026-10-17 — Beklenen-boş durum bile GÖRÜNÜR olmalı (yeşil sessiz durma yasak)
+- **Problem:** Günlük üretici kuyruk boşalınca `status:"empty"` + exit 0 dönüyordu; workflow son adımı `empty`'yi muaftan sayıyordu → iş YEŞİL, site sessizce yayın durdurur, kimse fark etmez.
+- **Rule:** Zamanlanmış bir işte "yapacak iş yok" ile "hiç çalışmadı" aynı sessiz-yeşil çıkışa sıkıştırılmaz. Beklenen-boş hâl bile `GITHUB_STEP_SUMMARY`'ye neden yazıp **exit 1 (kırmızı)** dönmeli. Sessiz durma, gürültülü durmadan pahalıdır.
 
