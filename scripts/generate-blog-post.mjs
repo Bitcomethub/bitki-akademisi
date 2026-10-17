@@ -1184,9 +1184,43 @@ async function main() {
 
   const topic = pickTopic();
   if (!topic) {
-    console.log("Backlog'da uygun konu kalmadı.");
-    emitOutput({ status: "empty" });
-    return;
+    // SİLENT TAKILMA YOK. Eskiden burada 'empty' ile 0 dönülüyordu ve iş YEŞİL
+    // görünüyordu — kuyruk tükendiğinde site aylarca sessizce donabilirdi.
+    // Şimdi: kuyruğun neden boş olduğunu özet ekranına yaz ve KIRMIZI dön.
+    const done = publishedSlugs();
+    const state = loadState();
+    const waiting = backlog.topics
+      .filter((t) => !done.has(t.slug))
+      .map((t) => ({
+        slug: t.slug,
+        attempts: state.deferred[t.slug]?.attempts ?? 0,
+        problems: state.deferred[t.slug]?.problems ?? [],
+      }));
+    const blocked = waiting.filter((t) => t.attempts >= 2);
+    const lines = [
+      "## ⛔ Yayımlanabilir konu yok — üretim durdu",
+      "",
+      `- yayımlanmamış konu: ${waiting.length}`,
+      `- kalite kapısında hak bırakan (ertelenmiş): ${blocked.length}`,
+      "",
+    ];
+    if (blocked.length) {
+      lines.push("### Takılı konular — elle inceleme gerekli", "");
+      blocked.forEach((t) =>
+        lines.push(
+          `- \`${t.slug}\` — deneme ${t.attempts}/2 · ${(t.problems || []).slice(0, 2).join(" · ") || "bkz. content/rejected-drafts/"}`
+        )
+      );
+      lines.push("");
+    } else {
+      lines.push("Kuyruk tükendi: `content/blog-topic-backlog.json` dosyasına yeni konu ekle.", "");
+    }
+    if (process.env.GITHUB_STEP_SUMMARY) {
+      appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+    }
+    lines.forEach((l) => console.log(l));
+    emitOutput({ status: "stalled" });
+    process.exit(1);
   }
 
   if (argv.includes("--next")) {

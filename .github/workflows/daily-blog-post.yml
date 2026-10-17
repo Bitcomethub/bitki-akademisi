@@ -170,9 +170,14 @@ jobs:
 
       # En sona bırakıldı: reddedilen taslak commit'lendikten SONRA fail et,
       # yoksa inceleme için gereken taslak kaybolur.
-      - name: Kapıdan geçemediyse işi başarısız say
-        if: steps.generate.outputs.status != 'published' && steps.generate.outputs.status != 'dry-run' && steps.generate.outputs.status != 'empty'
+      #
+      # 'empty' ARTIK BAŞARI DEĞİL. Eskiden kuyruk boşalınca script 'empty' ile
+      # 0 dönüyordu ve bu adım onu yeşil bırakıyordu — yani site sessizce
+      # durabiliyordu. Script artık bu durumda 'stalled' ile 1 döndüğü için
+      # koşuldan 'empty' muafiyeti kaldırıldı: yayımlanabilir konu yoksa iş kırmızı.
+      - name: Yayımlanamadıysa işi başarısız say
+        if: steps.generate.outputs.status != 'published' && steps.generate.outputs.status != 'dry-run'
         run: |
           echo "::error::Üretim başarısız (durum: ${{ steps.generate.outputs.status }})."
-          echo "Reddedilen taslak: content/rejected-drafts/${{ steps.generate.outputs.slug }}.json"
+          echo "Ayrıntı için iş özetine (Summary) ve content/rejected-drafts/ klasörüne bakın."
           exit 1
