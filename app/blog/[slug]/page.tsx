@@ -13,6 +13,24 @@ import { COVER_SIZE, coverPath } from "@/lib/cover";
 import { metaTitle, metaDescription } from "@/lib/seo";
 import { CoverBand } from "@/components/cover-band";
 
+// İçerikte yalnız site içi `[metin](/yol)` bağlantıları desteklenir.
+function withLinks(text: string) {
+  return text.split(/(\[[^\]]+\]\(\/[^)\s]*\))/).map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\((\/[^)\s]*)\)$/);
+    return m ? (
+      <Link
+        key={i}
+        href={m[2]}
+        className="text-emerald-800 underline underline-offset-2 hover:text-emerald-900"
+      >
+        {m[1]}
+      </Link>
+    ) : (
+      part
+    );
+  });
+}
+
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
@@ -168,7 +186,7 @@ export default async function BlogPost({
       <div className="mt-8 space-y-4">
         {post.intro.map((paragraph, i) => (
           <p key={i} className="text-lg text-stone-700 leading-relaxed">
-            {paragraph}
+            {withLinks(paragraph)}
           </p>
         ))}
       </div>
@@ -206,7 +224,7 @@ export default async function BlogPost({
             <div className="space-y-4">
               {section.body.map((paragraph, i) => (
                 <p key={i} className="text-stone-700 leading-relaxed">
-                  {paragraph}
+                  {withLinks(paragraph)}
                 </p>
               ))}
             </div>
