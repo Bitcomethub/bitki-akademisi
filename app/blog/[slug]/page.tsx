@@ -15,8 +15,8 @@ import { CoverBand } from "@/components/cover-band";
 
 // İçerikte yalnız site içi `[metin](/yol)` bağlantıları desteklenir.
 function withLinks(text: string) {
-  return text.split(/(\[[^\]]+\]\(\/[^)\s]*\))/).map((part, i) => {
-    const m = part.match(/^\[([^\]]+)\]\((\/[^)\s]*)\)$/);
+  return text.split(/(\[[^\]]+\]\(\/(?![\/\\])[^)\s]*\))/).map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\((\/(?![\/\\])[^)\s]*)\)$/);
     return m ? (
       <Link
         key={i}
