@@ -30,6 +30,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { anthropicIstegi } from "./gemini-yedek.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const p = (rel) => join(ROOT, rel);
@@ -793,20 +794,16 @@ async function callModel(messages) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY tanımlı değil");
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": key,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
+  // Anthropic hesap seviyesinde düşerse (limit/credit/401/403/ard arda 5xx) Gemini son-çare.
+  const res = await anthropicIstegi({
+    apiKey: key,
+    govde: {
       model: MODEL,
       max_tokens: 16000,
       system: systemPrompt(),
       messages,
       output_config: { format: { type: "json_schema", schema: OUTPUT_SCHEMA } },
-    }),
+    },
   });
 
   if (!res.ok) {

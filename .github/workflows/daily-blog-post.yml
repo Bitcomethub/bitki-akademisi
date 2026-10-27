@@ -60,6 +60,8 @@ jobs:
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Yalnız Anthropic hesap seviyesinde düşerse devreye girer; secret yoksa katman kapalı
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Bütçe uygunsa repo değişkeni ile modeli yükselt: BLOG_MODEL
           BLOG_MODEL: ${{ vars.BLOG_MODEL }}
         run: |
