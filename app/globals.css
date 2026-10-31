@@ -11,3 +11,33 @@ body {
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+
+/* ---- Dokunmatik temel ------------------------------------------------
+   Düz :hover kuralı yok; Tailwind v4 hover: varyantı zaten yalnız hover
+   destekleyen cihazda çalışır. Dokunuş geri bildirimi :active; gri dokunma
+   kutusu ve çift dokunma zoom gecikmesi kapatılır. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a[href],
+[role="button"],
+input[type="submit"],
+input[type="button"],
+select,
+summary {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button:active,
+a[href]:active,
+[role="button"]:active,
+input[type="submit"]:active,
+input[type="button"]:active,
+select:active,
+summary:active {
+  opacity: 0.85;
+}
