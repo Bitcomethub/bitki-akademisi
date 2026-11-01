@@ -2,11 +2,11 @@
  * Makale sayfasının JSON-LD grafiği.
  *
  * Sayfa bileşeninden ayrı tutuluyor çünkü tek kural var: BURADAKİ HER ALAN
- * SAYFADA GÖRÜNEN METİNDEN TÜRETİLİR. Şemaya sayfada olmayan bir şey yazmak
- * (özellikle FAQPage) Google yapılandırılmış veri ihlalidir. Post tipi
+ * SAYFADA GÖRÜNEN METİNDEN TÜRETİLİR. Şemaya sayfada olmayan bir metin yazmak
+ * Google yapılandırılmış veri ihlalidir. Post tipi
  * yapısal olduğu için buradaki her değer doğrudan render edilen alandan gelir.
  *
- * Grafik üç düğüm içerir ve hepsi layout.tsx'teki site grafiğine @id ile
+ * Grafik iki düğüm içerir ve hepsi layout.tsx'teki site grafiğine @id ile
  * bağlanır — motorlar makaleyi yayıncıya, yayıncıyı da İmmu-Nat'a tek
  * okumada bağlayabilsin diye.
  */
@@ -42,7 +42,7 @@ export function postGraph(post: Post) {
     // Article.image, makaleyi TEMSİL eden görsel — gövdeye gömülü bir görsel
     // olmak zorunda değil; og:image mekanizmasının şemadaki karşılığı budur.
     // Bu, dosyanın başındaki "sayfada olmayanı şemaya yazma" kuralının istisnası
-    // değil, kapsamı dışı: kural METİN alanları içindir (özellikle FAQPage),
+    // değil, kapsamı dışı: kural METİN alanları içindir,
     // çünkü orada görünmeyen metin doğrudan ihlaldir. Görselde Google'ın tek
     // şartı URL'in taranabilir ve indekslenebilir olması — /kapak/<slug>.png
     // build anında üretilen statik bir dosya, ikisini de karşılıyor.
@@ -70,17 +70,6 @@ export function postGraph(post: Post) {
     article.mentions = { "@id": `${site.url}/#immunat` };
   }
 
-  const faqPage = {
-    "@type": "FAQPage",
-    "@id": `${url}#faq`,
-    inLanguage: "tr-TR",
-    mainEntity: post.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.q,
-      acceptedAnswer: { "@type": "Answer", text: faq.a },
-    })),
-  };
-
   const breadcrumb = {
     "@type": "BreadcrumbList",
     "@id": `${url}#breadcrumb`,
@@ -93,6 +82,6 @@ export function postGraph(post: Post) {
 
   return {
     "@context": "https://schema.org",
-    "@graph": [article, faqPage, breadcrumb],
+    "@graph": [article, breadcrumb],
   };
 }

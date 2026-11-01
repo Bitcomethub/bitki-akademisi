@@ -106,7 +106,7 @@ export default async function BlogPost({
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
-      {/* Article + FAQPage + BreadcrumbList — hepsi aşağıda render edilen
+      {/* Article + BreadcrumbList — hepsi aşağıda render edilen
           metinden türetilir, elle yazılmış tek bir alan yok. */}
       <script
         type="application/ld+json"

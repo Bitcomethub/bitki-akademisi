@@ -17,7 +17,7 @@ import { coverUrl, SITE_COVER_SLUG } from "@/lib/cover";
  * tara" der — Google Images indekslemesi için açık davet yalnızca budur.
  * Kısacası bu alan, CSS şerit kararının açtığı boşluğu kapatıyor.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export function sitemapEntries(): MetadataRoute.Sitemap {
   const base = site.url;
   const posts = getAllPosts();
   const newestPost = posts[0]?.date ?? new Date().toISOString().slice(0, 10);
@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/hakkinda`, lastModified: newestPost, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/gizlilik`, lastModified: newestPost, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/kullanim-sartlari`, lastModified: newestPost, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/site-haritasi`, lastModified: newestPost, changeFrequency: "monthly", priority: 0.4 },
     ...posts.map((post) => ({
       url: `${base}/blog/${post.slug}`,
       lastModified: post.date,
@@ -43,4 +44,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       images: [coverUrl(post.slug)],
     })),
   ];
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return sitemapEntries();
 }

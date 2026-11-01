@@ -117,6 +117,11 @@ export default function RootLayout({
             </Link>
             .
           </p>
+          <p className="mb-3">
+            <Link href="/site-haritasi" className="text-emerald-700 hover:underline">
+              Site Haritası
+            </Link>
+          </p>
           <p>© {new Date().getFullYear()} Bitki Akademisi</p>
         </footer>
       </body>

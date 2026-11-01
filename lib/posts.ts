@@ -2,7 +2,7 @@
  * Makale veri modeli.
  *
  * Eski model `content: string` (HTML blob) idi. Yapısal veriye geçmemizin
- * sebebi kozmetik değil: FAQPage şeması HTML blob'undan TÜRETİLEMEZ. Şemayı
+ * sebebi kozmetik değil: JSON-LD şeması HTML blob'undan TÜRETİLEMEZ. Şemayı
  * elle yazsaydık sayfada görünen metinle JSON-LD zamanla ayrışırdı — bu hem
  * Google yapılandırılmış veri ihlali hem de AI motorları için güven kaybıdır.
  * Bölümler ve SSS'ler veri olduğunda, HTML ve JSON-LD aynı kaynağın iki

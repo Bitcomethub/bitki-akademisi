@@ -626,9 +626,9 @@ export function validatePost(post, topic) {
     if (!range(wc(f.a || ""), LIMITS.faqAnswer)) {
       fail(`${tag}: cevap ${wc(f.a || "")} kelime; ${LIMITS.faqAnswer.join("-")} olmalı`);
     }
-    // FAQPage şeması bu metni birebir yayımlar; cevap kendi başına durmalı.
+    // SSS cevabı sayfada tek başına okunur; bağlamsız zamirle başlamamalı.
     if (DANGLING_START.test(fold(f.a || ""))) {
-      fail(`${tag}: cevap belirsiz zamirle başlıyor; şemada bağlamsız görünür`);
+      fail(`${tag}: cevap belirsiz zamirle başlıyor; tek başına okunduğunda bağlamsız kalır`);
     }
   }
 
