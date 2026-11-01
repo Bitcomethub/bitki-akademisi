@@ -33,6 +33,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog`, lastModified: newestPost, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/urunler`, lastModified: newestPost, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/hakkinda`, lastModified: newestPost, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/gizlilik`, lastModified: newestPost, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/kullanim-sartlari`, lastModified: newestPost, changeFrequency: "yearly", priority: 0.3 },
     ...posts.map((post) => ({
       url: `${base}/blog/${post.slug}`,
       lastModified: post.date,
