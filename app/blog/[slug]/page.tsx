@@ -311,7 +311,7 @@ export default async function BlogPost({
           href="/urunler"
           className="inline-flex items-center rounded-lg bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
         >
-          Bu bitkinin ürünlerini gör
+          Ürünleri gör
         </Link>
       </div>
 
