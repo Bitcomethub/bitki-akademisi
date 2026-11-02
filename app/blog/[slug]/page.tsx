@@ -303,6 +303,18 @@ export default async function BlogPost({
         </aside>
       )}
 
+      {/* Sayfanın TEK butonu: yazının ürün bağlantısı metin olarak yukarıda
+          duruyor (sponsor beyanıyla birlikte), buradaki eylem ürün listesine
+          götürür. Sola hizalı ve sade — reklam kutusu gibi okunmasın. */}
+      <div className="mt-8">
+        <Link
+          href="/urunler"
+          className="inline-flex items-center rounded-lg bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
+        >
+          Bu bitkinin ürünlerini gör
+        </Link>
+      </div>
+
       <p className="mt-8 text-sm text-stone-500 leading-relaxed border-t border-stone-200 pt-6">
         Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez ve
         hastalık teşhis, tedavi veya önleme iddiası içermez. Aktarılan
