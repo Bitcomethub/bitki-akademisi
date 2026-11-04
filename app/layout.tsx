@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
@@ -124,6 +125,7 @@ export default function RootLayout({
           </p>
           <p>© {new Date().getFullYear()} Bitki Akademisi</p>
         </footer>
+        <Script src="/ph.js" strategy="afterInteractive" data-product="bitki" />
       </body>
     </html>
   );
