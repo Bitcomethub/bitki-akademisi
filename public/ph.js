@@ -9,7 +9,7 @@
  * Neden npm paketi degil: lockfile/pnpm-minimumReleaseAge cakismasi yok, bundle'a girmez,
  * yuklenemezse (reklam engelleyici, ag) sayfa etkilenmez; her sey try/catch ve async.
  *
- * KVKK: cerez/localStorage YOK (persistence 'memory'), kisi profili YOK, autocapture KAPALI
+ * KVKK: cerez/localStorage YOK (cookieless_mode 'always': sunucu tarafli gunluk anonim hash, sayfalar arasi ziyaretci birlesir), kisi profili YOK, autocapture KAPALI
  * (form alani/input degeri hic okunmaz), URL'den utm_* disindaki sorgu parametreleri silinir,
  * oturum kaydi/anket/feature-flag kapali, Do-Not-Track'e saygi. Olaylar kendi alan adimizdan
  * /ingest uzerinden gider (Next rewrite), PostHog'a dogrudan istek yok.
@@ -75,7 +75,7 @@
       api_host: "/ingest",
       ui_host: "https://us.posthog.com",
       person_profiles: "identified_only",
-      persistence: "memory",
+      cookieless_mode: "always",
       capture_pageview: "history_change",
       capture_pageleave: true,
       autocapture: false,
