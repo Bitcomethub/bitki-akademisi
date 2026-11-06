@@ -5,6 +5,12 @@
       "problems": [
         "[faqs[2].a] Yasak sağlık iddiası: \"ilaçların yerine\""
       ]
+    },
+    "gilaburu-faydalari-nelerdir": {
+      "attempts": 1,
+      "problems": [
+        "[intro[2]] Yasak sağlık iddiası: \"mucize\""
+      ]
     }
   }
 }
